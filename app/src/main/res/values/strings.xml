@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">SafeTravelPH</string>
+    <string name="find_location">[Long press to select and drag the marker]</string>
+    <string name="notice_login">We request your support and cooperation in ensuring safety and public order in view of the Enhanced Community Quarantine. This app is part of the efforts of the UP COVID-19 Pandemic Response Team spearheaded by the UP Resilience Institute (UPRI).</string>
+    <string name="notice_request">We value your personal privacy. Please register here to open an account.</string>
+    <string name="notice_developer">Developed by the Data Analytics for Research and Education (DARE)-Project 3 (Information Exchange Platform for the Public Sector) housed at the University of the Philippines National College of Public Administration and Governance (UP-NCPAG).</string>
+    <string name="notice_contact">Visit www.safetravel.ph. For comments and suggestions, send email at admin@safetravel.ph</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="hint_landmarks">Nearest building or structure</string>
+    <string name="hint_description">Detailed description of incident like checkpoint/medical emergency</string>
+    <string name="hint_street">House No./Street/Village</string>
+    <string name="hint_city">City or Municipality</string>
+    <string name="google_maps_key">AIzaSyDfD0MWZk2LP-U9p63k6cOUzBwfd85m9g0</string>
+</resources>
