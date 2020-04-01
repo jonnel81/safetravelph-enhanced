@@ -16,6 +16,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Address;
+import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
@@ -48,6 +49,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -73,17 +76,18 @@ public class Report extends FragmentActivity
     AlertDialog.Builder builder;
     AlertDialog alertDialog;
     Button buttonReport;
-    Button takePhotoButton;
+    Button takePhotoButton, pickPhotoButton;
     ImageView imageView;
-    public final String APP_TAG = "Testapp";
+    public final String APP_TAG = "CameraTest";
     public final String photoFileName = "photo.jpg";
     String base64String="";
-    LocationManager lm;
-    LocationRequest mLocationRequest;
     Location mLastLocation;
     Marker mCurrLocationMarker;
-    FusedLocationProviderClient mFusedLocationClient;
-    Boolean isGPS;
+    private FusedLocationProviderClient mFusedLocationClient;
+    private LocationRequest locationRequest;
+    private LocationManager locationManager;
+    private boolean isContinue = false;
+    private boolean isGPS = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,15 +108,18 @@ public class Report extends FragmentActivity
 
         // Taking a photo
         takePhotoButton = (Button) findViewById(R.id.btnTakePhoto);
+        pickPhotoButton = (Button) findViewById(R.id.btnPickPhoto);
         imageView = (ImageView) findViewById(R.id.imageview);
         takePhotoButton.setEnabled(false);
+        pickPhotoButton.setEnabled(false);
 
         // Get permission for camera
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
+                    Manifest.permission.READ_EXTERNAL_STORAGE}, AppConstants.CAMERA_REQUEST);
         } else {
             takePhotoButton.setEnabled(true);
+            pickPhotoButton.setEnabled(true);
         }
 
         // Disable report button
@@ -127,7 +134,14 @@ public class Report extends FragmentActivity
         description.addTextChangedListener(watcher);
 
         // FuseLocationProviderClient
-        //mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+
+        // Location request for GPS
+        locationRequest= LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        //mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        locationRequest.setInterval(120 * 1000); // 2 minutes
+        locationRequest.setFastestInterval(60 * 1000); // 1 minute
 
         // Map fragment
         mMapFragment = MapFragment.newInstance();
@@ -149,15 +163,48 @@ public class Report extends FragmentActivity
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == 0) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                //
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case AppConstants.LOCATION_REQUEST: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    if (isContinue) {
+                        mFusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null);
+                    } else {
+                        mFusedLocationClient.getLastLocation().addOnSuccessListener(Report.this, new OnSuccessListener<Location>() {
+                            @SuppressLint("DefaultLocale")
+                            @Override
+                            public void onSuccess(Location location) {
+                                if (location != null) {
+                                    // Place location marker
+                                    LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                                    MarkerOptions markerOptions = new MarkerOptions();
+                                    markerOptions.position(latLng);
+                                    markerOptions.title("Marker Position");
+                                    mMap.clear();
+                                    mCurrLocationMarker = mMap.addMarker(markerOptions);
+                                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                                    lat.setText(String.format ("%.9f", location.getLatitude()));
+                                    lng.setText(String.format ("%.9f", location.getLongitude()));
+                                } else {
+                                    mFusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null);
+                                }
+                            }
+                        });
+                    }
+                } else {
+                    Toast.makeText(this, "Permission denied", Toast.LENGTH_SHORT).show();
+                }
+                break;
             }
-        }
-        if (requestCode == 100) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
-                    && grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
-                //
+            case AppConstants.CAMERA_REQUEST: {
+                    if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                            && grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
+                            takePhotoButton.setEnabled(true);
+                            pickPhotoButton.setEnabled(true);
+                    }
+                break;
             }
         }
     } // onRequestPermissionsResult
@@ -165,22 +212,23 @@ public class Report extends FragmentActivity
     public void onTakePhoto(View view) {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         intent.putExtra(MediaStore.EXTRA_OUTPUT, getPhotoFileUri(photoFileName));
-        startActivityForResult(intent, 100);
+        startActivityForResult(intent, AppConstants.TAKE_PHOTO_REQUEST);
     } // onTakePhoto
 
+    @SuppressLint("IntentReset")
     public void onPickPhoto(View view) {
         Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         intent.setType("image/*");
-        //intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"),200);
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Photo"),AppConstants.PICK_PHOTO_REQUEST);
     } // onPickPhoto
 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 100) {
-            if (resultCode == RESULT_OK) {
+        if (resultCode == RESULT_OK) {
+            if (requestCode == AppConstants.TAKE_PHOTO_REQUEST) {
                 Uri takenPhotoUri = getPhotoFileUri(photoFileName);
                 // Display the image, all images in Android are by default Bitmap images
                 Bitmap takenImage = BitmapFactory.decodeFile(takenPhotoUri.getPath());
@@ -193,32 +241,70 @@ public class Report extends FragmentActivity
                 System.out.println(base64String);
             }
         }
-        if (requestCode == 200 && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            Uri uri = data.getData();
-            try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                ImageView imageView = findViewById(R.id.imageview);
-                imageView.setImageBitmap(bitmap);
-                Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 640, 480, true);
-                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-                resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-                byte[] imageBytes = bytes.toByteArray();
-                base64String = Base64.encodeToString(imageBytes, Base64.NO_WRAP);
-                System.out.println(base64String);
-            } catch (IOException e) {
-                e.printStackTrace();
+        if (resultCode == RESULT_OK) {
+            if(requestCode == AppConstants.PICK_PHOTO_REQUEST && data != null && data.getData() != null) {
+                Uri uri = data.getData();
+                try {
+                    Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                    ImageView imageView = findViewById(R.id.imageview);
+                    imageView.setImageBitmap(bitmap);
+                    Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 640, 480, true);
+                    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                    resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+                    byte[] imageBytes = bytes.toByteArray();
+                    base64String = Base64.encodeToString(imageBytes, Base64.NO_WRAP);
+                    System.out.println(base64String);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
-        if (requestCode == 500) {
-            if (resultCode == RESULT_OK) {
-                isGPS = true; // flag maintain before get location
+        if (resultCode == RESULT_OK) {
+            if (requestCode == AppConstants.GPS_REQUEST) {
+                // flag maintain before get location
+                isGPS = true;
+                // Get current location
+                FusedLocationProviderClient mFusedLocationClient =  LocationServices.getFusedLocationProviderClient(this);
+                Task<Location> locationTask = mFusedLocationClient.getLastLocation();
+                locationTask.addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @SuppressLint("DefaultLocale")
+                    @Override
+                    public void onSuccess(Location location) {
+                        // Got last known location
+                        if (location != null) {
+                            // Place location marker
+                            LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                            MarkerOptions markerOptions = new MarkerOptions();
+                            markerOptions.position(latLng);
+                            markerOptions.title("Marker Position");
+                            mMap.clear();
+                            mCurrLocationMarker = mMap.addMarker(markerOptions);
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                            lat.setText(String.format ("%.9f", location.getLatitude()));
+                            lng.setText(String.format ("%.9f", location.getLongitude()));
+                            // Get current city address
+                            Geocoder geocoder = new Geocoder(Report.this, Locale.getDefault());
+                            List<Address> addresses = null;
+                            try {
+                                addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                                String addressString = addresses.get(0).getAddressLine(0);
+                                String cityString = addresses.get(0).getLocality();
+                                Toast.makeText(getApplicationContext(), "Current location: " + cityString, Toast.LENGTH_LONG).show();
+                                city.setText(cityString);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                });
             }
         }
     } // onActivityResult
 
     // Returns the File for a photo stored on disk given the fileName
     public Uri getPhotoFileUri(String fileName) {
-        // get the directory path, SD card => Pictures => CameraTest (custom folder)
+        // get the directory path
+        // SD card -> Pictures -> CameraTest (custom folder)
         File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), APP_TAG);
         // Create the storage directory if it does not exist
         if(!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()) {
@@ -315,43 +401,33 @@ public class Report extends FragmentActivity
         SharedPreferences.Editor editor = myPrefs.edit();
         editor.clear();
         editor.apply();
-        // Go back to main activity
+        // Go to main activity
         startActivity(new Intent(this, MainActivity.class));
     } // onLogout
 
     @Override
     public void onBackPressed() {
-        // Do nothing
+        // ---Do nothing---
     } // onBackPressed
 
     @SuppressLint("DefaultLocale")
     @Override
     public void onMapClick(LatLng point) {
-        double latVal = point.latitude;
-        double lngVal = point.longitude;
-        // Display position values
-        lat.setText(String.format ("%.9f", latVal));
-        lng.setText(String.format ("%.9f", lngVal));
-        // Clear the marker
+        lat.setText(String.format ("%.9f", point.latitude));
+        lng.setText(String.format ("%.9f", point.longitude));
         mMap.clear();
-        // Add a marker to the current position
         mMap.addMarker(new MarkerOptions()
                 .position(point)
                 .draggable(true)
-                .title("Current location"));
+                .title("Marker location"));
     } // onMapClick
 
     @SuppressLint("DefaultLocale")
     @Override
     public void onMapLongClick(LatLng point) {
-        double latVal = point.latitude;
-        double lngVal = point.longitude;
-        // Display position values
-        lat.setText(String.format ("%.9f", latVal));
-        lng.setText(String.format ("%.9f", lngVal));
-        // Clear the markers
+        lat.setText(String.format ("%.9f", point.latitude));
+        lng.setText(String.format ("%.9f", point.longitude));
         mMap.clear();
-        // Add a marker to the current position
         mMap.addMarker(new MarkerOptions()
                 .position(point)
                 .draggable(true)
@@ -362,36 +438,27 @@ public class Report extends FragmentActivity
     @Override
     public void onMarkerDragStart(Marker marker) {
         LatLng position=marker.getPosition();
-        // Display position values
-        double latVal = position.latitude;
-        double lngVal = position.longitude;
-        lat.setText(String.format ("%.9f", latVal));
-        lng.setText(String.format ("%.9f", lngVal));
+        lat.setText(String.format ("%.9f", position.latitude));
+        lng.setText(String.format ("%.9f", position.longitude));
     } // onMarkerDragStart
 
     @SuppressLint("DefaultLocale")
     @Override
     public void onMarkerDrag(Marker marker) {
         LatLng position=marker.getPosition();
-        // Display position values
-        double latVal = position.latitude;
-        double lngVal = position.longitude;
-        lat.setText(String.format ("%.9f", latVal));
-        lng.setText(String.format ("%.9f", lngVal));
+        lat.setText(String.format ("%.9f", position.latitude));
+        lng.setText(String.format ("%.9f", position.longitude));
     } //onMarkerDrag
 
     @SuppressLint("DefaultLocale")
     @Override
     public void onMarkerDragEnd(Marker marker) {
         LatLng position=marker.getPosition();
-        // Display position values
-        double latVal = position.latitude;
-        double lngVal = position.longitude;
-        lat.setText(String.format ("%.9f", latVal));
-        lng.setText(String.format ("%.9f", lngVal));
+        lat.setText(String.format ("%.9f", position.latitude));
+        lng.setText(String.format ("%.9f", position.longitude));
     } // onMarkerDragEnd
 
-    LocationCallback mLocationCallback = new LocationCallback() {
+    LocationCallback locationCallback = new LocationCallback() {
         @SuppressLint("DefaultLocale")
         @Override
         public void onLocationResult(LocationResult locationResult) {
@@ -404,23 +471,19 @@ public class Report extends FragmentActivity
                 if (mCurrLocationMarker != null) {
                     mCurrLocationMarker.remove();
                 }
-                // Place current location marker
+                // Place location marker
                 LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
                 MarkerOptions markerOptions = new MarkerOptions();
                 markerOptions.position(latLng);
-                markerOptions.title("Current Position");
+                markerOptions.title("Marker Position");
                 mMap.clear();
                 mCurrLocationMarker = mMap.addMarker(markerOptions);
-                //move map camera
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-                // Display position values
-                double latVal = latLng.latitude;
-                double lngVal = latLng.longitude;
-                lat.setText(String.format ("%.9f", latVal));
-                lng.setText(String.format ("%.9f", lngVal));
+                lat.setText(String.format ("%.9f", location.getLatitude()));
+                lng.setText(String.format ("%.9f", location.getLongitude()));
             }
         }
-    }; // mLocationCallback
+    }; // locationCallback
 
     @SuppressLint("DefaultLocale")
     @Override
@@ -430,55 +493,57 @@ public class Report extends FragmentActivity
         mMap.setOnMapClickListener(this);
         mMap.setOnMarkerDragListener(this);
         mMap.setOnMapLongClickListener(this);
-        //mMap.setMyLocationEnabled(true);
-
-        mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(300000); // five minute interval
-        mLocationRequest.setFastestInterval(300000);
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-
-        // FuseLocationProviderClient
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
         // Get permission for location
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.INTERNET}, 100);
-        //if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-        //        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                    AppConstants.LOCATION_REQUEST);
         } else {
-            //mMap.setMyLocationEnabled(true);
-            mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
             mMap.setMyLocationEnabled(true);
-            lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         }
 
-        // Get current location
-        //LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        final boolean gpsEnabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
-
-        if (gpsEnabled) {
-            Location location = (Location) lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            double longitude = location.getLongitude();
-            double latitude = location.getLatitude();
-
+        if (isGPS){
             // Get current location
-            Geocoder geocoder = new Geocoder(this, Locale.getDefault());
-            List<Address> addresses = null;
-            try {
-                addresses = geocoder.getFromLocation(latitude, longitude, 1);
-                String addressString = addresses.get(0).getAddressLine(0);
-                String cityString = addresses.get(0).getLocality();
-                Toast.makeText(getApplicationContext(), "Current location: " + cityString, Toast.LENGTH_LONG).show();
-                city.setText(cityString);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            FusedLocationProviderClient mFusedLocationClient =  LocationServices.getFusedLocationProviderClient(this);
+            Task<Location> locationTask = mFusedLocationClient.getLastLocation();
+            locationTask.addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                    // Got last known location
+                    if (location != null) {
+                        // Place location marker
+                        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                        MarkerOptions markerOptions = new MarkerOptions();
+                        markerOptions.position(latLng);
+                        markerOptions.title("Marker Position");
+                        mMap.clear();
+                        mCurrLocationMarker = mMap.addMarker(markerOptions);
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
+                        lat.setText(String.format ("%.9f", location.getLatitude()));
+                        lng.setText(String.format ("%.9f", location.getLongitude()));
+                        // Get current city address
+                        Geocoder geocoder = new Geocoder(Report.this, Locale.getDefault());
+                        List<Address> addresses = null;
+                        try {
+                            addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+                            String addressString = addresses.get(0).getAddressLine(0);
+                            String cityString = addresses.get(0).getLocality();
+                            Toast.makeText(getApplicationContext(), "Current location: " + cityString, Toast.LENGTH_LONG).show();
+                            city.setText(cityString);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            });
         } else {
             // Add a marker in Metro Manila and move the camera, if there is no GPS
             LatLng mmla = new LatLng(14.6091, 121.0223);
-            mMap.addMarker(new MarkerOptions().position(mmla).title("Current Position"));
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mmla, 15));
+            mMap.addMarker(new MarkerOptions().position(mmla).title("Marker Position"));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mmla, 10));
+            lat.setText(String.format ("%.9f", mmla.latitude));
+            lng.setText(String.format ("%.9f", mmla.longitude));
         }
     } // onMapReady
 
