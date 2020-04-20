@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_logout"
+        android:icon="@drawable/ic_exit"
+        android:enabled="true"
+        android:title="Logout" />
+
+    <item
+        android:id="@+id/navigation_info"
+        android:icon="@drawable/ic_info"
+        android:enabled="true"
+        android:title="@string/title_info" />
+
+    <item
+        android:id="@+id/navigation_report"
+        android:icon="@drawable/ic_location"
+        android:enabled="true"
+        android:title="@string/title_report" />
+
+    <item
+        android:id="@+id/navigation_trip"
+        android:icon="@drawable/ic_navigate"
+        android:enabled="true"
+        android:title="@string/title_trip" />
+
+    <item
+        android:id="@+id/navigation_fleet"
+        android:icon="@drawable/ic_fleet"
+        android:enabled="true"
+        android:title="@string/title_fleet" />
+
+</menu>

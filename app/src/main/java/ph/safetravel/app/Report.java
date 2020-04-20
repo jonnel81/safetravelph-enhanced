@@ -1,5 +1,6 @@
 package ph.safetravel.app;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -16,21 +17,20 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Address;
-import android.location.Criteria;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationManager;
-//import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Looper;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -51,6 +51,9 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -68,7 +71,7 @@ public class Report extends FragmentActivity
     SharedPreferences sp;
     MapFragment mMapFragment;
     SharedPreferences myPrefs;
-    private GoogleMap mMap;
+    GoogleMap mMap;
     View view;
     AsyncResponse aR = Report.this;
     BackgroundWorker backgroundWorker = new BackgroundWorker(Report.this, aR);
@@ -85,7 +88,7 @@ public class Report extends FragmentActivity
     Marker mCurrLocationMarker;
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationRequest locationRequest;
-    private LocationManager locationManager;
+    //private LocationManager locationManager;
     private boolean isContinue = false;
     private boolean isGPS = false;
 
@@ -138,15 +141,14 @@ public class Report extends FragmentActivity
 
         // Location request for GPS
         locationRequest= LocationRequest.create();
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        //mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+        //locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
         locationRequest.setInterval(120 * 1000); // 2 minutes
         locationRequest.setFastestInterval(60 * 1000); // 1 minute
 
         // Map fragment
         mMapFragment = MapFragment.newInstance();
-        FragmentTransaction fragmentTransaction =
-                getFragmentManager().beginTransaction();
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         fragmentTransaction.add(R.id.map, mMapFragment);
         fragmentTransaction.commit();
         mMapFragment.getMapAsync(this);
@@ -156,6 +158,52 @@ public class Report extends FragmentActivity
             public void gpsStatus(boolean isGPSEnable) {
                 // turn on GPS
                 isGPS = isGPSEnable;
+            }
+        });
+
+        // BottomNavigation
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav_view);
+        bottomNavigationView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
+        Menu menu = bottomNavigationView.getMenu();
+        MenuItem menuItem = menu.getItem(2);
+        menuItem.setChecked(true);
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.navigation_logout: {
+                        // Clear shared preferences
+                        myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = myPrefs.edit();
+                        editor.clear();
+                        editor.apply();
+                        // Go to main activity
+                        Intent intent0 = new Intent(Report.this, MainActivity.class);
+                        startActivity(intent0);
+                        break;
+                    }
+                    case R.id.navigation_info: {
+                        Intent intent1 = new Intent(Report.this, Info.class);
+                        startActivity(intent1);
+                        break;
+                    }
+                    case R.id.navigation_report: {
+
+                        break;
+                    }
+                    case R.id.navigation_trip: {
+                        Intent intent3 = new Intent(Report.this, Trip.class);
+                        startActivity(intent3);
+                        break;
+                    }
+                    case R.id.navigation_fleet: {
+                        Intent intent4 = new Intent(Report.this, Fleet.class);
+                        startActivity(intent4);
+                        break;
+                    }
+                }
+                return true;
             }
         });
 
@@ -407,7 +455,8 @@ public class Report extends FragmentActivity
 
     @Override
     public void onBackPressed() {
-        // ---Do nothing---
+        // Go to info
+        startActivity(new Intent(this, Info.class));
     } // onBackPressed
 
     @SuppressLint("DefaultLocale")
@@ -529,7 +578,7 @@ public class Report extends FragmentActivity
                             addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
                             String addressString = addresses.get(0).getAddressLine(0);
                             String cityString = addresses.get(0).getLocality();
-                            Toast.makeText(getApplicationContext(), "Current location: " + cityString, Toast.LENGTH_LONG).show();
+                            Toast.makeText(getApplicationContext(), "Current location: " + cityString, Toast.LENGTH_SHORT).show();
                             city.setText(cityString);
                         } catch (IOException e) {
                             e.printStackTrace();

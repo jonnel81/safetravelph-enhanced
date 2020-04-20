@@ -10,5 +10,12 @@
     <string name="hint_description">Detailed description of incident like checkpoint/medical emergency</string>
     <string name="hint_street">House No./Street/Village</string>
     <string name="hint_city">City or Municipality</string>
-    <string name="google_maps_key">AIzaSyDfD0MWZk2LP-U9p63k6cOUzBwfd85m9g0</string>
+    <string name="google_maps_key">AIzaSyDcNwbKHXqF0YhYLhb7ZN2A3XupIk8v0_c</string>
+    <string name="title_logout">Logout</string>
+    <string name="title_info">Info</string>
+    <string name="title_report">Report</string>
+    <string name="title_trip">Trip</string>
+    <string name="title_fleet">Fleet</string>
+    <string name="appbar_scrolling_view_behavior" translatable="false">com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior</string>
+    <string name="nav_instruction">The SafeTravelPH App allows you to report road and other transport incidents related to the Enhanced Community Quarantine (ECQ) in your area to be relayed to national and local authorities for their immediate action.</string>
 </resources>
