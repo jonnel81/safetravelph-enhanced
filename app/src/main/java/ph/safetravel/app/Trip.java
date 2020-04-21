@@ -2,9 +2,9 @@ package ph.safetravel.app;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -15,20 +15,16 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.Vibrator;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.SimpleAdapter;
+
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -49,6 +45,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -63,12 +60,15 @@ import org.eclipse.paho.client.mqttv3.MqttClientPersistence;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -80,7 +80,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import ph.safetravel.app.protobuf.Passenger;
+import ph.safetravel.app.protos.Passenger;
 
 public class Trip extends FragmentActivity implements OnMapReadyCallback {
     SharedPreferences myPrefs;
@@ -117,34 +117,31 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip);
 
-        toolbar = (androidx.appcompat.widget.Toolbar) findViewById(R.id.toolbar);
+        // App Tollbar
+        toolbar = findViewById(R.id.toolbar);
         toolbar.setSubtitle("Trip Tracking");
         toolbar.inflateMenu(R.menu.main_menu);
 
-        toolbar.setOnMenuItemClickListener(new androidx.appcompat.widget.Toolbar.OnMenuItemClickListener() {
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-
-                if(item.getItemId()==R.id.item1)
-                {
-                    // do something
-                    //Intent intent0 = new Intent(Fleet.this, MainActivity.class);
-                    //startActivity(intent0);
-                }
-                if(item.getItemId()==R.id.item2)
-                {
-                    // do something
-                }
-                return false;
+            if(item.getItemId()==R.id.item1) {
+                startActivity(new Intent(getApplicationContext(), BarcodeReader.class));
+            }
+            if(item.getItemId()==R.id.item2)
+            {
+                // do something
+            }
+            return false;
             }
         });
 
         // Origin marker
-        origButton = (ImageButton) findViewById(R.id.btnOrig);
+        origButton = findViewById(R.id.btnOrig);
         OnClickListener findOrigClickListener = new OnClickListener() {
             @Override
             public void onClick(View view) {
-                origin = (AutoCompleteTextView) findViewById(R.id.atvOrig);
+                origin = findViewById(R.id.atvOrig);
                 String location = origin.getText().toString();
                 if(location!=null && !location.equals("")){
                     new origGeocoderTask().execute(location);
@@ -154,11 +151,11 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
         origButton.setOnClickListener(findOrigClickListener);
 
         // Destination marker
-        destButton = (ImageButton) findViewById(R.id.btnDest);
+        destButton = findViewById(R.id.btnDest);
         OnClickListener findDestClickListener = new OnClickListener() {
             @Override
             public void onClick(View view) {
-                EditText destination = (EditText) findViewById(R.id.atvDest);
+                EditText destination = findViewById(R.id.atvDest);
                 String location = destination.getText().toString();
                 if(location!=null && !location.equals("")){
                     new destGeocoderTask().execute(location);
@@ -198,12 +195,12 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
                     AppConstants.LOCATION_REQUEST);
         }
 
-        view = (View) findViewById(android.R.id.content);
+        view = findViewById(android.R.id.content);
         //subText = (EditText) findViewById(R.id.txtMessage);
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 
         // Toogle Button
-        tButton = (ToggleButton) findViewById(R.id.toggleTrip);
+        tButton = findViewById(R.id.toggleTrip);
         tButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -255,6 +252,11 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
             }
 
             @Override
+            public int hashCode() {
+                return super.hashCode();
+            }
+
+            @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
                 Log.i(TAG, "topic: " + topic + ", msg: " + new String(message.getPayload()));
                 //subText.setText(new String(message.getPayload()));
@@ -279,14 +281,35 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.navigation_logout: {
-                        // Clear shared preferences
-                        myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = myPrefs.edit();
-                        editor.clear();
-                        editor.apply();
-                        // Go to main activity
-                        Intent intent0 = new Intent(Trip.this, MainActivity.class);
-                        startActivity(intent0);
+                        // Dialog
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Trip.this);
+                        builder.setMessage("Are you sure you want to logout?");
+                        builder.setCancelable(false);
+                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Clear shared preferences
+                                myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = myPrefs.edit();
+                                editor.clear();
+                                editor.apply();
+                                // Go to main activity
+                                Intent intent0 = new Intent(Trip.this, MainActivity.class);
+                                startActivity(intent0);
+                            }
+                        });
+                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                        AlertDialog alertDialog = builder.create();
+                        alertDialog.setTitle("Status");
+                        alertDialog.setCancelable(false);
+                        alertDialog.setCanceledOnTouchOutside(false);
+                        alertDialog.show();
+
                         break;
                     }
                     case R.id.navigation_info: {
@@ -314,9 +337,6 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
         });
     } // onCreate
 
-    private void setSupportActionBar(Toolbar toolbar) {
-    }
-
     // An AsyncTask class for accessing the GeoCoding Web Service for origin
     private class origGeocoderTask extends AsyncTask<String, Void, List<Address>> {
         @Override
@@ -342,7 +362,7 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
             mMap.clear();
             // Adding Markers on Google Map for each matching address
             for(int i=0;i<addresses.size();i++){
-                Address address = (Address) addresses.get(i);
+                Address address = addresses.get(i);
                 // Creating an instance of GeoPoint, to display in Google Map
                 origLatLng = new LatLng(address.getLatitude(), address.getLongitude());
                 //String addressText = String.format("%s, %s",
@@ -386,7 +406,7 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
             mMap.clear();
             // Adding Markers on Google Map for each matching address
             for(int i=0;i<addresses.size();i++){
-                Address address = (Address) addresses.get(i);
+                Address address = addresses.get(i);
                 // Creating an instance of GeoPoint, to display in Google Map
                 origLatLng = new LatLng(address.getLatitude(), address.getLongitude());
                 String addressText = String.format("%s, %s",
@@ -443,18 +463,27 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
             if (locationList.size() > 0) {
                 //The last location in the list is the newest
                 Location location = locationList.get(locationList.size() - 1);
-                Log.i("MapsActivity", "Location: " + location.getLatitude() + " " + location.getLongitude());
+                //Log.i("MapsActivity", "Location: " + location.getLatitude() + " " + location.getLongitude());
                 mLastLocation = location;
                 //sendTrack();
                 if (mLastLocation != null) {
                     // Get location details
                     String lat = String.valueOf(location.getLatitude());
                     String lng = String.valueOf(location.getLongitude());
+                    //String lat = String.format ("%.6f", location.getLatitude());
+                    //String lng = String.format ("%.6f", location.getLongitude());
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
                     sdf.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
                     String timeStamp = sdf.format(new Date());
+                    myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
+                    String username = myPrefs.getString("username",null);
+                    String password = myPrefs.getString("password",null);
+                    String paxCode = username+":"+password;
+                    String vehCode = "test01";
+
                     // Publish message
-                    publishMessage(passengerMessage(clientId, topicStr, lat, lng, timeStamp));
+                    publishMessage(passengerMessage(clientId, lat, lng, timeStamp, paxCode, vehCode));
+
                     //publishMessage(clientId.toString()+","+lat+"_"+lng+"_"+timeStamp);
                     //JSONObject personTrack = new JSONObject();
                     //try {
@@ -500,29 +529,45 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
         }
     }
 
-    public String passengerMessage(String passId, String topic, String lat, String lng, String timestamp) {
+    public byte[] passengerMessage(String clientId, String lat, String lng, String timestamp, String paxcode, String vehcode) {
         Passenger passenger = Passenger.newBuilder()
-                .setId(passId)
-                .setTopic(topic)
+                .setClientId(clientId)
                 .setLat(lat)
                 .setLng(lng)
                 .setTimestamp(timestamp)
+                .setPaxCode(paxcode)
+                .setVehCode(vehcode)
                 .build();
-        //byte message[] = passenger.toByteArray();
-        String message = passenger.toString();
-
+        byte message[] = passenger.toByteArray();
         return message;
+        //String message = passenger.toString();
+        //Log.i("pb", message);
+
     }
 
-    public void publishMessage(String payload) {
+    public void publishMessage(byte[] payload) {
         try {
             if (!client.isConnected()) {
                 client.connect();
             }
 
             MqttMessage message = new MqttMessage();
-            message.setPayload(payload.getBytes());
-            //message.setPayload(payload);
+            //message.setPayload(payload.getBytes());
+            //write to disk
+            //try {
+            //    // Write the new address book back to disk.
+            //    FileOutputStream output = new FileOutputStream("test.pb");
+            //    DataOutputStream dos = new DataOutputStream(output);
+            //    dos.write(payload);
+            //    dos.close();
+            //    output.close();
+            //} catch (FileNotFoundException e) {
+            //    e.printStackTrace();
+            //} catch (IOException e) {
+            //    e.printStackTrace();
+            //}
+
+            message.setPayload(payload);
             message.setQos(0);
             client.publish("test", message,null, new IMqttActionListener() {
                 @Override

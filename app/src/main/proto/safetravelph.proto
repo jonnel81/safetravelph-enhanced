@@ -1,22 +1,21 @@
 syntax = "proto3";
 
 option java_package = "ph.safetravel.app";
-option java_outer_classname = "protobuf";
+option java_outer_classname = "protos";
 
 message Passenger {
-    string id = 1;
-    string topic = 2;
-    string lat = 3;
-    string lng = 4;
-    string timestamp = 5;
-    string passCode = 6;
+    string clientId = 1;
+    string lat = 2;
+    string lng = 3;
+    string timestamp = 4;
+    string paxCode = 5;
+    string vehCode= 6;
 }
 
 message Vehicle {
-    string id = 1;
-    string topic = 2;
-    string lat = 3;
-    string lng = 4;
-    string timestamp = 5;
-    string vehCode = 6;
+    string clientId = 1;
+    string lat = 2;
+    string lng = 3;
+    string timestamp = 4;
+    string vehCode = 5;
 }

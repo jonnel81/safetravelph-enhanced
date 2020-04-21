@@ -29,25 +29,25 @@ public class Register extends AppCompatActivity implements AsyncResponse {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        firstname = (EditText) findViewById(R.id.etFirstName);
-        lastname = (EditText) findViewById(R.id.etLastName);
-        age = (EditText) findViewById(R.id.etAge);
-        username = (EditText) findViewById(R.id.etUserName);
-        password = (EditText) findViewById(R.id.etPassword);
-        view = (View) findViewById(android.R.id.content);
+        firstname = findViewById(R.id.etFirstName);
+        lastname = findViewById(R.id.etLastName);
+        age = findViewById(R.id.etAge);
+        username = findViewById(R.id.etUserName);
+        password = findViewById(R.id.etPassword);
+        view = findViewById(android.R.id.content);
 
         // Agree checkbox
-        TextView link = (TextView) findViewById(R.id.chkRegister);
+        TextView link = findViewById(R.id.chkRegister);
         link.setText(
                 Html.fromHtml("I agree with the <a href='https://safetravel.ph/testapp/termsandconditions.html'>Terms and Conditions</a>."));
         link.setMovementMethod(LinkMovementMethod.getInstance());
 
         // Disable register button
-        Button buttonReg = (Button)findViewById(R.id.btnReg);
+        Button buttonReg = findViewById(R.id.btnReg);
         buttonReg.setEnabled(false);
 
         // Listener of agree checkbox
-        CheckBox checkAgree =  (CheckBox)findViewById(R.id.chkRegister);
+        CheckBox checkAgree = findViewById(R.id.chkRegister);
         checkAgree.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

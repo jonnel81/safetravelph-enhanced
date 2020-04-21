@@ -1,6 +1,7 @@
 package ph.safetravel.app;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -10,6 +11,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -63,7 +65,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import ph.safetravel.app.protobuf.Vehicle;
+import ph.safetravel.app.protos.Vehicle;
 
 
 public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
@@ -101,19 +103,16 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fleet);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setSubtitle("Fleet Tracking");
+        // App Tollbar
+        toolbar = findViewById(R.id.toolbar);
+        toolbar.setSubtitle("Trip Tracking");
         toolbar.inflateMenu(R.menu.main_menu);
 
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-
-                if(item.getItemId()==R.id.item1)
-                {
-                    // do something
-                    //Intent intent0 = new Intent(Fleet.this, MainActivity.class);
-                    //startActivity(intent0);
+                if(item.getItemId()==R.id.item1) {
+                    startActivity(new Intent(getApplicationContext(), BarcodeReader.class));
                 }
                 if(item.getItemId()==R.id.item2)
                 {
@@ -122,6 +121,7 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
                 return false;
             }
         });
+
         //  Sensors
         //sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
@@ -177,7 +177,7 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
                     AppConstants.LOCATION_REQUEST);
         }
 
-        view = (View) findViewById(android.R.id.content);
+        view = findViewById(android.R.id.content);
         //subText = (EditText) findViewById(R.id.txtMessage);
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         // BottomNavigation
@@ -188,7 +188,7 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
         menuItem.setChecked(true);
 
         // Toogle Button
-        tButton = (ToggleButton) findViewById(R.id.toggleFleet);
+        tButton = findViewById(R.id.toggleFleet);
         tButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -255,14 +255,35 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.navigation_logout: {
-                        // Clear shared preferences
-                        myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = myPrefs.edit();
-                        editor.clear();
-                        editor.apply();
-                        // Go to main activity
-                        Intent intent0 = new Intent(Fleet.this, MainActivity.class);
-                        startActivity(intent0);
+                        // Dialog
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Fleet.this);
+                        builder.setMessage("Are you sure you want to logout?");
+                        builder.setCancelable(false);
+                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Clear shared preferences
+                                myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = myPrefs.edit();
+                                editor.clear();
+                                editor.apply();
+                                // Go to main activity
+                                Intent intent0 = new Intent(Fleet.this, MainActivity.class);
+                                startActivity(intent0);
+                            }
+                        });
+                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                        AlertDialog alertDialog = builder.create();
+                        alertDialog.setTitle("Status");
+                        alertDialog.setCancelable(false);
+                        alertDialog.setCanceledOnTouchOutside(false);
+                        alertDialog.show();
+
                         break;
                     }
                     case R.id.navigation_info: {
@@ -387,13 +408,13 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
         }
     }
 
-    public String passengerMessage(String passId, String topic, String lat, String lng, String timestamp) {
+    public String passengerMessage(String clienId, String lat, String lng, String timestamp, String vehcode) {
         Vehicle vehicle = Vehicle.newBuilder()
-                .setId(passId)
-                .setTopic(topic)
+                .setClientId(clientId)
                 .setLat(lat)
                 .setLng(lng)
                 .setTimestamp(timestamp)
+                .setVehCode(vehcode)
                 .build();
         String message = vehicle.toString();
         return message;

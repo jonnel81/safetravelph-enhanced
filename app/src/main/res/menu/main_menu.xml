@@ -4,10 +4,10 @@
 
     <item
         android:id="@+id/item1"
-        android:title="Setting1" />
+        android:title="Scan QR code" />
 
     <item
         android:id="@+id/item2"
-        android:title="Setting2" />
+        android:title="Settings" />
 
 </menu>

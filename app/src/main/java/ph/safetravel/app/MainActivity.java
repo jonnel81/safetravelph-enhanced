@@ -27,9 +27,9 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        UserNameEt = (EditText) findViewById(R.id.etUserName);
-        PasswordEt = (EditText) findViewById(R.id.etPassword);
-        view = (View) findViewById(android.R.id.content);
+        UserNameEt = findViewById(R.id.etUserName);
+        PasswordEt = findViewById(R.id.etPassword);
+        view = findViewById(android.R.id.content);
 
         myPrefs=getSharedPreferences("MYPREFS",Context.MODE_PRIVATE);
         String username = myPrefs.getString("username",null);

@@ -68,7 +68,6 @@ public class Report extends FragmentActivity
         GoogleMap.OnMarkerDragListener,
         AsyncResponse {
     EditText street, landmarks, barangay, city, description, lat, lng;
-    SharedPreferences sp;
     MapFragment mMapFragment;
     SharedPreferences myPrefs;
     GoogleMap mMap;
@@ -96,23 +95,23 @@ public class Report extends FragmentActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
-        street = (EditText) findViewById(R.id.etStreet);
-        landmarks = (EditText) findViewById(R.id.etLandmarks);
-        barangay = (EditText) findViewById(R.id.etBarangay);
-        city = (EditText) findViewById(R.id.etCity);
-        description = (EditText) findViewById(R.id.etDescription);
-        lat = (EditText) findViewById(R.id.etLat);
-        lng = (EditText) findViewById(R.id.etLng);
-        view = (View) findViewById(android.R.id.content);
+        street = findViewById(R.id.etStreet);
+        landmarks = findViewById(R.id.etLandmarks);
+        barangay = findViewById(R.id.etBarangay);
+        city = findViewById(R.id.etCity);
+        description = findViewById(R.id.etDescription);
+        lat = findViewById(R.id.etLat);
+        lng = findViewById(R.id.etLng);
+        view = findViewById(android.R.id.content);
 
         // Avoid Uri issues
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
 
         // Taking a photo
-        takePhotoButton = (Button) findViewById(R.id.btnTakePhoto);
-        pickPhotoButton = (Button) findViewById(R.id.btnPickPhoto);
-        imageView = (ImageView) findViewById(R.id.imageview);
+        takePhotoButton = findViewById(R.id.btnTakePhoto);
+        pickPhotoButton = findViewById(R.id.btnPickPhoto);
+        imageView = findViewById(R.id.imageview);
         takePhotoButton.setEnabled(false);
         pickPhotoButton.setEnabled(false);
 
@@ -126,7 +125,7 @@ public class Report extends FragmentActivity
         }
 
         // Disable report button
-        buttonReport = (Button) findViewById(R.id.btnReport);
+        buttonReport = findViewById(R.id.btnReport);
         buttonReport.setEnabled(false);
 
         // Watcher for complete inputs
@@ -173,14 +172,35 @@ public class Report extends FragmentActivity
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.navigation_logout: {
-                        // Clear shared preferences
-                        myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = myPrefs.edit();
-                        editor.clear();
-                        editor.apply();
-                        // Go to main activity
-                        Intent intent0 = new Intent(Report.this, MainActivity.class);
-                        startActivity(intent0);
+                        // Dialog
+                        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(Report.this);
+                        builder.setMessage("Are you sure you want to logout?");
+                        builder.setCancelable(false);
+                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Clear shared preferences
+                                myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = myPrefs.edit();
+                                editor.clear();
+                                editor.apply();
+                                // Go to main activity
+                                Intent intent0 = new Intent(Report.this, MainActivity.class);
+                                startActivity(intent0);
+                            }
+                        });
+                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                        androidx.appcompat.app.AlertDialog alertDialog = builder.create();
+                        alertDialog.setTitle("Status");
+                        alertDialog.setCancelable(false);
+                        alertDialog.setCanceledOnTouchOutside(false);
+                        alertDialog.show();
+
                         break;
                     }
                     case R.id.navigation_info: {
