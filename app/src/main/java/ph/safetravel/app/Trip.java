@@ -43,6 +43,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
+import com.google.protobuf.CodedOutputStream;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -73,6 +74,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -468,10 +470,10 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
                 //sendTrack();
                 if (mLastLocation != null) {
                     // Get location details
-                    String lat = String.valueOf(location.getLatitude());
-                    String lng = String.valueOf(location.getLongitude());
-                    //String lat = String.format ("%.6f", location.getLatitude());
-                    //String lng = String.format ("%.6f", location.getLongitude());
+                    //String lat = String.valueOf(location.getLatitude());
+                    //String lng = String.valueOf(location.getLongitude());
+                    double lat = location.getLatitude();
+                    double lng = location.getLongitude();
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
                     sdf.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
                     String timeStamp = sdf.format(new Date());
@@ -529,7 +531,7 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
         }
     }
 
-    public byte[] passengerMessage(String clientId, String lat, String lng, String timestamp, String paxcode, String vehcode) {
+    public byte[] passengerMessage(String clientId, double lat, double lng, String timestamp, String paxcode, String vehcode) {
         Passenger passenger = Passenger.newBuilder()
                 .setClientId(clientId)
                 .setLat(lat)
@@ -554,18 +556,19 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
             MqttMessage message = new MqttMessage();
             //message.setPayload(payload.getBytes());
             //write to disk
-            //try {
-            //    // Write the new address book back to disk.
-            //    FileOutputStream output = new FileOutputStream("test.pb");
-            //    DataOutputStream dos = new DataOutputStream(output);
-            //    dos.write(payload);
-            //    dos.close();
-            //    output.close();
-            //} catch (FileNotFoundException e) {
-            //    e.printStackTrace();
-            //} catch (IOException e) {
-            //    e.printStackTrace();
-            //}
+            try {
+                // Write the new address book back to disk.
+                FileOutputStream output = openFileOutput("test.pb", context.MODE_PRIVATE);
+                DataOutputStream dos = new DataOutputStream(output);
+                dos.write(payload);
+                dos.close();
+                output.close();
+                Log.d("Pb","File written");
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
             message.setPayload(payload);
             message.setQos(0);
