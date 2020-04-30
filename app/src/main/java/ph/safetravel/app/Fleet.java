@@ -217,7 +217,7 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
                 public void onSuccess(IMqttToken asyncActionToken) {
                     // We are connected
                     Toast.makeText(getApplicationContext(),"Connected", Toast.LENGTH_SHORT).show();
-                    subscribeTopic("test");
+                    subscribeTopic("#");
                 }
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
@@ -367,13 +367,16 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
                 //sendTrack();
                 if (mLastLocation != null) {
                     // Get location details
+                    //double lat = location.getLatitude();
+                    //double lng = location.getLongitude();
                     String lat = String.valueOf(location.getLatitude());
                     String lng = String.valueOf(location.getLongitude());
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
                     sdf.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
                     String timeStamp = sdf.format(new Date());
+                    String vehCode = "None";
                     // Publish message
-                    publishMessage(passengerMessage(clientId, topicStr, lat, lng, timeStamp));
+                    publishMessage(vehicleMessage(clientId, lat, lng, timeStamp, vehCode));
                 }
             }
         }
@@ -408,7 +411,7 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
         }
     }
 
-    public String passengerMessage(String clienId, String lat, String lng, String timestamp, String vehcode) {
+    public byte[] vehicleMessage(String clienId, String lat, String lng, String timestamp, String vehcode) {
         Vehicle vehicle = Vehicle.newBuilder()
                 .setClientId(clientId)
                 .setLat(lat)
@@ -416,25 +419,23 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
                 .setTimestamp(timestamp)
                 .setVehCode(vehcode)
                 .build();
-        String message = vehicle.toString();
+        byte message[] = vehicle.toByteArray();
         return message;
     }
 
-    public void publishMessage(String payload) {
+    public void publishMessage(byte[] payload) {
         try {
             if (!client.isConnected()) {
                 client.connect();
             }
-
             MqttMessage message = new MqttMessage();
-            message.setPayload(payload.getBytes());
+            message.setPayload(payload);
             message.setQos(0);
-            client.publish("test", message,null, new IMqttActionListener() {
+            client.publish("vehicles", message,null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     Log.i (TAG, "publish succeed! ") ;
                 }
-
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
                     Log.i(TAG, "publish failed!") ;

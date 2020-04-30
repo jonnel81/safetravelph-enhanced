@@ -234,7 +234,7 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
                 public void onSuccess(IMqttToken asyncActionToken) {
                     // We are connected
                     Toast.makeText(getApplicationContext(),"Connected", Toast.LENGTH_SHORT).show();
-                    subscribeTopic("test");
+                    subscribeTopic("#");
                 }
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
@@ -470,10 +470,10 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
                 //sendTrack();
                 if (mLastLocation != null) {
                     // Get location details
-                    //String lat = String.valueOf(location.getLatitude());
-                    //String lng = String.valueOf(location.getLongitude());
-                    double lat = location.getLatitude();
-                    double lng = location.getLongitude();
+                    String lat = String.valueOf(location.getLatitude());
+                    String lng = String.valueOf(location.getLongitude());
+                    //double lat = location.getLatitude();
+                    //double lng = location.getLongitude();
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
                     sdf.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
                     String timeStamp = sdf.format(new Date());
@@ -481,8 +481,7 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
                     String username = myPrefs.getString("username",null);
                     String password = myPrefs.getString("password",null);
                     String paxCode = username+":"+password;
-                    String vehCode = "test01";
-
+                    String vehCode = "None";
                     // Publish message
                     publishMessage(passengerMessage(clientId, lat, lng, timeStamp, paxCode, vehCode));
 
@@ -531,7 +530,7 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
         }
     }
 
-    public byte[] passengerMessage(String clientId, double lat, double lng, String timestamp, String paxcode, String vehcode) {
+    public byte[] passengerMessage(String clientId, String lat, String lng, String timestamp, String paxcode, String vehcode) {
         Passenger passenger = Passenger.newBuilder()
                 .setClientId(clientId)
                 .setLat(lat)
@@ -552,27 +551,25 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
             if (!client.isConnected()) {
                 client.connect();
             }
-
             MqttMessage message = new MqttMessage();
             //message.setPayload(payload.getBytes());
             //write to disk
-            try {
-                // Write the new address book back to disk.
-                FileOutputStream output = openFileOutput("test.pb", context.MODE_PRIVATE);
-                DataOutputStream dos = new DataOutputStream(output);
-                dos.write(payload);
-                dos.close();
-                output.close();
-                Log.d("Pb","File written");
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
+            //try {
+            //    // Write the new address book back to disk.
+            //    FileOutputStream output = openFileOutput("test.pb", context.MODE_PRIVATE);
+            //    DataOutputStream dos = new DataOutputStream(output);
+            //    dos.write(payload);
+            //    dos.close();
+            //    output.close();
+            //    Log.d("Pb","File written");
+            //} catch (FileNotFoundException e) {
+            //    e.printStackTrace();
+            //} catch (IOException e) {
+            //    e.printStackTrace();
+            //}
             message.setPayload(payload);
             message.setQos(0);
-            client.publish("test", message,null, new IMqttActionListener() {
+            client.publish("passengers", message,null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     Log.i (TAG, "publish succeed! ") ;
