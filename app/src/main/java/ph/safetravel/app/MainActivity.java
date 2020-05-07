@@ -8,8 +8,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+
+import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity implements AsyncResponse {
     EditText UserNameEt, PasswordEt;
@@ -18,6 +22,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
     BackgroundWorker backgroundWorker = new BackgroundWorker(MainActivity.this, aR);
     String username = "";
     String password = "";
+    String androidId = "";
+    //String androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
     Context context;
     View view;
     AlertDialog.Builder builder;
@@ -34,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         myPrefs=getSharedPreferences("MYPREFS",Context.MODE_PRIVATE);
         String username = myPrefs.getString("username",null);
         String password = myPrefs.getString("password",null);
+        String androidId = myPrefs.getString("androidId",null);
 
         // Check if shared preferences contains username and password then redirect to report activity
         if(username != null && password != null ){
@@ -58,6 +65,10 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             SharedPreferences.Editor editor = myPrefs.edit();
             editor.putString("username", username);
             editor.putString("password", password);
+            androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID); // UUID
+            //androidId = UUID.randomUUID().toString();
+            editor.putString("androidId", androidId);
+            Log.d("prefs", androidId);
             editor.apply();
 
             builder = new AlertDialog.Builder(this);

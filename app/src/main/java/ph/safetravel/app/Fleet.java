@@ -75,7 +75,7 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
     MqttConnectOptions options;
     MqttClientPersistence clientPersistence;
     Vibrator vibrator;
-    String topicStr = "fleet";
+    String mqttTopic = "";
     String TAG="Mqtt";
     Context context;
     String MqttHost = "tcp://mqtt.safetravel.ph:8883";
@@ -97,6 +97,8 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
     SensorEventListener acListener;
     Sensor gyroscope;
     Toolbar toolbar;
+    //boolean board, alight;
+    int numPass;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -158,8 +160,8 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
         // Location request for GPS
         locationRequest= LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(10 * 1000);
-        locationRequest.setFastestInterval(5 * 1000);
+        locationRequest.setInterval(5 * 1000);
+        locationRequest.setFastestInterval(1 * 1000);
 
         // Enable GPS
         new GpsUtils(this).turnGPSOn(new GpsUtils.onGpsListener() {
@@ -374,9 +376,11 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
                     sdf.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
                     String timeStamp = sdf.format(new Date());
+                    myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
+                    String androidId = myPrefs.getString("androidId",null);
                     String vehCode = "None";
                     // Publish message
-                    publishMessage(vehicleMessage(clientId, lat, lng, timeStamp, vehCode));
+                    publishMessage(vehicleMessage(androidId, lat, lng, timeStamp, vehCode, false, false, numPass));
                 }
             }
         }
@@ -411,13 +415,16 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
         }
     }
 
-    public byte[] vehicleMessage(String clienId, String lat, String lng, String timestamp, String vehcode) {
+    public byte[] vehicleMessage(String deviceId, String lat, String lng, String timestamp, String vehCode, boolean board, boolean alight, int numPass) {
         Vehicle vehicle = Vehicle.newBuilder()
-                .setClientId(clientId)
+                .setDeviceId(deviceId)
                 .setLat(lat)
                 .setLng(lng)
                 .setTimestamp(timestamp)
-                .setVehCode(vehcode)
+                .setVehCode(vehCode)
+                .setBoard(board)
+                .setAlight(alight)
+                .setNumPass(numPass)
                 .build();
         byte message[] = vehicle.toByteArray();
         return message;

@@ -178,8 +178,8 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
         // Location request for GPS
         locationRequest= LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(10 * 1000);
-        locationRequest.setFastestInterval(5 * 1000);
+        locationRequest.setInterval(5 * 1000);
+        locationRequest.setFastestInterval(1 * 1000);
 
         // Enable GPS
         new GpsUtils(this).turnGPSOn(new GpsUtils.onGpsListener() {
@@ -479,11 +479,12 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
                     String timeStamp = sdf.format(new Date());
                     myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
                     String username = myPrefs.getString("username",null);
-                    String password = myPrefs.getString("password",null);
-                    String paxCode = username+":"+password;
+                    //String password = myPrefs.getString("password",null);
+                    String androidId = myPrefs.getString("androidId",null);
+                    String paxCode = username;
                     String vehCode = "None";
                     // Publish message
-                    publishMessage(passengerMessage(clientId, lat, lng, timeStamp, paxCode, vehCode));
+                    publishMessage(passengerMessage(androidId, lat, lng, timeStamp, paxCode, vehCode));
 
                     //publishMessage(clientId.toString()+","+lat+"_"+lng+"_"+timeStamp);
                     //JSONObject personTrack = new JSONObject();
@@ -530,9 +531,9 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
         }
     }
 
-    public byte[] passengerMessage(String clientId, String lat, String lng, String timestamp, String paxcode, String vehcode) {
+    public byte[] passengerMessage(String deviceId, String lat, String lng, String timestamp, String paxcode, String vehcode) {
         Passenger passenger = Passenger.newBuilder()
-                .setClientId(clientId)
+                .setDeviceId(deviceId)
                 .setLat(lat)
                 .setLng(lng)
                 .setTimestamp(timestamp)

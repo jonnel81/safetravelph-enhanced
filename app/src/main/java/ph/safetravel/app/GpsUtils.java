@@ -37,8 +37,8 @@ public class GpsUtils {
         mSettingsClient = LocationServices.getSettingsClient(context);
         locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(10 * 1000);
-        locationRequest.setFastestInterval(2 * 1000);
+        locationRequest.setInterval(5 * 1000);
+        locationRequest.setFastestInterval(1 * 1000);
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
                 .addLocationRequest(locationRequest);
         mLocationSettingsRequest = builder.build();

@@ -4,18 +4,21 @@ option java_package = "ph.safetravel.app";
 option java_outer_classname = "protos";
 
 message Passenger {
-    string clientId = 1;
+    string deviceId = 1;
     string lat = 2;
     string lng = 3;
     string timestamp = 4;
     string paxCode = 5;
-    string vehCode= 6;
+    string vehCode = 6;
 }
 
 message Vehicle {
-    string clientId = 1;
+    string deviceId = 1;
     string lat = 2;
     string lng = 3;
     string timestamp = 4;
     string vehCode = 5;
+    bool board = 6;
+    bool alight = 7;
+    int32 numPass = 8;
 }
