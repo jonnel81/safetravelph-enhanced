@@ -97,7 +97,6 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
     String MqttHost = "tcp://mqtt.safetravel.ph:8883";
     final String Username = "mqtt";
     final String Password = "mqtt";
-    EditText subText;
     String clientId;
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationRequest locationRequest;
@@ -656,6 +655,5 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
         //mMap.addMarker(new MarkerOptions().position(mmla).title("Marker Position"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mmla, 11));
     }
-
 
 }
