@@ -92,6 +92,19 @@
             app:layout_constraintStart_toEndOf="@id/btnBoard"
             app:layout_constraintTop_toBottomOf="@id/mapFragFleet" />
 
+        <TextView
+            android:id="@+id/txtNumPass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/border"
+            android:text="#"
+            android:textSize="24sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btnAlight"
+            app:layout_constraintStart_toEndOf="@+id/btnBoard"
+            app:layout_constraintTop_toBottomOf="@+id/mapFragFleet" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>

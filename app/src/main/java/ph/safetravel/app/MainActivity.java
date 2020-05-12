@@ -23,7 +23,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
     String username = "";
     String password = "";
     String androidId = "";
-    //String androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
     Context context;
     View view;
     AlertDialog.Builder builder;
@@ -41,6 +40,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         String username = myPrefs.getString("username",null);
         String password = myPrefs.getString("password",null);
         String androidId = myPrefs.getString("androidId",null);
+        String vehicleId = myPrefs.getString("vehicleId",null);
 
         // Check if shared preferences contains username and password then redirect to report activity
         if(username != null && password != null ){
@@ -78,7 +78,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
-                    //startActivity(new Intent(view.getContext(), Report.class));
                     startActivity(new Intent(view.getContext(), Navigation.class));
                 }
             });

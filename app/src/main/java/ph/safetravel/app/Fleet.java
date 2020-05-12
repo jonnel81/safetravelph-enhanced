@@ -27,8 +27,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -81,7 +84,6 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
     String MqttHost = "tcp://mqtt.safetravel.ph:8883";
     final String Username = "mqtt";
     final String Password = "mqtt";
-    EditText subText;
     String clientId;
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationRequest locationRequest;
@@ -97,17 +99,21 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
     SensorEventListener acListener;
     Sensor gyroscope;
     Toolbar toolbar;
-    //boolean board, alight;
+    ImageButton boardButton, alightButton;
     int numPass;
+    TextView NumPassengers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fleet);
 
+        NumPassengers = findViewById(R.id.txtNumPass);
+        NumPassengers.setText(String.valueOf(numPass));
+
         // App Tollbar
         toolbar = findViewById(R.id.toolbar);
-        toolbar.setSubtitle("Trip Tracking");
+        toolbar.setSubtitle("Fleet Tracking");
         toolbar.inflateMenu(R.menu.main_menu);
 
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
@@ -123,6 +129,54 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
                 return false;
             }
         });
+
+        // Board button
+        boardButton = findViewById(R.id.btnBoard);
+        final OnClickListener boardClickListener = new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mLastLocation != null) {
+                    String lat = String.valueOf(mLastLocation.getLatitude());
+                    String lng = String.valueOf(mLastLocation.getLongitude());
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+                    sdf.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
+                    String timeStamp = sdf.format(new Date());
+                    myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
+                    String username = myPrefs.getString("username",null);
+                    String androidId = myPrefs.getString("androidId",null);
+                    String paxCode = username;
+                    String vehCode = "None";
+                    numPass=numPass+1;
+                    NumPassengers.setText(String.valueOf(numPass));
+                    publishMessage(vehicleMessage(androidId, lat, lng, timeStamp, paxCode, vehCode, true, false, numPass));
+                }
+            }
+        };
+        boardButton.setOnClickListener(null);
+
+        // Alight button
+        alightButton = findViewById(R.id.btnAlight);
+        final OnClickListener alightClickListener = new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (mLastLocation != null) {
+                    String lat = String.valueOf(mLastLocation.getLatitude());
+                    String lng = String.valueOf(mLastLocation.getLongitude());
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+                    sdf.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
+                    String timeStamp = sdf.format(new Date());
+                    myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
+                    String username = myPrefs.getString("username",null);
+                    String androidId = myPrefs.getString("androidId",null);
+                    String paxCode = username;
+                    String vehCode = "None";
+                    if (numPass != 0) numPass=numPass-1;
+                    NumPassengers.setText(String.valueOf(numPass));
+                    publishMessage(vehicleMessage(androidId, lat, lng, timeStamp, paxCode, vehCode, false, true, numPass));
+                }
+            }
+        };
+        alightButton.setOnClickListener(null);
 
         //  Sensors
         //sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -197,8 +251,9 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
                 if(isChecked && isGPS) {
                     connectBroker();
                     startLocationUpdates();
+                    boardButton.setOnClickListener(boardClickListener);
+                    alightButton.setOnClickListener(alightClickListener);
                 } else {
-                    //mFusedLocationClient.removeLocationUpdates(locationCallback);
                     stopLocationUpdates();
                     disconnectBroker();
                 }
@@ -368,19 +423,20 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
                 mLastLocation = location;
                 //sendTrack();
                 if (mLastLocation != null) {
-                    // Get location details
-                    //double lat = location.getLatitude();
-                    //double lng = location.getLongitude();
                     String lat = String.valueOf(location.getLatitude());
                     String lng = String.valueOf(location.getLongitude());
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
                     sdf.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
                     String timeStamp = sdf.format(new Date());
                     myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
+                    String username = myPrefs.getString("username",null);
                     String androidId = myPrefs.getString("androidId",null);
+                    String paxCode = username;
+                    //String vehicleId = myPrefs.getString("vehicleId",null);
+                    //String vehCode = vehicleId;
                     String vehCode = "None";
                     // Publish message
-                    publishMessage(vehicleMessage(androidId, lat, lng, timeStamp, vehCode, false, false, numPass));
+                    publishMessage(vehicleMessage(androidId, lat, lng, timeStamp, paxCode, vehCode, false, false, numPass));
                 }
             }
         }
@@ -396,6 +452,8 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
             }
         }
     } // onActivityResult
+
+    //public void sendBoard
 
     public void subscribeTopic(String topic) {
         try {
@@ -415,12 +473,13 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
         }
     }
 
-    public byte[] vehicleMessage(String deviceId, String lat, String lng, String timestamp, String vehCode, boolean board, boolean alight, int numPass) {
+    public byte[] vehicleMessage(String deviceId, String lat, String lng, String timestamp, String paxCode, String vehCode, boolean board, boolean alight, int numPass) {
         Vehicle vehicle = Vehicle.newBuilder()
                 .setDeviceId(deviceId)
                 .setLat(lat)
                 .setLng(lng)
                 .setTimestamp(timestamp)
+                .setPaxCode(paxCode)
                 .setVehCode(vehCode)
                 .setBoard(board)
                 .setAlight(alight)

@@ -17,8 +17,9 @@ message Vehicle {
     string lat = 2;
     string lng = 3;
     string timestamp = 4;
-    string vehCode = 5;
-    bool board = 6;
-    bool alight = 7;
-    int32 numPass = 8;
+    string paxCode = 5;
+    string vehCode = 6;
+    bool board = 7;
+    bool alight = 8;
+    int32 numPass = 9;
 }

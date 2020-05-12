@@ -209,11 +209,7 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
                 if(isChecked && isGPS) {
                     connectBroker();
                     startLocationUpdates();
-                    //mFusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper());
-                    //sendTrack();
-
                 } else {
-                    //mFusedLocationClient.removeLocationUpdates(locationCallback);
                     stopLocationUpdates();
                     disconnectBroker();
                 }
@@ -469,7 +465,6 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
                 mLastLocation = location;
                 //sendTrack();
                 if (mLastLocation != null) {
-                    // Get location details
                     String lat = String.valueOf(location.getLatitude());
                     String lng = String.valueOf(location.getLongitude());
                     //double lat = location.getLatitude();
@@ -479,9 +474,10 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
                     String timeStamp = sdf.format(new Date());
                     myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
                     String username = myPrefs.getString("username",null);
-                    //String password = myPrefs.getString("password",null);
                     String androidId = myPrefs.getString("androidId",null);
                     String paxCode = username;
+                    //String vehicleId = myPrefs.getString("vehicleId",null);
+                    //String vehCode = vehicleId;
                     String vehCode = "None";
                     // Publish message
                     publishMessage(passengerMessage(androidId, lat, lng, timeStamp, paxCode, vehCode));
@@ -494,6 +490,7 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
                     //    personTrack.put("lng", lng);
                     //    personTrack.put("timeStamp", timeStamp);
                     //    publishMessage(personTrack.toString());
+
                     //} catch (JSONException e) {
                     //    e.printStackTrace();
                     //}
@@ -544,7 +541,6 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
         return message;
         //String message = passenger.toString();
         //Log.i("pb", message);
-
     }
 
     public void publishMessage(byte[] payload) {
