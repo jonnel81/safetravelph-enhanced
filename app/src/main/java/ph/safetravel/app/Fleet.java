@@ -256,6 +256,8 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
                 } else {
                     stopLocationUpdates();
                     disconnectBroker();
+                    boardButton.setOnClickListener(null);
+                    alightButton.setOnClickListener(null);
                 }
             }
         });
