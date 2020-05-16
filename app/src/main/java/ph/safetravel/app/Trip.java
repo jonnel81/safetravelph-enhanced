@@ -474,12 +474,12 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
                     myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
                     String username = myPrefs.getString("username",null);
                     String androidId = myPrefs.getString("androidId",null);
-                    String paxCode = username;
+                    String userId = username;
                     //String vehicleId = myPrefs.getString("vehicleId",null);
                     //String vehCode = vehicleId;
-                    String vehCode = "None";
+                    String vehicleId = "None";
                     // Publish message
-                    publishMessage(passengerMessage(androidId, lat, lng, timeStamp, paxCode, vehCode));
+                    publishMessage(passengerMessage(androidId, lat, lng, timeStamp, userId, vehicleId));
 
                     //publishMessage(clientId.toString()+","+lat+"_"+lng+"_"+timeStamp);
                     //JSONObject personTrack = new JSONObject();
@@ -527,14 +527,14 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
         }
     }
 
-    public byte[] passengerMessage(String deviceId, String lat, String lng, String timestamp, String paxcode, String vehcode) {
+    public byte[] passengerMessage(String deviceId, String lat, String lng, String timestamp, String userId, String vehId) {
         Passenger passenger = Passenger.newBuilder()
                 .setDeviceId(deviceId)
                 .setLat(lat)
                 .setLng(lng)
                 .setTimestamp(timestamp)
-                .setPaxCode(paxcode)
-                .setVehCode(vehcode)
+                .setUserId(userId)
+                .setVehicleId(vehId)
                 .build();
         byte message[] = passenger.toByteArray();
         return message;

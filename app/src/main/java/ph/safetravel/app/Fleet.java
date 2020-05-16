@@ -15,11 +15,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.AssetFileDescriptor;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.Vibrator;
@@ -107,6 +109,7 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fleet);
+        final MediaPlayer mp = new MediaPlayer();
 
         NumPassengers = findViewById(R.id.txtNumPass);
         NumPassengers.setText(String.valueOf(numPass));
@@ -135,6 +138,23 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
         final OnClickListener boardClickListener = new OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(mp.isPlaying())
+                {
+                    mp.stop();
+                }
+                try {
+                    mp.reset();
+                    AssetFileDescriptor afd;
+                    afd = getAssets().openFd("beep.mp3");
+                    mp.setDataSource(afd.getFileDescriptor(),afd.getStartOffset(),afd.getLength());
+                    mp.prepare();
+                    mp.start();
+                } catch (IllegalStateException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
                 if (mLastLocation != null) {
                     String lat = String.valueOf(mLastLocation.getLatitude());
                     String lng = String.valueOf(mLastLocation.getLongitude());
@@ -159,6 +179,23 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
         final OnClickListener alightClickListener = new OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(mp.isPlaying())
+                {
+                    mp.stop();
+                }
+                try {
+                    mp.reset();
+                    AssetFileDescriptor afd;
+                    afd = getAssets().openFd("beep.mp3");
+                    mp.setDataSource(afd.getFileDescriptor(),afd.getStartOffset(),afd.getLength());
+                    mp.prepare();
+                    mp.start();
+                } catch (IllegalStateException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
                 if (mLastLocation != null) {
                     String lat = String.valueOf(mLastLocation.getLatitude());
                     String lng = String.valueOf(mLastLocation.getLongitude());
@@ -433,12 +470,12 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
                     myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
                     String username = myPrefs.getString("username",null);
                     String androidId = myPrefs.getString("androidId",null);
-                    String paxCode = username;
+                    String userId = username;
                     //String vehicleId = myPrefs.getString("vehicleId",null);
                     //String vehCode = vehicleId;
-                    String vehCode = "None";
+                    String vehicleId = "None";
                     // Publish message
-                    publishMessage(vehicleMessage(androidId, lat, lng, timeStamp, paxCode, vehCode, false, false, numPass));
+                    publishMessage(vehicleMessage(androidId, lat, lng, timeStamp, userId, vehicleId, false, false, numPass));
                 }
             }
         }
@@ -475,14 +512,14 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
         }
     }
 
-    public byte[] vehicleMessage(String deviceId, String lat, String lng, String timestamp, String paxCode, String vehCode, boolean board, boolean alight, int numPass) {
+    public byte[] vehicleMessage(String deviceId, String lat, String lng, String timestamp, String userId, String vehicleId, boolean board, boolean alight, int numPass) {
         Vehicle vehicle = Vehicle.newBuilder()
                 .setDeviceId(deviceId)
                 .setLat(lat)
                 .setLng(lng)
                 .setTimestamp(timestamp)
-                .setPaxCode(paxCode)
-                .setVehCode(vehCode)
+                .setUserId(userId)
+                .setVehicleId(vehicleId)
                 .setBoard(board)
                 .setAlight(alight)
                 .setNumPass(numPass)

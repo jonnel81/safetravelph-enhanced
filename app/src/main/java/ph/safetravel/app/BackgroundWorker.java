@@ -35,9 +35,9 @@ public class BackgroundWorker extends AsyncTask<String,String,String> {
     @Override
     protected String doInBackground(String... params) {
         String type = params[0];
-        String login_url = "https://safetravel.ph/testapp/login.php";
-        String register_url = "https://safetravel.ph/testapp/register.php";
-        String report_url = "https://safetravel.ph/testapp/report.php";
+        String login_url = "https://www.safetravel.ph/testapp/login.php";
+        String register_url = "https://www.safetravel.ph/testapp/register.php";
+        String report_url = "https://www.safetravel.ph/testapp/report.php";
         if(type.equals("login")) {
             // login activity
             try {
