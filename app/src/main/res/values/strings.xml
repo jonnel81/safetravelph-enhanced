@@ -1,15 +1,16 @@
 <resources>
     <string name="app_name">SafeTravelPH</string>
     <string name="find_location">[Long press to select and drag the marker]</string>
-    <string name="notice_login">We request your support and cooperation in ensuring safety and public order in view of the Enhanced Community Quarantine. This app is part of the efforts of the UP COVID-19 Pandemic Response Team spearheaded by the UP Resilience Institute (UPRI).</string>
-    <string name="notice_request">We value your personal privacy. Please register here to open an account.</string>
-    <string name="notice_developer">Developed by the Data Analytics for Research and Education (DARE)-Project 3 (Information Exchange Platform for the Public Sector) housed at the University of the Philippines National College of Public Administration and Governance (UP-NCPAG).</string>
+    <string name="notice_login">Please log in using your account.</string>
+    <string name="notice_request">Please register for an account.</string>
+    <string name="notice_developer">Copyright © 2020 UP-NCPAG. Developed by DARE-Project 3. This app is part of the efforts of the UP COVID-19 Pandemic Response Team spearheaded by the UP Resilience Institute (UPRI). </string>
     <string name="notice_contact">Visit www.safetravel.ph. For comments and suggestions, send email at admin@safetravel.ph</string>
     <string name="title_activity_maps">Map</string>
-    <string name="hint_landmarks">Nearest building or structure</string>
-    <string name="hint_description">Detailed description of incident like checkpoint/medical emergency</string>
-    <string name="hint_street">House No./Street/Village</string>
-    <string name="hint_city">City or Municipality</string>
+    <string name="hint_landmarks">Nearest landmark</string>
+    <string name="hint_description">Detailed description and recommedations</string>
+    <string name="hint_street">Street/Village</string>
+    <string name="hint_barangay">Barangay</string>
+    <string name="hint_city">City/Municipality</string>
     <string name="google_maps_key">AIzaSyDcNwbKHXqF0YhYLhb7ZN2A3XupIk8v0_c</string>
     <string name="title_logout">Logout</string>
     <string name="title_info">Info</string>
@@ -17,8 +18,7 @@
     <string name="title_trip">Trip</string>
     <string name="title_fleet">Fleet</string>
     <string name="appbar_scrolling_view_behavior" translatable="false">com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior</string>
-    <string name="nav_instruction">The SafeTravelPH App allows you to report road and other transport incidents related to the Enhanced Community Quarantine (ECQ) in your area to be relayed to national and local authorities for their immediate action.</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="nav_info1">The SafeTravelPH mobile app allows commuters to report and view road conditions and accidents; monitor Public Utility Vehicle (PUV) availability and locations, arrival times at transit stops, and occupancies of buses; and rate and record the quality of their trips. At the same time, the app allows bus providers to better calibrate their routes, monitor their operations and improve their overall systems in response to crowdsourced data provided by the application.</string>
+    <string name="nav_info2">The app, which is free to use by all stakeholders, aims to help improve the quality, sustainability, and reliability of public transport services. It provides relevant real-time information to commuters and bus operators and more importantly, government agencies involved in the planning and management of the public transportation sector. We believe that the system will contribute in improving public transport systems in the country by providing an open data platform for public transport planning and policy-making.</string>
+    <string name="nav_info3">Developed by the Data Analytics for Research and Education (DARE)-Project 3 (Information Exchange Platform for the Public Sector) Team of UP-NCPAG. This app is part of the efforts of the UP Pandemic Response Team spearheaded by the UP Resiliency Institute (UPRI).</string>
 </resources>

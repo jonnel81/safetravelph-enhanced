@@ -13,6 +13,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
@@ -35,28 +36,7 @@ public class Info extends AppCompatActivity {
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                //int id = menuItem.getItemId();
-                //if (id == R.id.navigation_logout) {
-                //    AlertDialog.Builder builder = new AlertDialog.Builder(Info.this);
-                //    builder.setMessage("Are you sure you want to logout?");
-                //    builder.setCancelable(false);
-                //    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                //        @Override
-                //        public void onClick(DialogInterface dialog, int which) {
-                //            dialog.dismiss();
-                //            //startActivity(new Intent(view.getContext(), Report.class));
-                //            //startActivity(new Intent(view.getContext(), Navigation.class));
-                //        }
-                //    });
-                //    AlertDialog alertDialog = builder.create();
-                //    alertDialog.setTitle("Status");
-                //    alertDialog.setCancelable(false);
-                //    alertDialog.setCanceledOnTouchOutside(false);
-                //    alertDialog.show();
-                //    }
-                //return true;
-                //}
+            public boolean onNavigationItemSelected(@NonNull final MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.navigation_logout: {
                         // Dialog
@@ -80,6 +60,8 @@ public class Info extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
+                                Intent intent1 = new Intent(Info.this, Info.class);
+                                startActivity(intent1);
                             }
                         });
                         AlertDialog alertDialog = builder.create();
@@ -91,21 +73,22 @@ public class Info extends AppCompatActivity {
                         break;
                     }
                     case R.id.navigation_info: {
-//
+
                         break;
                     }
                     case R.id.navigation_report: {
-                        Intent intent1 = new Intent(Info.this, Report.class);
-                        startActivity(intent1);
-                        break;
-                    }
-                    case R.id.navigation_trip: {
-                        Intent intent2 = new Intent(Info.this, Trip.class);
+                        Intent intent2 = new Intent(Info.this, Report.class);
                         startActivity(intent2);
                         break;
                     }
+                    case R.id.navigation_trip: {
+                        Intent intent3 = new Intent(Info.this, Trip.class);
+                        startActivity(intent3);
+                        break;
+                    }
                     case R.id.navigation_fleet: {
-//
+                        Intent intent4 = new Intent(Info.this, Fleet.class);
+                        startActivity(intent4);
                         break;
                     }
                 }

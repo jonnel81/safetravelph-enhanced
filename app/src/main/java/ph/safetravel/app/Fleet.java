@@ -116,7 +116,7 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
 
         // App Tollbar
         toolbar = findViewById(R.id.toolbar);
-        toolbar.setSubtitle("Fleet Tracking");
+        //toolbar.setSubtitle("Fleet Tracking");
         toolbar.inflateMenu(R.menu.main_menu);
 
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
@@ -372,6 +372,8 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
+                                Intent intent4 = new Intent(Fleet.this, Fleet.class);
+                                startActivity(intent4);
                             }
                         });
                         AlertDialog alertDialog = builder.create();

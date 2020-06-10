@@ -95,6 +95,7 @@ public class Report extends FragmentActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_report);
+
         street = findViewById(R.id.etStreet);
         landmarks = findViewById(R.id.etLandmarks);
         barangay = findViewById(R.id.etBarangay);
@@ -111,7 +112,7 @@ public class Report extends FragmentActivity
         // Taking a photo
         takePhotoButton = findViewById(R.id.btnTakePhoto);
         pickPhotoButton = findViewById(R.id.btnPickPhoto);
-        imageView = findViewById(R.id.imageview);
+        imageView = findViewById(R.id.imageviewPhoto);
         takePhotoButton.setEnabled(false);
         pickPhotoButton.setEnabled(false);
 
@@ -193,6 +194,8 @@ public class Report extends FragmentActivity
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
+                                Intent intent2 = new Intent(Report.this, Report.class);
+                                startActivity(intent2);
                             }
                         });
                         androidx.appcompat.app.AlertDialog alertDialog = builder.create();
@@ -314,7 +317,7 @@ public class Report extends FragmentActivity
                 Uri uri = data.getData();
                 try {
                     Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                    ImageView imageView = findViewById(R.id.imageview);
+                    ImageView imageView = findViewById(R.id.imageviewPhoto);
                     imageView.setImageBitmap(bitmap);
                     Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 640, 480, true);
                     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -357,7 +360,7 @@ public class Report extends FragmentActivity
                                 addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
                                 String addressString = addresses.get(0).getAddressLine(0);
                                 String cityString = addresses.get(0).getLocality();
-                                Toast.makeText(getApplicationContext(), "Current location: " + cityString, Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), "Current location: " + cityString, Toast.LENGTH_SHORT).show();
                                 city.setText(cityString);
                             } catch (IOException e) {
                                 e.printStackTrace();

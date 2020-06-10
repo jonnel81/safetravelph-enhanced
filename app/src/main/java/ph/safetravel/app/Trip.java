@@ -120,8 +120,9 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
 
         // App Tollbar
         toolbar = findViewById(R.id.toolbar);
-        toolbar.setSubtitle("Trip Tracking");
+        //toolbar.setSubtitle("Trip Tracking");
         toolbar.inflateMenu(R.menu.main_menu);
+        //toolbar.setLogo(R.drawable.safetravelph_round);
 
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
@@ -299,6 +300,8 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
+                                Intent intent3 = new Intent(Trip.this, Trip.class);
+                                startActivity(intent3);
                             }
                         });
                         AlertDialog alertDialog = builder.create();

@@ -2,7 +2,6 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Report">
@@ -10,104 +9,69 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:titleTextColor="@android:color/white"
+            app:titleTextColor="@color/blue"
+            app:subtitleTextColor="@color/blue"
             app:title="@string/app_name"
+            app:titleTextAppearance="@style/ActionBarTextAppearance"
+            app:subtitleTextAppearance="@font/gothammedium_font"
             android:background="?attr/colorPrimary">
         </androidx.appcompat.widget.Toolbar>
-
     </com.google.android.material.appbar.AppBarLayout>
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_nav_view"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toStartOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_gravity="bottom"
-        android:background="?android:attr/windowBackground"
-        app:labelVisibilityMode="labeled"
-        app:itemBackground="@color/colorPrimary"
-        app:itemIconTint="@color/white"
-        app:itemTextColor="@color/white"
-        app:menu="@menu/bottom_nav_menu"/>
-
-    <androidx.core.widget.NestedScrollView
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"
+        android:fillViewport="true"
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="top">
+            android:layout_height="wrap_content" >
 
-    <fragment
-        android:id="@+id/map"
-        android:name="com.google.android.gms.maps.MapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="240dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:background="#33FF00"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-            <EditText
-                android:id="@+id/editText"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginRight="16dp"
-                android:background="@null"
-                android:ems="8"
-                android:enabled="false"
-                android:inputType="none"
-                android:text="@string/find_location"
-                android:textSize="15sp"
+            <fragment
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.MapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="240dp"
+                android:layout_marginBottom="8dp"
+                android:background="#33FF00"
+                app:layout_constraintBottom_toTopOf="@+id/imageviewPhoto"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/btnReport" />
 
             <EditText
                 android:id="@+id/etStreet"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="-30dp"
-                android:ems="10"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/edit_text_border"
+                android:fontFamily="@font/gothammedium_font"
                 android:hint="@string/hint_street"
                 android:inputType="textPersonName"
                 android:textSize="15sp"
                 app:layout_constraintBottom_toTopOf="@+id/etLandmarks"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/imageview"
-                tools:targetApi="o" />
+                app:layout_constraintTop_toBottomOf="@id/imageviewPhoto" />
 
             <EditText
                 android:id="@+id/etLandmarks"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="-30dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="-30dp"
-                android:ems="10"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/edit_text_border"
+                android:fontFamily="@font/gothammedium_font"
                 android:hint="@string/hint_landmarks"
                 android:inputType="textPersonName"
                 android:textSize="15sp"
@@ -119,29 +83,28 @@
             <Button
                 android:id="@+id/btnReport"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginRight="16dp"
+                android:layout_height="48dp"
+                android:background="@color/blue"
+                android:fontFamily="@font/gothammedium_font"
                 android:onClick="OnReport"
                 android:text="Send Report"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toTopOf="@+id/map"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/etDescription" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <EditText
                 android:id="@+id/etBarangay"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="-30dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="-30dp"
-                android:ems="10"
-                android:hint="Barangay"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/edit_text_border"
+                android:fontFamily="@font/gothammedium_font"
+                android:hint="@string/hint_barangay"
                 android:inputType="textPersonName"
                 android:textSize="15sp"
                 app:layout_constraintBottom_toTopOf="@+id/etCity"
@@ -152,13 +115,12 @@
             <EditText
                 android:id="@+id/etCity"
                 android:layout_width="0dp"
-                android:layout_height="40dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="-30dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginRight="16dp"
-                android:ems="10"
+                android:layout_marginBottom="8dp"
+                android:background="@drawable/edit_text_border"
+                android:fontFamily="@font/gothammedium_font"
                 android:hint="@string/hint_city"
                 android:inputType="textPersonName"
                 android:textSize="15sp"
@@ -169,20 +131,19 @@
 
             <EditText
                 android:id="@+id/etDescription"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="-30dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginBottom="8dp"
-                android:ems="10"
+                android:layout_marginBottom="60dp"
+                android:background="@drawable/edit_text_border"
+                android:fontFamily="@font/gothammedium_font"
                 android:gravity="start|top"
                 android:hint="@string/hint_description"
                 android:inputType="textMultiLine"
+                android:lines="3"
                 android:textSize="15sp"
-                app:layout_constraintBottom_toTopOf="@+id/btnReport"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/etCity" />
@@ -200,7 +161,6 @@
                 android:hint="Lat"
                 android:textSize="15sp"
                 android:visibility="gone"
-                app:layout_constraintBottom_toTopOf="@id/editText"
                 app:layout_constraintEnd_toStartOf="@id/etLng"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -213,18 +173,17 @@
                 android:layout_marginLeft="16dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginRight="16dp"
-                android:visibility="gone"
                 android:ems="10"
                 android:enabled="false"
                 android:hint="Lng"
                 android:textSize="15sp"
-                app:layout_constraintBottom_toTopOf="@+id/editText"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/etLat"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
-                android:id="@+id/imageview"
+                android:id="@+id/imageviewPhoto"
                 android:layout_width="120dp"
                 android:layout_height="100dp"
                 android:background="#000000"
@@ -247,11 +206,13 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="4dp"
                 android:layout_marginBottom="4dp"
+                android:fontFamily="@font/gothammedium_font"
                 android:onClick="onTakePhoto"
                 android:text="Take a Photo"
+                android:textSize="14sp"
                 app:layout_constraintBottom_toTopOf="@id/btnPickPhoto"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imageview"
+                app:layout_constraintStart_toEndOf="@+id/imageviewPhoto"
                 app:layout_constraintTop_toBottomOf="@id/map" />
 
             <Button
@@ -260,15 +221,34 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
+                android:fontFamily="@font/gothammedium_font"
                 android:onClick="onPickPhoto"
                 android:text="Pick a Photo"
+                android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/imageview"
+                app:layout_constraintStart_toEndOf="@+id/imageviewPhoto"
                 app:layout_constraintTop_toBottomOf="@id/btnPickPhoto" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 
-        </androidx.core.widget.NestedScrollView>
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_nav_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_gravity="bottom"
+        app:itemTextAppearanceActive="@style/BottomNavigation.ActiveItemTextAppearance"
+        app:itemTextAppearanceInactive="@style/BottomNavigation.InactiveItemTextAppearance"
+        android:background="?android:attr/windowBackground"
+        app:labelVisibilityMode="labeled"
+        app:itemBackground="@color/colorPrimary"
+        app:itemIconTint="@color/blue"
+        app:itemTextColor="@color/blue"
+        app:menu="@menu/bottom_nav_menu"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

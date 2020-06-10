@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
@@ -17,7 +18,7 @@ import android.view.View;
 import android.widget.TextView;
 
 public class Register extends AppCompatActivity implements AsyncResponse {
-    EditText firstname, lastname, age, username, password;
+    EditText firstname, lastname, age, username, password, retypepassword;
     View view;
     AsyncResponse aR = Register.this;
     BackgroundWorker backgroundWorker = new BackgroundWorker(Register.this, aR);
@@ -34,6 +35,7 @@ public class Register extends AppCompatActivity implements AsyncResponse {
         age = findViewById(R.id.etAge);
         username = findViewById(R.id.etUserName);
         password = findViewById(R.id.etPassword);
+        retypepassword = findViewById(R.id.etRetypePassword);
         view = findViewById(android.R.id.content);
 
         // Agree checkbox
@@ -89,9 +91,29 @@ public class Register extends AppCompatActivity implements AsyncResponse {
         String str_age = age.getText().toString();
         String str_username = username.getText().toString();
         String str_password = password.getText().toString();
+        String str_retypepassword = retypepassword.getText().toString();
         String type = "register";
 
-        backgroundWorker.execute(type, str_firstname, str_lastname, str_age, str_username, str_password);
+        // Check inputs
+        if(!str_password.equals(str_retypepassword)) {
+            androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(Register.this);
+            builder.setMessage("Passwords do not match.");
+            builder.setCancelable(false);
+            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            androidx.appcompat.app.AlertDialog alertDialog = builder.create();
+            alertDialog.setTitle("Status");
+            alertDialog.setCancelable(false);
+            alertDialog.setCanceledOnTouchOutside(false);
+            alertDialog.show();
+        } else {
+            backgroundWorker.execute(type, str_firstname, str_lastname, str_age, str_username, str_password);
+        }
+
     } // OnReg
 
     @Override
@@ -99,7 +121,7 @@ public class Register extends AppCompatActivity implements AsyncResponse {
         // Register success
         if(result.equals("Register success")) {
             builder = new AlertDialog.Builder(this);
-            builder.setMessage("Registration completed. You may login now.");
+            builder.setMessage("Registration completed. You may log in now.");
             builder.setCancelable(false);
             builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                 @Override

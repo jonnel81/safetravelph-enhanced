@@ -15,14 +15,90 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:titleTextColor="@android:color/white"
+            app:titleTextColor="@color/blue"
             app:title="@string/app_name"
+            app:titleTextAppearance="@style/ActionBarTextAppearance"
+            app:subtitleTextAppearance="@font/gothammedium_font"
             android:background="?attr/colorPrimary"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
             app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
         </androidx.appcompat.widget.Toolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="top">
+
+            <ToggleButton
+                android:id="@+id/toggleFleet"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@color/blue"
+                android:fontFamily="@font/gothammedium_font"
+                android:text="ToggleButton"
+                android:textColor="@color/white"
+                android:textOff="Start Fleet Tracking"
+                android:textOn="Stop Fleet Tracking"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toTopOf="@+id/mapFragFleet"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <fragment
+                android:id="@+id/mapFragFleet"
+                android:name="com.google.android.gms.maps.MapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="460dp"
+                app:layout_constraintTop_toBottomOf="@+id/toggleFleet"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <ImageButton
+                android:id="@+id/btnBoard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/ic_plus"
+                android:text="Board"
+                app:layout_constraintEnd_toStartOf="@id/btnAlight"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/mapFragFleet" />
+
+            <ImageButton
+                android:id="@+id/btnAlight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/ic_minus"
+                android:text="Alight"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/btnBoard"
+                app:layout_constraintTop_toBottomOf="@id/mapFragFleet" />
+
+            <TextView
+                android:id="@+id/txtNumPass"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/border"
+                android:text="#"
+                android:textSize="24sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/btnAlight"
+                app:layout_constraintStart_toEndOf="@+id/btnBoard"
+                app:layout_constraintTop_toBottomOf="@+id/mapFragFleet" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav_view"
@@ -32,81 +108,13 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         android:layout_gravity="bottom"
+        app:itemTextAppearanceActive="@style/BottomNavigation.ActiveItemTextAppearance"
+        app:itemTextAppearanceInactive="@style/BottomNavigation.InactiveItemTextAppearance"
         android:background="?android:attr/windowBackground"
         app:labelVisibilityMode="labeled"
         app:itemBackground="@color/colorPrimary"
-        app:itemIconTint="@color/white"
-        app:itemTextColor="@color/white"
+        app:itemIconTint="@color/blue"
+        app:itemTextColor="@color/blue"
         app:menu="@menu/bottom_nav_menu"/>
-
-    <androidx.core.widget.NestedScrollView
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="top">
-
-        <ToggleButton
-            android:id="@+id/toggleFleet"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="ToggleButton"
-            android:textOff="Start Tracking"
-            android:textOn="Stop Tracking"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <fragment
-            android:id="@+id/mapFragFleet"
-            android:name="com.google.android.gms.maps.MapFragment"
-            android:layout_width="match_parent"
-            android:layout_height="460dp"
-            app:layout_constraintTop_toBottomOf="@+id/toggleFleet"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-        <ImageButton
-            android:id="@+id/btnBoard"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/ic_plus"
-            android:text="Board"
-            app:layout_constraintEnd_toStartOf="@id/btnAlight"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/mapFragFleet" />
-
-        <ImageButton
-            android:id="@+id/btnAlight"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/ic_minus"
-            android:text="Alight"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/btnBoard"
-            app:layout_constraintTop_toBottomOf="@id/mapFragFleet" />
-
-        <TextView
-            android:id="@+id/txtNumPass"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:background="@drawable/border"
-            android:text="#"
-            android:textSize="24sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btnAlight"
-            app:layout_constraintStart_toEndOf="@+id/btnBoard"
-            app:layout_constraintTop_toBottomOf="@+id/mapFragFleet" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </androidx.core.widget.NestedScrollView>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
