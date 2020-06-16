@@ -45,7 +45,7 @@
             android:fontFamily="@font/gothammedium_font"
             android:hint="Firstname"
             android:inputType="textPersonName"
-            android:textSize="15sp"
+            android:textSize="14sp"
             app:layout_constraintBottom_toTopOf="@+id/etLastName"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textViewRegister" />
@@ -60,7 +60,7 @@
             android:fontFamily="@font/gothammedium_font"
             android:hint="Lastname"
             android:inputType="textPersonName"
-            android:textSize="15sp"
+            android:textSize="14sp"
             app:layout_constraintBottom_toTopOf="@+id/etAge"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/etFirstName" />
@@ -75,14 +75,14 @@
             android:fontFamily="@font/gothammedium_font"
             android:hint="Username"
             android:inputType="textPersonName"
-            android:textSize="15sp"
+            android:textSize="14sp"
             app:layout_constraintBottom_toTopOf="@+id/etPassword"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/etAge" />
 
         <EditText
             android:id="@+id/etAge"
-            android:layout_width="wrap_content"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:layout_marginBottom="8dp"
@@ -90,10 +90,26 @@
             android:fontFamily="@font/gothammedium_font"
             android:hint="Age"
             android:inputType="textPersonName"
-            android:textSize="15sp"
+            android:textSize="14sp"
             app:layout_constraintBottom_toTopOf="@+id/etUserName"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/etLastName" />
+
+        <Spinner
+            android:id="@+id/spinnerRole"
+            android:layout_width="170dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/edit_text_border"
+            android:fontFamily="@font/gothammedium_font"
+            android:prompt="@string/hint_barangay"
+            android:textSize="14sp"
+            android:theme="@style/SpinnerTheme"
+            app:layout_constraintBottom_toTopOf="@+id/etUserName"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/etAge" />
 
         <Button
             android:id="@+id/btnReg"
@@ -118,7 +134,7 @@
             android:fontFamily="@font/gothammedium_font"
             android:hint="Password"
             android:inputType="textPassword"
-            android:textSize="15sp"
+            android:textSize="14sp"
             app:layout_constraintBottom_toTopOf="@+id/etRetypePassword"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/etUserName" />
@@ -133,7 +149,7 @@
             android:fontFamily="@font/gothammedium_font"
             android:hint="Retype Password"
             android:inputType="textPassword"
-            android:textSize="15sp"
+            android:textSize="14sp"
             app:layout_constraintBottom_toTopOf="@+id/chkRegister"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/etPassword" />
@@ -147,6 +163,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:textSize="14sp"
+            android:lineSpacingExtra="3sp"
             android:fontFamily="@font/gothambook_font"
             android:text="@string/notice_request"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
@@ -157,13 +174,13 @@
 
         <CheckBox
             android:id="@+id/chkRegister"
-            android:layout_width="360dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="60dp"
+            android:layout_marginStart="32dp"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="16dp"
             android:fontFamily="@font/gothambook_font"
-            android:text="I agree to the Terms and Conditions."
+            android:text="Agree with Terms and Conditions."
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

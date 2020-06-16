@@ -114,9 +114,8 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
         NumPassengers = findViewById(R.id.txtNumPass);
         NumPassengers.setText(String.valueOf(numPass));
 
-        // App Tollbar
+        // Tollbar
         toolbar = findViewById(R.id.toolbar);
-        //toolbar.setSubtitle("Fleet Tracking");
         toolbar.inflateMenu(R.menu.main_menu);
 
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
@@ -329,19 +328,17 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
         client.setCallback(new MqttCallback() {
             @Override
             public void connectionLost(Throwable cause) {
-                Log.i(TAG, "connection lost");
+                //Log.i(TAG, "connection lost");
             }
 
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
-                Log.i(TAG, "topic: " + topic + ", msg: " + new String(message.getPayload()));
-                //subText.setText(new String(message.getPayload()));
-                //vibrator.vibrate(500);
+                //Log.i(TAG, "topic: " + topic + ", msg: " + new String(message.getPayload()));
             }
 
             @Override
             public void deliveryComplete(IMqttDeliveryToken token) {
-                Log.i(TAG, "msg delivered");
+                //Log.i(TAG, "msg delivered");
             }
         }); // mqtt client callback
 
@@ -363,6 +360,7 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
                                 SharedPreferences.Editor editor = myPrefs.edit();
                                 editor.clear();
                                 editor.apply();
+                                closeApp();
                                 // Go to main activity
                                 Intent intent0 = new Intent(Fleet.this, MainActivity.class);
                                 startActivity(intent0);
@@ -385,16 +383,19 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
                         break;
                     }
                     case R.id.navigation_info: {
+                        closeApp();
                         Intent intent1 = new Intent(Fleet.this, Info.class);
                         startActivity(intent1);
                         break;
                     }
                     case R.id.navigation_report: {
+                        closeApp();
                         Intent intent2 = new Intent(Fleet.this, Report.class);
                         startActivity(intent2);
                         break;
                     }
                     case R.id.navigation_trip: {
+                        closeApp();
                         Intent intent3 = new Intent(Fleet.this, Trip.class);
                         startActivity(intent3);
                         break;
@@ -460,7 +461,7 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
             if (locationList.size() > 0) {
                 //The last location in the list is the newest
                 Location location = locationList.get(locationList.size() - 1);
-                Log.i("MapsActivity", "Location: " + location.getLatitude() + " " + location.getLongitude());
+                //Log.i("MapsActivity", "Location: " + location.getLatitude() + " " + location.getLongitude());
                 mLastLocation = location;
                 //sendTrack();
                 if (mLastLocation != null) {
@@ -501,12 +502,12 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
             client.subscribe(topic, 0, null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    Log.i(TAG, "subscribed succeed");
+                    //Log.i(TAG, "subscribed succeed");
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    Log.i(TAG, "subscribed failed");
+                    //Log.i(TAG, "subscribed failed");
                 }
             });
         } catch (MqttException e) {
@@ -541,15 +542,15 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
             client.publish("vehicles", message,null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    Log.i (TAG, "publish succeed! ") ;
+                    //Log.i (TAG, "publish succeed! ") ;
                 }
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    Log.i(TAG, "publish failed!") ;
+                    //Log.i(TAG, "publish failed!") ;
                 }
             });
         } catch (MqttException e) {
-            Log.e(TAG, e.toString());
+            //Log.e(TAG, e.toString());
             e.printStackTrace();
         }
     }
@@ -633,5 +634,12 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
         LatLng mmla = new LatLng(14.6091, 121.0223);
         //mMap.addMarker(new MarkerOptions().position(mmla).title("Marker Position"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mmla, 10));
-    }
+    } // onMapReady
+
+    public void closeApp(){
+        disconnectBroker();
+        stopLocationUpdates();
+        this.finish();
+    } // closeApp
+
 }

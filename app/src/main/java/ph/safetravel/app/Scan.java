@@ -13,7 +13,7 @@ public class Scan extends AppCompatActivity implements ZXingScannerView.ResultHa
     public void onCreate(Bundle state) {
         super.onCreate(state);
         mScannerView = new ZXingScannerView(this);   // Programmatically initialize the scanner view
-        setContentView(mScannerView);                // Set the scanner view as the content view
+        setContentView(mScannerView);                        // Set the scanner view as the content view
     }
 
     @Override

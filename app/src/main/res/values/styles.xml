@@ -41,4 +41,14 @@
         <item name="android:textSize">10sp</item>
     </style>
 
+    <style name="NavigationDrawerStyle" parent="TextAppearance.AppCompat">
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/gothammedium_font</item>
+    </style>
+
+    <style name="SpinnerTheme">
+        <item name="android:fontFamily">@font/gothammedium_font</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
 </resources>

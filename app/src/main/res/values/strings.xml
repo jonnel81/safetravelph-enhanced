@@ -1,9 +1,11 @@
 <resources>
     <string name="app_name">SafeTravelPH</string>
+    <string name="Open">Navbar</string>
+    <string name="Close">Navbar</string>
     <string name="find_location">[Long press to select and drag the marker]</string>
     <string name="notice_login">Please log in using your account.</string>
-    <string name="notice_request">Please register for an account.</string>
-    <string name="notice_developer">Copyright © 2020 UP-NCPAG. Developed by DARE-Project 3. This app is part of the efforts of the UP COVID-19 Pandemic Response Team spearheaded by the UP Resilience Institute (UPRI). </string>
+    <string name="notice_request">Please register for an account.  All fields are required.</string>
+    <string name="notice_developer">Copyright © University of the Philippines 2020. Developed by DARE-Project 3 Team of UP-NCPAG. This app is part of the efforts of the UP COVID-19 Pandemic Response Team spearheaded by the UP Resilience Institute (UPRI). </string>
     <string name="notice_contact">Visit www.safetravel.ph. For comments and suggestions, send email at admin@safetravel.ph</string>
     <string name="title_activity_maps">Map</string>
     <string name="hint_landmarks">Nearest landmark</string>
@@ -21,4 +23,20 @@
     <string name="nav_info1">The SafeTravelPH mobile app allows commuters to report and view road conditions and accidents; monitor Public Utility Vehicle (PUV) availability and locations, arrival times at transit stops, and occupancies of buses; and rate and record the quality of their trips. At the same time, the app allows bus providers to better calibrate their routes, monitor their operations and improve their overall systems in response to crowdsourced data provided by the application.</string>
     <string name="nav_info2">The app, which is free to use by all stakeholders, aims to help improve the quality, sustainability, and reliability of public transport services. It provides relevant real-time information to commuters and bus operators and more importantly, government agencies involved in the planning and management of the public transportation sector. We believe that the system will contribute in improving public transport systems in the country by providing an open data platform for public transport planning and policy-making.</string>
     <string name="nav_info3">Developed by the Data Analytics for Research and Education (DARE)-Project 3 (Information Exchange Platform for the Public Sector) Team of UP-NCPAG. This app is part of the efforts of the UP Pandemic Response Team spearheaded by the UP Resiliency Institute (UPRI).</string>
+    <string-array name="purpose_array">
+        <item>Government work</item>
+        <item>Private sector job</item>
+        <item>Return to province</item>
+        <item>Seek medical services</item>
+        <item>Buy food and essential supplies</item>
+        <item>Personal errands</item>
+        <item>Business meeting</item>
+        <item>Religious activity</item>
+        <item>School-related activity</item>
+        <item>Others</item>
+    </string-array>
+    <string-array name="role_array">
+        <item>Commuter</item>
+        <item>Driver-Operator</item>
+    </string-array>
 </resources>

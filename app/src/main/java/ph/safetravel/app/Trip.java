@@ -20,11 +20,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -39,6 +42,7 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -47,6 +51,7 @@ import com.google.protobuf.CodedOutputStream;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -76,6 +81,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -84,7 +90,7 @@ import java.util.TimeZone;
 
 import ph.safetravel.app.protos.Passenger;
 
-public class Trip extends FragmentActivity implements OnMapReadyCallback {
+public class Trip extends FragmentActivity implements OnMapReadyCallback, AdapterView.OnItemClickListener {
     SharedPreferences myPrefs;
     View view;
     MqttAndroidClient client;
@@ -106,24 +112,25 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
     Location mLastLocation;
     MapFragment mMapFragment;
     GoogleMap mMap;
-    AutoCompleteTextView origin, destination;
+    AutoCompleteTextView origin, destination, purpose;
     ImageButton origButton, destButton;
     LatLng origLatLng, destLatLng;
     MarkerOptions markerOptions;
     Toolbar toolbar;
+    private Marker mCurrentMarker;
+    private ArrayList<Marker> mMarkerArrayList;
 
-    @SuppressLint("ServiceCast")
+    @SuppressLint({"ServiceCast", "WrongViewCast"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip);
 
-        // App Tollbar
+        // Tollbar
         toolbar = findViewById(R.id.toolbar);
-        //toolbar.setSubtitle("Trip Tracking");
-        toolbar.inflateMenu(R.menu.main_menu);
-        //toolbar.setLogo(R.drawable.safetravelph_round);
 
+        // Menu
+        toolbar.inflateMenu(R.menu.main_menu);
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
@@ -138,8 +145,8 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
             }
         });
 
-        // Origin marker
-        origButton = findViewById(R.id.btnOrig);
+        // Get origin
+        origButton = findViewById(R.id.btnOrigPost);
         OnClickListener findOrigClickListener = new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -152,12 +159,12 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
         };
         origButton.setOnClickListener(findOrigClickListener);
 
-        // Destination marker
-        destButton = findViewById(R.id.btnDest);
+        // Get destination
+        destButton = findViewById(R.id.btnDestPost);
         OnClickListener findDestClickListener = new OnClickListener() {
             @Override
             public void onClick(View view) {
-                EditText destination = findViewById(R.id.atvDest);
+                destination = findViewById(R.id.atvDest);
                 String location = destination.getText().toString();
                 if(location!=null && !location.equals("")){
                     new destGeocoderTask().execute(location);
@@ -165,6 +172,14 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
             }
         };
         destButton.setOnClickListener(findDestClickListener);
+
+        // Get purpose
+        AutoCompleteTextView purpose = (AutoCompleteTextView) findViewById(R.id.atvPurpose);
+        String[] purposeArray = getResources().getStringArray(R.array.purpose_array);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.select_dialog_item, purposeArray);
+        purpose.setThreshold(1); //will start working from first character
+        purpose.setAdapter(adapter);
 
         // Map fragment
         mMapFragment = MapFragment.newInstance();
@@ -256,14 +271,12 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
 
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
-                Log.i(TAG, "topic: " + topic + ", msg: " + new String(message.getPayload()));
-                //subText.setText(new String(message.getPayload()));
-                //vibrator.vibrate(500);
+                //Log.i(TAG, "topic: " + topic + ", msg: " + new String(message.getPayload()));
             }
 
             @Override
             public void deliveryComplete(IMqttDeliveryToken token) {
-                Log.i(TAG, "msg delivered");
+                //Log.i(TAG, "msg delivered");
             }
         }); // mqtt client callback
 
@@ -291,6 +304,7 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
                                 SharedPreferences.Editor editor = myPrefs.edit();
                                 editor.clear();
                                 editor.apply();
+                                closeApp();
                                 // Go to main activity
                                 Intent intent0 = new Intent(Trip.this, MainActivity.class);
                                 startActivity(intent0);
@@ -313,11 +327,13 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
                         break;
                     }
                     case R.id.navigation_info: {
+                        closeApp();
                         Intent intent1 = new Intent(Trip.this, Report.class);
                         startActivity(intent1);
                         break;
                     }
                     case R.id.navigation_report: {
+                        closeApp();
                         Intent intent2 = new Intent(Trip.this, Report.class);
                         startActivity(intent2);
                         break;
@@ -327,6 +343,7 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
                         break;
                     }
                     case R.id.navigation_fleet: {
+                        closeApp();
                         Intent intent4 = new Intent(Trip.this, Fleet.class);
                         startActivity(intent4);
                         break;
@@ -336,6 +353,16 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
             }
         });
     } // onCreate
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        // fetch the user selected value
+        String item = parent.getItemAtPosition(position).toString();
+        // create Toast with user selected value
+        //Toast.makeText(Trip.this, "Selected Item is: \t" + item, Toast.LENGTH_LONG).show();
+        // set user selected value to the TextView
+        //tvDisplay.setText(item);
+    }
 
     // An AsyncTask class for accessing the GeoCoding Web Service for origin
     private class origGeocoderTask extends AsyncTask<String, Void, List<Address>> {
@@ -358,23 +385,37 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
             if(addresses==null || addresses.size()==0){
                 Toast.makeText(getBaseContext(), "No Location found", Toast.LENGTH_SHORT).show();
             }
-            // Clears all the existing markers on the map
-            mMap.clear();
-            // Adding Markers on Google Map for each matching address
-            for(int i=0;i<addresses.size();i++){
+
+            // Remove first marker, if existing
+            if (mMarkerArrayList.size() > 0) {
+                for (int i = 0; i < mMarkerArrayList.size(); i++) {
+                    Marker m = mMarkerArrayList.get(i);
+                    if (m.getTitle().equals("orig")) {
+                        Marker markerToRemove = mMarkerArrayList.get(i);
+                        // remove the maker from list
+                        mMarkerArrayList.remove(markerToRemove);
+                        // remove the marker from the map
+                        markerToRemove.remove();
+                        break;
+                    }
+                }
+            }
+
+            // Add new marker on Google Map for matching address
+            for(int i = 0; i < addresses.size(); i++){
                 Address address = addresses.get(i);
-                // Creating an instance of GeoPoint, to display in Google Map
+                // Create an instance of GeoPoint, to display in Google Map
                 origLatLng = new LatLng(address.getLatitude(), address.getLongitude());
-                //String addressText = String.format("%s, %s",
-                //        address.getMaxAddressLineIndex() > 0 ? address.getAddressLine(1) : "",
-                //        address.getCountryName());
-                String addressText = String.format("%s, %s", address.getLocality(),address.getCountryName());
+                String addressText = String.format("%s, %s, %s", address.getThoroughfare(), address.getSubLocality(), address.getLocality());
+                // Add marker
                 markerOptions = new MarkerOptions();
                 markerOptions.position(origLatLng);
-                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.greenpin));
-                markerOptions.title(addressText);
-                mMap.addMarker(markerOptions);
-                // Locate the first location
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.green_marker_big));
+                markerOptions.title("orig");
+                mCurrentMarker = mMap.addMarker(markerOptions);
+                mMarkerArrayList.add(mCurrentMarker);
+                origin.setText(origin.getText() + ", " + addressText);
+                // Locate the origin
                 if(i==0)
                     mMap.animateCamera(CameraUpdateFactory.newLatLng(origLatLng));
             }
@@ -402,24 +443,39 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
             if(addresses==null || addresses.size()==0){
                 Toast.makeText(getBaseContext(), "No Location found", Toast.LENGTH_SHORT).show();
             }
-            // Clears all the existing markers on the map
-            mMap.clear();
-            // Adding Markers on Google Map for each matching address
-            for(int i=0;i<addresses.size();i++){
+
+            // Remove second marker, if existing
+            if (mMarkerArrayList.size() > 0) {
+                for (int i = 0; i < mMarkerArrayList.size(); i++) {
+                    Marker m = mMarkerArrayList.get(i);
+                    if (m.getTitle().equals("dest")) {
+                        Marker markerToRemove = mMarkerArrayList.get(i);
+                        // remove the maker from list
+                        mMarkerArrayList.remove(markerToRemove);
+                        // remove the marker from the map
+                        markerToRemove.remove();
+                        break;
+                    }
+                }
+            }
+
+            // Add new marker on Google Map for matching address
+            for(int i = 0; i < addresses.size(); i++){
                 Address address = addresses.get(i);
                 // Creating an instance of GeoPoint, to display in Google Map
-                origLatLng = new LatLng(address.getLatitude(), address.getLongitude());
-                String addressText = String.format("%s, %s",
-                        address.getMaxAddressLineIndex() > 0 ? address.getSubAdminArea() : "",
-                        address.getCountryName());
+                destLatLng = new LatLng(address.getLatitude(), address.getLongitude());
+                String addressText = String.format("%s, %s, %s", address.getThoroughfare(), address.getSubLocality(), address.getLocality());
+                // Add marker
                 markerOptions = new MarkerOptions();
-                markerOptions.position(origLatLng);
-                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.yellowpin));
-                markerOptions.title(addressText);
-                mMap.addMarker(markerOptions);
-                // Locate the first location
+                markerOptions.position(destLatLng);
+                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.red_marker_big));
+                markerOptions.title("dest");
+                mCurrentMarker = mMap.addMarker(markerOptions);
+                mMarkerArrayList.add(mCurrentMarker);
+                destination.setText(destination.getText() + ", " + addressText);
+                // Locate the destination
                 if(i==0)
-                    mMap.animateCamera(CameraUpdateFactory.newLatLng(origLatLng));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLng(destLatLng));
             }
         }
     }
@@ -517,12 +573,12 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
             client.subscribe(topic, 0, null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    Log.i(TAG, "subscribed succeed");
+                    //Log.i(TAG, "subscribed succeed");
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    Log.i(TAG, "subscribed failed");
+                    //Log.i(TAG, "subscribed failed");
                 }
             });
         } catch (MqttException e) {
@@ -571,16 +627,16 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
             client.publish("passengers", message,null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    Log.i (TAG, "publish succeed! ") ;
+                    //Log.i (TAG, "publish succeed! ") ;
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    Log.i(TAG, "publish failed!") ;
+                    //Log.i(TAG, "publish failed!") ;
                 }
             });
         } catch (MqttException e) {
-            Log.e(TAG, e.toString());
+            //Log.e(TAG, e.toString());
             e.printStackTrace();
         }
     }
@@ -654,9 +710,17 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
+        mMarkerArrayList = new ArrayList<>();
         LatLng mmla = new LatLng(14.6091, 121.0223);
         //mMap.addMarker(new MarkerOptions().position(mmla).title("Marker Position"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mmla, 11));
-    }
+    } // onMapReady
+
+    public void closeApp(){
+        disconnectBroker();
+        stopLocationUpdates();
+        this.finish();
+    } // closeApp
 
 }

@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/item1"
-        android:title="Scan QR code" />
+        android:title="Scan QR code"  />
 
     <item
         android:id="@+id/item2"

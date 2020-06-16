@@ -42,6 +42,7 @@
                 android:id="@+id/toggleTrip"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:background="@color/blue"
                 android:fontFamily="@font/gothammedium_font"
                 android:text="ToggleButton"
@@ -52,13 +53,13 @@
                 app:layout_constraintBottom_toTopOf="@+id/mapFragTrip"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/btnOrigPost" />
 
             <fragment
                 android:id="@+id/mapFragTrip"
                 android:name="com.google.android.gms.maps.MapFragment"
                 android:layout_width="match_parent"
-                android:layout_height="460dp"
+                android:layout_height="420dp"
                 android:layout_marginBottom="8dp"
                 app:layout_constraintBottom_toTopOf="@id/atvOrig"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -70,28 +71,40 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="-30dp"
                 android:layout_marginBottom="8dp"
                 android:background="@drawable/edit_text_border"
                 android:fontFamily="@font/gothammedium_font"
                 android:hint="Origin"
-                android:textSize="15sp"
+                android:textSize="14sp"
+                android:maxLines="1"
                 app:layout_constraintBottom_toTopOf="@id/atvDest"
-                app:layout_constraintEnd_toStartOf="@+id/btnOrig"
+                app:layout_constraintEnd_toStartOf="@+id/btnOrigPost"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/mapFragTrip" />
 
             <ImageButton
-                android:id="@+id/btnOrig"
+                android:id="@+id/btnOrigPost"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/checkmark"
+                android:text="Show Origin"
+                app:layout_constraintEnd_toStartOf="@+id/btnOrigDelete"
+                app:layout_constraintStart_toEndOf="@+id/atvOrig"
+                app:layout_constraintTop_toBottomOf="@id/mapFragTrip" />
+
+            <ImageButton
+                android:id="@+id/btnOrigDelete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
-                android:background="@drawable/arrow"
+                android:background="@drawable/xmark"
                 android:text="Show Origin"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/atvOrig"
+                app:layout_constraintStart_toEndOf="@+id/btnOrigPost"
                 app:layout_constraintTop_toBottomOf="@id/mapFragTrip" />
 
             <AutoCompleteTextView
@@ -99,30 +112,58 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="-30dp"
                 android:layout_marginBottom="8dp"
                 android:background="@drawable/edit_text_border"
                 android:fontFamily="@font/gothammedium_font"
                 android:hint="Destination"
-                android:inputType="text"
-                android:textSize="15sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/btnDest"
+                android:textSize="14sp"
+                android:maxLines="1"
+                app:layout_constraintBottom_toTopOf="@id/atvPurpose"
+                app:layout_constraintEnd_toStartOf="@+id/btnDestPost"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/atvOrig" />
+                app:layout_constraintTop_toBottomOf="@+id/atvOrig" />
 
             <ImageButton
-                android:id="@+id/btnDest"
+                android:id="@+id/btnDestPost"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/checkmark"
+                android:text="Show Dest"
+                app:layout_constraintEnd_toStartOf="@+id/btnDestDelete"
+                app:layout_constraintStart_toEndOf="@+id/atvDest"
+                app:layout_constraintTop_toBottomOf="@id/atvOrig" />
+
+            <ImageButton
+                android:id="@+id/btnDestDelete"
+                android:layout_width="24dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:background="@drawable/arrow"
+                android:background="@drawable/xmark"
                 android:text="Show Dest"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/atvDest"
-                app:layout_constraintTop_toBottomOf="@id/btnOrig" />
+                app:layout_constraintStart_toEndOf="@+id/btnDestPost"
+                app:layout_constraintTop_toBottomOf="@id/atvOrig" />
+
+            <AutoCompleteTextView
+                android:id="@+id/atvPurpose"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="100dp"
+                android:layout_marginBottom="40dp"
+                android:background="@drawable/edit_text_border"
+                android:fontFamily="@font/gothammedium_font"
+                android:hint="Purpose"
+                android:textSize="14sp"
+                android:dropDownHeight="150dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/atvDest" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>

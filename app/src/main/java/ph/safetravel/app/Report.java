@@ -538,7 +538,7 @@ public class Report extends FragmentActivity
             if (locationList.size() > 0) {
                 //The last location in the list is the newest
                 Location location = locationList.get(locationList.size() - 1);
-                Log.i("MapsActivity", "Location: " + location.getLatitude() + " " + location.getLongitude());
+                //Log.i("MapsActivity", "Location: " + location.getLatitude() + " " + location.getLongitude());
                 mLastLocation = location;
                 if (mCurrLocationMarker != null) {
                     mCurrLocationMarker.remove();
@@ -599,10 +599,19 @@ public class Report extends FragmentActivity
                         List<Address> addresses = null;
                         try {
                             addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
-                            String addressString = addresses.get(0).getAddressLine(0);
+                            String streetString = addresses.get(0).getThoroughfare();
+                            String brgyString = addresses.get(0).getSubLocality();
                             String cityString = addresses.get(0).getLocality();
                             Toast.makeText(getApplicationContext(), "Current location: " + cityString, Toast.LENGTH_SHORT).show();
-                            city.setText(cityString);
+                            if(streetString!=null) {
+                                street.setText(streetString);
+                            }
+                            if(brgyString!=null) {
+                                barangay.setText(brgyString);
+                            }
+                            if(cityString!=null) {
+                                city.setText(cityString);
+                            }
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

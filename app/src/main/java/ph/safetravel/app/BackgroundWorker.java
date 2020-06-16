@@ -38,8 +38,9 @@ public class BackgroundWorker extends AsyncTask<String,String,String> {
         String login_url = "https://www.safetravel.ph/testapp/login.php";
         String register_url = "https://www.safetravel.ph/testapp/register.php";
         String report_url = "https://www.safetravel.ph/testapp/report.php";
+
+        // login activity
         if(type.equals("login")) {
-            // login activity
             try {
                 String username = params[1];
                 String password = params[2];
@@ -73,14 +74,16 @@ public class BackgroundWorker extends AsyncTask<String,String,String> {
                 e.printStackTrace();
             } // catch for login
         } // for login
+
+        // register activity
         if(type.equals("register")) {
-            // register activity
             try {
                 String firstname = params[1];
                 String lastname = params[2];
                 String age = params[3];
                 String username = params[4];
                 String password = params[5];
+                String role = params[6];
                 URL url = new URL(register_url);
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
                 httpURLConnection.setRequestMethod("POST");
@@ -92,7 +95,8 @@ public class BackgroundWorker extends AsyncTask<String,String,String> {
                         +URLEncoder.encode("lastname","UTF-8")+"="+URLEncoder.encode(lastname,"UTF-8")+"&"
                         +URLEncoder.encode("age","UTF-8")+"="+URLEncoder.encode(age,"UTF-8")+"&"
                         +URLEncoder.encode("username","UTF-8")+"="+URLEncoder.encode(username,"UTF-8")+"&"
-                        +URLEncoder.encode("password","UTF-8")+"="+URLEncoder.encode(password,"UTF-8");
+                        +URLEncoder.encode("password","UTF-8")+"="+URLEncoder.encode(password,"UTF-8")
+                        +URLEncoder.encode("role","UTF-8")+"="+URLEncoder.encode(role,"UTF-8");
                 bufferedWriter.write(post_data);
                 bufferedWriter.flush();
                 bufferedWriter.close();
@@ -113,8 +117,9 @@ public class BackgroundWorker extends AsyncTask<String,String,String> {
                 e.printStackTrace();
             } // catch for register
         } // for register
+
+        // report activity
         if(type.equals("report")){
-            // report activity
             try {
                 String username = params[1];
                 String street = params[2];
