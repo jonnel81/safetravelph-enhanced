@@ -113,7 +113,7 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback, Adapte
     MapFragment mMapFragment;
     GoogleMap mMap;
     AutoCompleteTextView origin, destination, purpose;
-    ImageButton origButton, destButton;
+    ImageButton origPostButton, destPostButton, origDeleteButton, destDeleteButton;
     LatLng origLatLng, destLatLng;
     MarkerOptions markerOptions;
     Toolbar toolbar;
@@ -145,9 +145,9 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback, Adapte
             }
         });
 
-        // Get origin
-        origButton = findViewById(R.id.btnOrigPost);
-        OnClickListener findOrigClickListener = new OnClickListener() {
+        // Post origin
+        origPostButton = findViewById(R.id.btnOrigPost);
+        OnClickListener origPostClickListener = new OnClickListener() {
             @Override
             public void onClick(View view) {
                 origin = findViewById(R.id.atvOrig);
@@ -157,11 +157,36 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback, Adapte
                 }
             }
         };
-        origButton.setOnClickListener(findOrigClickListener);
+        origPostButton.setOnClickListener(origPostClickListener);
 
-        // Get destination
-        destButton = findViewById(R.id.btnDestPost);
-        OnClickListener findDestClickListener = new OnClickListener() {
+        // Delete origin
+        origDeleteButton = findViewById(R.id.btnOrigDelete);
+        OnClickListener origDeleteClickListener = new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                origin = findViewById(R.id.atvOrig);
+                origin.setText("");
+                // Remove first marker, if existing
+                if (mMarkerArrayList.size() > 0) {
+                    for (int i = 0; i < mMarkerArrayList.size(); i++) {
+                        Marker m = mMarkerArrayList.get(i);
+                        if (m.getTitle().equals("orig")) {
+                            Marker markerToRemove = mMarkerArrayList.get(i);
+                            // remove the maker from list
+                            mMarkerArrayList.remove(markerToRemove);
+                            // remove the marker from the map
+                            markerToRemove.remove();
+                            break;
+                        }
+                    }
+                }
+            }
+        };
+        origDeleteButton.setOnClickListener(origDeleteClickListener);
+
+        // Post destination
+        destPostButton = findViewById(R.id.btnDestPost);
+        OnClickListener destPostClickListener = new OnClickListener() {
             @Override
             public void onClick(View view) {
                 destination = findViewById(R.id.atvDest);
@@ -171,7 +196,32 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback, Adapte
                 }
             }
         };
-        destButton.setOnClickListener(findDestClickListener);
+        destPostButton.setOnClickListener(destPostClickListener);
+
+        // Delete destination
+        destDeleteButton = findViewById(R.id.btnDestDelete);
+        OnClickListener destDeleteClickListener = new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                destination = findViewById(R.id.atvDest);
+                destination.setText("");
+                // Remove second marker, if existing
+                if (mMarkerArrayList.size() > 0) {
+                    for (int i = 0; i < mMarkerArrayList.size(); i++) {
+                        Marker m = mMarkerArrayList.get(i);
+                        if (m.getTitle().equals("dest")) {
+                            Marker markerToRemove = mMarkerArrayList.get(i);
+                            // remove the maker from list
+                            mMarkerArrayList.remove(markerToRemove);
+                            // remove the marker from the map
+                            markerToRemove.remove();
+                            break;
+                        }
+                    }
+                }
+            }
+        };
+        destDeleteButton.setOnClickListener(destDeleteClickListener);
 
         // Get purpose
         AutoCompleteTextView purpose = (AutoCompleteTextView) findViewById(R.id.atvPurpose);
@@ -359,7 +409,7 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback, Adapte
         // fetch the user selected value
         String item = parent.getItemAtPosition(position).toString();
         // create Toast with user selected value
-        //Toast.makeText(Trip.this, "Selected Item is: \t" + item, Toast.LENGTH_LONG).show();
+        Toast.makeText(Trip.this, "Selected Item is: \t" + item, Toast.LENGTH_LONG).show();
         // set user selected value to the TextView
         //tvDisplay.setText(item);
     }
@@ -385,7 +435,6 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback, Adapte
             if(addresses==null || addresses.size()==0){
                 Toast.makeText(getBaseContext(), "No Location found", Toast.LENGTH_SHORT).show();
             }
-
             // Remove first marker, if existing
             if (mMarkerArrayList.size() > 0) {
                 for (int i = 0; i < mMarkerArrayList.size(); i++) {
@@ -400,7 +449,6 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback, Adapte
                     }
                 }
             }
-
             // Add new marker on Google Map for matching address
             for(int i = 0; i < addresses.size(); i++){
                 Address address = addresses.get(i);
@@ -443,7 +491,6 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback, Adapte
             if(addresses==null || addresses.size()==0){
                 Toast.makeText(getBaseContext(), "No Location found", Toast.LENGTH_SHORT).show();
             }
-
             // Remove second marker, if existing
             if (mMarkerArrayList.size() > 0) {
                 for (int i = 0; i < mMarkerArrayList.size(); i++) {
@@ -458,7 +505,6 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback, Adapte
                     }
                 }
             }
-
             // Add new marker on Google Map for matching address
             for(int i = 0; i < addresses.size(); i++){
                 Address address = addresses.get(i);
