@@ -120,7 +120,7 @@
                 android:textSize="14sp"
                 android:maxLines="2"
                 android:lineSpacingExtra="3sp"
-                app:layout_constraintBottom_toTopOf="@id/atvPurpose"
+                app:layout_constraintBottom_toTopOf="@id/spinnerPurpose"
                 app:layout_constraintEnd_toStartOf="@+id/btnDestPost"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/atvOrig" />
@@ -150,18 +150,17 @@
                 app:layout_constraintStart_toEndOf="@+id/btnDestPost"
                 app:layout_constraintTop_toBottomOf="@id/atvOrig" />
 
-            <AutoCompleteTextView
-                android:id="@+id/atvPurpose"
+            <Spinner
+                android:id="@+id/spinnerPurpose"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginEnd="100dp"
-                android:layout_marginBottom="40dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="8dp"
                 android:background="@drawable/edit_text_border"
                 android:fontFamily="@font/gothammedium_font"
-                android:hint="Purpose"
                 android:textSize="14sp"
-                android:dropDownHeight="150dp"
+                android:theme="@style/SpinnerTheme"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

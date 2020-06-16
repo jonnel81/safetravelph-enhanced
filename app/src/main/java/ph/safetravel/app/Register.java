@@ -55,7 +55,7 @@ public class Register extends AppCompatActivity implements AsyncResponse {
                 "Commuter",
                 "Driver"
         };
-        final List<String> rolesList = new ArrayList<>(Arrays.asList(roles));
+        //final List<String> rolesList = new ArrayList<>(Arrays.asList(roles));
 
         ArrayAdapter<String> adp = new ArrayAdapter<String>(this,R.layout.spinner_item, roles) {
             @Override

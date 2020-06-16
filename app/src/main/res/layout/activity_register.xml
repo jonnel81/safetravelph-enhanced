@@ -104,7 +104,6 @@
             android:layout_marginBottom="8dp"
             android:background="@drawable/edit_text_border"
             android:fontFamily="@font/gothammedium_font"
-            android:prompt="@string/hint_barangay"
             android:textSize="14sp"
             android:theme="@style/SpinnerTheme"
             app:layout_constraintBottom_toTopOf="@+id/etUserName"

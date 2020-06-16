@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -20,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -28,6 +30,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -82,6 +85,7 @@ import java.net.URLEncoder;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -119,6 +123,7 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback, Adapte
     Toolbar toolbar;
     private Marker mCurrentMarker;
     private ArrayList<Marker> mMarkerArrayList;
+    Spinner spinnerPurpose;
 
     @SuppressLint({"ServiceCast", "WrongViewCast"})
     @Override
@@ -224,12 +229,78 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback, Adapte
         destDeleteButton.setOnClickListener(destDeleteClickListener);
 
         // Get purpose
-        AutoCompleteTextView purpose = (AutoCompleteTextView) findViewById(R.id.atvPurpose);
-        String[] purposeArray = getResources().getStringArray(R.array.purpose_array);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.select_dialog_item, purposeArray);
-        purpose.setThreshold(1); //will start working from first character
-        purpose.setAdapter(adapter);
+        //final AutoCompleteTextView purpose = (AutoCompleteTextView) findViewById(R.id.atvPurpose);
+        //String[] purposeArray = getResources().getStringArray(R.array.purpose_array);
+        //ArrayAdapter<String> arrayAdapter  = new ArrayAdapter<String>(this,
+        //        android.R.layout.simple_spinner_item, purposeArray);
+        //purpose.setThreshold(1); //will start working from first character
+        //purpose.setEnabled(false);
+        //purpose.setAdapter(arrayAdapter);
+        //purpose.setOnClickListener(new View.OnClickListener() {
+        //    @Override
+        //    public void onClick(final View arg0) {
+        //        purpose.showDropDown();
+        //    }
+        //});
+
+        spinnerPurpose = findViewById(R.id.spinnerPurpose);
+        String[] purpose = new String[]{
+                "Select a purpose...",
+                "Government work",
+                "Private sector job",
+                "Return to province",
+                "Seek medical services",
+                "Buy food and essential supplies",
+                "Personal errand",
+                "NGO/Religious activity",
+                "School-related activity",
+                "Others"
+        };
+
+        ArrayAdapter<String> adp = new ArrayAdapter<String>(this,R.layout.spinner_item, purpose) {
+            @Override
+            public boolean isEnabled(int position) {
+                if (position == 0) {
+                    // Disable the first item from Spinner
+                    // First item will be use for hint
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+            @Override
+            public View getDropDownView (int position, View convertView,
+                                         ViewGroup parent){
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                if(position == 0) {
+                    // Set the hint text color gray
+                    tv.setTextColor(Color.GRAY);               }
+                else {
+                    tv.setTextColor(Color.BLACK);
+                }
+                return view;
+            }
+        };
+        adp.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerPurpose.setAdapter(adp);
+
+        spinnerPurpose.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String selectedItemText = (String) parent.getItemAtPosition(position);
+                // If user change the default selection
+                // First item is disable and it is used for hint
+                if (position > 0) {
+                    // Notify the selected item text
+                    //Toast.makeText(getApplicationContext(), "Selected : " + selectedItemText, Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Do nothing
+            }
+        });
 
         // Map fragment
         mMapFragment = MapFragment.newInstance();
