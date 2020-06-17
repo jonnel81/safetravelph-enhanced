@@ -141,7 +141,7 @@
                 android:gravity="start|top"
                 android:hint="@string/hint_description"
                 android:inputType="textMultiLine"
-                android:lines="3"
+                android:lines="4"
                 android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

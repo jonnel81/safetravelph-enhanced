@@ -4,170 +4,49 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Trip">
+    android:fitsSystemWindows="true"
+    tools:context=".MainActivity">
 
-    <com.google.android.material.appbar.AppBarLayout
+    <androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="false"
+        android:layout_marginTop="?attr/actionBarSize"
+        android:id="@+id/drawer_layout">
+
+        <include layout="@layout/content_trip"/>
+
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/nav_view"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            app:itemTextColor="@color/blue"
+            android:fitsSystemWindows="false"
+            app:menu="@menu/navigation_menu"
+            app:headerLayout="@layout/navigation_header" />
+    </androidx.drawerlayout.widget.DrawerLayout>
+
+    <com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:fitsSystemWindows="false"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" >
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:titleTextColor="@color/blue"
-            app:subtitleTextColor="@color/blue"
             app:title="@string/app_name"
             app:titleTextAppearance="@style/ActionBarTextAppearance"
-            app:subtitleTextAppearance="@font/gothammedium_font"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+            android:background="?attr/colorPrimary">
         </androidx.appcompat.widget.Toolbar>
-
     </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.core.widget.NestedScrollView
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="40dp"
-            android:layout_gravity="top">
-
-            <ToggleButton
-                android:id="@+id/toggleTrip"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@color/blue"
-                android:fontFamily="@font/gothammedium_font"
-                android:text="ToggleButton"
-                android:textColor="@color/white"
-                android:textOff="Start Trip Tracking"
-                android:textOn="Stop Trip Tracking"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toTopOf="@+id/mapFragTrip"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnOrigPost" />
-
-            <fragment
-                android:id="@+id/mapFragTrip"
-                android:name="com.google.android.gms.maps.SupportMapFragment"
-                android:layout_width="match_parent"
-                android:layout_height="420dp"
-                android:layout_marginBottom="8dp"
-                app:layout_constraintBottom_toTopOf="@id/atvOrig"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/toggleTrip" />
-
-            <AutoCompleteTextView
-                android:id="@+id/atvOrig"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/edit_text_border"
-                android:fontFamily="@font/gothammedium_font"
-                android:hint="Origin"
-                android:textSize="14sp"
-                android:maxLines="2"
-                android:lineSpacingExtra="3sp"
-                app:layout_constraintBottom_toTopOf="@id/atvDest"
-                app:layout_constraintEnd_toStartOf="@+id/btnOrigPost"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/mapFragTrip" />
-
-            <ImageButton
-                android:id="@+id/btnOrigPost"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/checkmark"
-                android:text="Show Origin"
-                app:layout_constraintEnd_toStartOf="@+id/btnOrigDelete"
-                app:layout_constraintStart_toEndOf="@+id/atvOrig"
-                app:layout_constraintTop_toBottomOf="@id/mapFragTrip" />
-
-            <ImageButton
-                android:id="@+id/btnOrigDelete"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:background="@drawable/xmark"
-                android:text="Show Origin"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/btnOrigPost"
-                app:layout_constraintTop_toBottomOf="@id/mapFragTrip" />
-
-            <AutoCompleteTextView
-                android:id="@+id/atvDest"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/edit_text_border"
-                android:fontFamily="@font/gothammedium_font"
-                android:hint="Destination"
-                android:textSize="14sp"
-                android:maxLines="2"
-                android:lineSpacingExtra="3sp"
-                app:layout_constraintBottom_toTopOf="@id/spinnerPurpose"
-                app:layout_constraintEnd_toStartOf="@+id/btnDestPost"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/atvOrig" />
-
-            <ImageButton
-                android:id="@+id/btnDestPost"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/checkmark"
-                android:text="Show Dest"
-                app:layout_constraintEnd_toStartOf="@+id/btnDestDelete"
-                app:layout_constraintStart_toEndOf="@+id/atvDest"
-                app:layout_constraintTop_toBottomOf="@id/atvOrig" />
-
-            <ImageButton
-                android:id="@+id/btnDestDelete"
-                android:layout_width="24dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:background="@drawable/xmark"
-                android:text="Show Dest"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/btnDestPost"
-                app:layout_constraintTop_toBottomOf="@id/atvOrig" />
-
-            <Spinner
-                android:id="@+id/spinnerPurpose"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="8dp"
-                android:background="@drawable/edit_text_border"
-                android:fontFamily="@font/gothammedium_font"
-                android:textSize="14sp"
-                android:theme="@style/SpinnerTheme"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/atvDest" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_nav_view"
@@ -186,4 +65,4 @@
         app:itemTextColor="@color/blue"
         app:menu="@menu/bottom_nav_menu"/>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout >
