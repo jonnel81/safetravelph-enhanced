@@ -8,13 +8,13 @@ sourceSets {
 android {
     signingConfigs {
         debug {
-            storeFile file('C:\\Users\\User\\Desktop\\SafeTravelPH app\\upload.keystore.jks')
+            storeFile file('C:\\Users\\User\\AndroidStudioProjects\\safetravelph\\debug.keystore.jks')
             storePassword 'f1ghtcovid19'
             keyAlias = 'key0'
             keyPassword 'f1ghtcovid19'
         }
         release {
-            storeFile file('C:\\Users\\User\\Desktop\\SafeTravelPH\\upload1.keystore.jks')
+            storeFile file('C:\\Users\\User\\AndroidStudioProjects\\safetravelph\\release.keystore.jks')
             storePassword '123456'
             keyAlias 'test'
             keyPassword '123456'
