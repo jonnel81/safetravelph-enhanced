@@ -19,11 +19,14 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.MediaController;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.UUID;
+
 
 public class MainActivity extends AppCompatActivity implements AsyncResponse {
     EditText UserNameEt, PasswordEt;
@@ -33,72 +36,15 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
     String username = "";
     String password = "";
     String androidId = "";
-    Context context;
     View view;
     AlertDialog.Builder builder;
     AlertDialog alertDialog;
-    private Toolbar toolbar;
-    private DrawerLayout dl;
-    private ActionBarDrawerToggle t;
-    private NavigationView nv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR);
-
-        // Tollbar
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-
-        // Drawer
-        dl = findViewById(R.id.drawer_layout);
-        t = new ActionBarDrawerToggle(this, dl, toolbar, R.string.Open, R.string.Close) {
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                //actions upon opening slider
-                //presently nothing
-            }
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-                //actions upon closing slider
-                //presently nothing
-            }
-        };
-
-        t.setDrawerIndicatorEnabled(true);
-        dl.addDrawerListener(t);
-        t.syncState();
-
-        // Navigation
-        nv = (NavigationView)findViewById(R.id.nav_view);
-        nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                int id = menuItem.getItemId();
-                switch(id) {
-                    case R.id.myprofile:
-                    {
-                        //Toast.makeText(MainActivity.this, "My Profile", Toast.LENGTH_SHORT).show();
-                    }
-                    case R.id.settings:
-                    {
-                        //Toast.makeText(MainActivity.this, "Settings", Toast.LENGTH_SHORT).show();
-                    }
-                    case R.id.editprofile:
-                    {
-                        //Toast.makeText(MainActivity.this, "Edit Profile", Toast.LENGTH_SHORT).show();
-                    }
-                }
-                return false;
-            }
-        });
 
         UserNameEt = findViewById(R.id.etUserName);
         PasswordEt = findViewById(R.id.etPassword);
@@ -116,13 +62,13 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         }
     } // onCreate
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(t.onOptionsItemSelected(item))
-            return true;
+    //@Override
+    //public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    //    if(t.onOptionsItemSelected(item))
+    //        return true;
 
-        return super.onOptionsItemSelected(item);
-    }
+    //    return super.onOptionsItemSelected(item);
+    //}
 
     // Click login button
     public void OnLogin(View view) {

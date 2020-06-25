@@ -29,6 +29,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,6 +44,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -50,14 +52,24 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.tabs.TabLayout;
 import com.google.protobuf.CodedOutputStream;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
 import androidx.appcompat.widget.Toolbar;
+//import androidx.core.app.ActivityCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.databinding.DataBindingUtil;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager.widget.ViewPager;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -92,9 +104,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import ph.safetravel.app.databinding.ActivityTripBinding;
 import ph.safetravel.app.protos.Passenger;
 
-public class Trip extends FragmentActivity implements OnMapReadyCallback, AdapterView.OnItemClickListener {
+
+public class Trip extends AppCompatActivity implements OnMapReadyCallback, AdapterView.OnItemClickListener {
     SharedPreferences myPrefs;
     View view;
     MqttAndroidClient client;
@@ -114,44 +128,163 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback, Adapte
     private boolean isContinue = false;
     ToggleButton tButton;
     Location mLastLocation;
+    Marker mCurrLocationMarker;
     MapFragment mMapFragment;
     GoogleMap mMap;
-    AutoCompleteTextView origin, destination, purpose;
-    ImageButton origPostButton, destPostButton, origDeleteButton, destDeleteButton;
-    LatLng origLatLng, destLatLng;
-    MarkerOptions markerOptions;
-    Toolbar toolbar;
-    private Marker mCurrentMarker;
+    //AutoCompleteTextView origin, destination, purpose;
+    //ImageButton origPostButton, destPostButton, origDeleteButton, destDeleteButton;
+    //Spinner spinnerPurpose;
+    //LatLng origLatLng, destLatLng;
+    //MarkerOptions markerOptions;
+    private Toolbar toolbar;
+    private DrawerLayout dl;
+    private ActionBarDrawerToggle t;
+    private NavigationView nv;
+    //private Marker mCurrentMarker;
     private ArrayList<Marker> mMarkerArrayList;
-    Spinner spinnerPurpose;
+    //Spinner spinnerPurpose;
+    ProgressBar pgsBar;
+    ActivityTripBinding bi;
+    boolean isRotate = false;
 
     @SuppressLint({"ServiceCast", "WrongViewCast"})
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle  savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_trip);
+        //setContentView(R.layout.activity_trip);
+
+        //currentFragment = LoginFragment.getInstance("Rohit");
+        //getSupportFragmentManager()
+        //        .beginTransaction()
+        //        .add(R.id.fragmentHolder, currentFragment, "LOGIN_TAG")
+        //        .commit();
+
+        // FAB
+        bi = DataBindingUtil.setContentView(this, R.layout.activity_trip);
+        ViewAnimation.init(bi.fabTripInfo);
+        ViewAnimation.init(bi.fabTripFeeds);
+
+        bi.fabTripAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isRotate = ViewAnimation.rotateFab(v, !isRotate);
+                if(isRotate){
+                    ViewAnimation.showIn(bi.fabTripInfo);
+                    ViewAnimation.showIn(bi.fabTripFeeds);
+                }else{
+                    ViewAnimation.showOut(bi.fabTripInfo);
+                    ViewAnimation.showOut(bi.fabTripFeeds);
+                }
+            }
+        });
+
+        bi.fabTripInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(Trip.this, "Info", Toast.LENGTH_SHORT).show();
+                //Snackbar.make(view, "Here's a Snackbar", Snackbar.LENGTH_LONG)
+                //        .setAction("Action", null).show();
+            }
+        });
+
+        bi.fabTripFeeds.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Toast.makeText(Trip.this, "Feeds", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         // Tollbar
-        toolbar = findViewById(R.id.toolbar);
-
-        // Menu
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //setSupportActionBar(toolbar);
         toolbar.inflateMenu(R.menu.main_menu);
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-            if(item.getItemId()==R.id.item1) {
-                startActivity(new Intent(getApplicationContext(), BarcodeReader.class));
+                if(item.getItemId()==R.id.item1) {
+                    startActivity(new Intent(getApplicationContext(), BarcodeReader.class));
+                }
+                if(item.getItemId()==R.id.item2)
+                {
+                    // do something
+                }
+                return false;
             }
-            if(item.getItemId()==R.id.item2)
-            {
-                // do something
+        });
+        //setSupportActionBar(toolbar);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setHomeButtonEnabled(true);
+
+        // Progress Bar
+        pgsBar =  (ProgressBar) findViewById(R.id.progressBar);
+        pgsBar.setVisibility(View.INVISIBLE);
+        pgsBar.setScaleY(3f);
+
+        // Drawer
+        dl = findViewById(R.id.drawer_layout);
+        t = new ActionBarDrawerToggle(this, dl, toolbar, R.string.Open, R.string.Close) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                //actions upon opening slider
+                //presently nothing
             }
-            return false;
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                //actions upon closing slider
+                //presently nothing
+            }
+        };
+
+        t.setDrawerIndicatorEnabled(true);
+        dl.addDrawerListener(t);
+        t.syncState();
+
+        // Navigation
+        nv = (NavigationView)findViewById(R.id.nav_view);
+        nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                int id = menuItem.getItemId();
+                switch(id) {
+                    case R.id.myprofile:
+                    {
+                        Toast.makeText(Trip.this, "My Profile", Toast.LENGTH_SHORT).show();
+                    }
+                    case R.id.settings:
+                    {
+                        Toast.makeText(Trip.this, "Settings", Toast.LENGTH_SHORT).show();
+                    }
+                    case R.id.editprofile:
+                    {
+                        Toast.makeText(Trip.this, "Edit Profile", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                return false;
             }
         });
 
+        // Menu
+        //toolbar.inflateMenu(R.menu.main_menu);
+        //toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+        //    @Override
+        //    public boolean onMenuItemClick(MenuItem item) {
+        //    if(item.getItemId()==R.id.item1) {
+        //        startActivity(new Intent(getApplicationContext(), BarcodeReader.class));
+        //    }
+        //    if(item.getItemId()==R.id.item2)
+        //    {
+        //        // do something
+        //    }
+        //    return false;
+        //    }
+        //});
+
         // Post origin
-        origPostButton = findViewById(R.id.btnOrigPost);
+        /*origPostButton = findViewById(R.id.btnOrigPost);
         OnClickListener origPostClickListener = new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -227,6 +360,7 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback, Adapte
             }
         };
         destDeleteButton.setOnClickListener(destDeleteClickListener);
+        */
 
         // Get purpose
         //final AutoCompleteTextView purpose = (AutoCompleteTextView) findViewById(R.id.atvPurpose);
@@ -243,6 +377,7 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback, Adapte
         //    }
         //});
 
+        /*
         spinnerPurpose = findViewById(R.id.spinnerPurpose);
         String[] purpose = new String[]{
                 "Select a purpose...",
@@ -301,10 +436,12 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback, Adapte
                 // Do nothing
             }
         });
+        */
 
         // Map fragment
         mMapFragment = MapFragment.newInstance();
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        FragmentTransaction fragmentTransaction =
+                getFragmentManager().beginTransaction();
         fragmentTransaction.add(R.id.mapFragTrip, mMapFragment);
         fragmentTransaction.commit();
         mMapFragment.getMapAsync(this);
@@ -345,9 +482,11 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback, Adapte
                 if(isChecked && isGPS) {
                     connectBroker();
                     startLocationUpdates();
+                    pgsBar.setVisibility(View.VISIBLE);
                 } else {
                     stopLocationUpdates();
                     disconnectBroker();
+                    pgsBar.setVisibility(View.INVISIBLE);
                 }
             }
         });
@@ -474,6 +613,21 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback, Adapte
             }
         });
     } // onCreate
+    /*
+    private void setupTabIcons() {
+        tabLayout.getTabAt(0).setIcon(tabIcons[0]);
+        tabLayout.getTabAt(1).setIcon(tabIcons[1]);
+        tabLayout.getTabAt(2).setIcon(tabIcons[2]);
+    }
+
+    private void setupViewPager(ViewPager viewPager) {
+        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
+        adapter.addFrag(new TripInfoFragment(), "Test");
+        adapter.addFrag(new TripInfoFragment(), "Info");
+        adapter.addFrag(new TripInfoFragment(), "Feeds");
+        viewPager.setAdapter(adapter);
+    }
+    */
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -485,6 +639,7 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback, Adapte
         //tvDisplay.setText(item);
     }
 
+    /*
     // An AsyncTask class for accessing the GeoCoding Web Service for origin
     private class origGeocoderTask extends AsyncTask<String, Void, List<Address>> {
         @Override
@@ -596,6 +751,7 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback, Adapte
             }
         }
     }
+    */
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -656,6 +812,18 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback, Adapte
                     String vehicleId = "None";
                     // Publish message
                     publishMessage(passengerMessage(androidId, lat, lng, timeStamp, userId, vehicleId));
+
+                    // Place location marker
+                    if (mCurrLocationMarker != null) {
+                        mCurrLocationMarker.remove();
+                    }
+                    LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                    MarkerOptions markerOptions = new MarkerOptions();
+                    markerOptions.position(latLng);
+                    markerOptions.title("Marker Position");
+                    mMap.clear();
+                    mCurrLocationMarker = mMap.addMarker(markerOptions);
+                    //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
 
                     //publishMessage(clientId.toString()+","+lat+"_"+lng+"_"+timeStamp);
                     //JSONObject personTrack = new JSONObject();
@@ -827,16 +995,39 @@ public class Trip extends FragmentActivity implements OnMapReadyCallback, Adapte
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        //mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
 
+        UiSettings mapUiSettings = mMap.getUiSettings();
+        mapUiSettings.setZoomControlsEnabled(true);
+        mapUiSettings.setMapToolbarEnabled(true);
+        mapUiSettings.setCompassEnabled(true);
+        mapUiSettings.setIndoorLevelPickerEnabled(true);
+        mapUiSettings.setMyLocationButtonEnabled(true);
+
+        // Get permission for location
+        //if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+        //        && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        //    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+        //            AppConstants.LOCATION_REQUEST);
+        //} else {
+        //    mMap.setMyLocationEnabled(true);
+        //    mMap.setTrafficEnabled(true);
+        //}
+
+        // Initialize marker array
         mMarkerArrayList = new ArrayList<>();
+
         LatLng mmla = new LatLng(14.6091, 121.0223);
         //mMap.addMarker(new MarkerOptions().position(mmla).title("Marker Position"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mmla, 11));
     } // onMapReady
 
     public void closeApp(){
-        disconnectBroker();
         stopLocationUpdates();
+        if(client.isConnected()) {
+            disconnectBroker();
+        }
         this.finish();
     } // closeApp
 

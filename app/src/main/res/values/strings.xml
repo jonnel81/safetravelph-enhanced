@@ -39,4 +39,6 @@
         <item>Commuter</item>
         <item>Driver-Operator</item>
     </string-array>
+    <string name="fab_feeds">Map</string>
+    <string name="fab_info">Options</string>
 </resources>

@@ -351,8 +351,9 @@ public class Report extends FragmentActivity
                             mMap.clear();
                             mCurrLocationMarker = mMap.addMarker(markerOptions);
                             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-                            lat.setText(String.format ("%.9f", location.getLatitude()));
-                            lng.setText(String.format ("%.9f", location.getLongitude()));
+                            //lat.setText(String.format ("%.9f", location.getLatitude()));
+                            //lng.setText(String.format ("%.9f", location.getLongitude()));
+
                             // Get current city address
                             Geocoder geocoder = new Geocoder(Report.this, Locale.getDefault());
                             List<Address> addresses = null;
@@ -485,8 +486,8 @@ public class Report extends FragmentActivity
     @SuppressLint("DefaultLocale")
     @Override
     public void onMapClick(LatLng point) {
-        lat.setText(String.format ("%.9f", point.latitude));
-        lng.setText(String.format ("%.9f", point.longitude));
+        //lat.setText(String.format ("%.9f", point.latitude));
+        //lng.setText(String.format ("%.9f", point.longitude));
         mMap.clear();
         mMap.addMarker(new MarkerOptions()
                 .position(point)
@@ -497,37 +498,37 @@ public class Report extends FragmentActivity
     @SuppressLint("DefaultLocale")
     @Override
     public void onMapLongClick(LatLng point) {
-        lat.setText(String.format ("%.9f", point.latitude));
-        lng.setText(String.format ("%.9f", point.longitude));
+        //lat.setText(String.format ("%.9f", point.latitude));
+        //lng.setText(String.format ("%.9f", point.longitude));
         mMap.clear();
         mMap.addMarker(new MarkerOptions()
                 .position(point)
                 .draggable(true)
-                .title("Current location"));
+                .title("Marker Position"));
     } // onMapLongClick
 
     @SuppressLint("DefaultLocale")
     @Override
     public void onMarkerDragStart(Marker marker) {
         LatLng position=marker.getPosition();
-        lat.setText(String.format ("%.9f", position.latitude));
-        lng.setText(String.format ("%.9f", position.longitude));
+        //lat.setText(String.format ("%.9f", position.latitude));
+        //lng.setText(String.format ("%.9f", position.longitude));
     } // onMarkerDragStart
 
     @SuppressLint("DefaultLocale")
     @Override
     public void onMarkerDrag(Marker marker) {
         LatLng position=marker.getPosition();
-        lat.setText(String.format ("%.9f", position.latitude));
-        lng.setText(String.format ("%.9f", position.longitude));
+        //lat.setText(String.format ("%.9f", position.latitude));
+        //lng.setText(String.format ("%.9f", position.longitude));
     } //onMarkerDrag
 
     @SuppressLint("DefaultLocale")
     @Override
     public void onMarkerDragEnd(Marker marker) {
         LatLng position=marker.getPosition();
-        lat.setText(String.format ("%.9f", position.latitude));
-        lng.setText(String.format ("%.9f", position.longitude));
+        //lat.setText(String.format ("%.9f", position.latitude));
+        //lng.setText(String.format ("%.9f", position.longitude));
     } // onMarkerDragEnd
 
     LocationCallback locationCallback = new LocationCallback() {
@@ -540,10 +541,11 @@ public class Report extends FragmentActivity
                 Location location = locationList.get(locationList.size() - 1);
                 //Log.i("MapsActivity", "Location: " + location.getLatitude() + " " + location.getLongitude());
                 mLastLocation = location;
+
+                // Place location marker
                 if (mCurrLocationMarker != null) {
                     mCurrLocationMarker.remove();
                 }
-                // Place location marker
                 LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
                 MarkerOptions markerOptions = new MarkerOptions();
                 markerOptions.position(latLng);
@@ -551,8 +553,6 @@ public class Report extends FragmentActivity
                 mMap.clear();
                 mCurrLocationMarker = mMap.addMarker(markerOptions);
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-                lat.setText(String.format ("%.9f", location.getLatitude()));
-                lng.setText(String.format ("%.9f", location.getLongitude()));
             }
         }
     }; // locationCallback
@@ -592,8 +592,7 @@ public class Report extends FragmentActivity
                         mMap.clear();
                         mCurrLocationMarker = mMap.addMarker(markerOptions);
                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15));
-                        lat.setText(String.format ("%.9f", location.getLatitude()));
-                        lng.setText(String.format ("%.9f", location.getLongitude()));
+
                         // Get current city address
                         Geocoder geocoder = new Geocoder(Report.this, Locale.getDefault());
                         List<Address> addresses = null;
@@ -623,8 +622,8 @@ public class Report extends FragmentActivity
             LatLng mmla = new LatLng(14.6091, 121.0223);
             mMap.addMarker(new MarkerOptions().position(mmla).title("Marker Position"));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mmla, 10));
-            lat.setText(String.format ("%.9f", mmla.latitude));
-            lng.setText(String.format ("%.9f", mmla.longitude));
+            //lat.setText(String.format ("%.9f", mmla.latitude));
+            //lng.setText(String.format ("%.9f", mmla.longitude));
         }
     } // onMapReady
 
