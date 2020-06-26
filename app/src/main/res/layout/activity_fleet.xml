@@ -6,7 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
-        tools:context=".Fleet">
+        tools:context=".Trip">
 
         <androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -67,7 +67,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:src="@drawable/ic_baseline_directions_bus_24"
+                android:src="@drawable/ic_baseline_directions_24"
                 android:tint="@color/blue"
                 app:backgroundTint="@color/white"
                 app:fabSize="normal"

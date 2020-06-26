@@ -190,7 +190,8 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
         bi.fabTripFeeds.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(Trip.this, "Feeds", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(Trip.this, "Feeds", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getApplicationContext(), BarcodeReader.class));
             }
         });
 
