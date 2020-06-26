@@ -154,14 +154,12 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
         bi.fabFleetFeeds.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Toast.makeText(Fleet.this, "Feeds", Toast.LENGTH_SHORT).show();
             }
         });
 
-
         // Tollbar
-        toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbarFleet);
         toolbar.inflateMenu(R.menu.main_menu);
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
@@ -199,7 +197,6 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
                 //presently nothing
             }
         };
-
         t.setDrawerIndicatorEnabled(true);
         dl.addDrawerListener(t);
         t.syncState();
@@ -368,17 +365,6 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
                     AppConstants.LOCATION_REQUEST);
         }
 
-        //view = findViewById(android.R.id.content);
-        //subText = (EditText) findViewById(R.id.txtMessage);
-        //vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
-
-        // BottomNavigation
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav_view);
-        bottomNavigationView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
-        Menu menu = bottomNavigationView.getMenu();
-        MenuItem menuItem = menu.getItem(4);
-        menuItem.setChecked(true);
-
         // Toogle button
         tButton = findViewById(R.id.toggleFleet);
         tButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -445,6 +431,12 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
         }); // mqtt client callback
 
         // Bottom navigation
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav_view);
+        bottomNavigationView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
+        Menu menu = bottomNavigationView.getMenu();
+        MenuItem menuItem = menu.getItem(4);
+        menuItem.setChecked(true);
+
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -481,7 +473,6 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
                         alertDialog.setCancelable(false);
                         alertDialog.setCanceledOnTouchOutside(false);
                         alertDialog.show();
-
                         break;
                     }
                     case R.id.navigation_info: {
@@ -503,14 +494,12 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
                         break;
                     }
                     case R.id.navigation_fleet: {
-
                         break;
                     }
                 }
                 return true;
             }
         });
-
 
     } // onCreate
 

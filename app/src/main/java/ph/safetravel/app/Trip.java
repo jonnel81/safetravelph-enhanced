@@ -190,13 +190,12 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
         bi.fabTripFeeds.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Toast.makeText(Trip.this, "Feeds", Toast.LENGTH_SHORT).show();
             }
         });
 
         // Tollbar
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbarTrip);
         toolbar.inflateMenu(R.menu.main_menu);
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
@@ -238,7 +237,6 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                 //presently nothing
             }
         };
-
         t.setDrawerIndicatorEnabled(true);
         dl.addDrawerListener(t);
         t.syncState();
@@ -469,9 +467,9 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                     AppConstants.LOCATION_REQUEST);
         }
 
-        view = findViewById(android.R.id.content);
+        //view = findViewById(android.R.id.content);
         //subText = (EditText) findViewById(R.id.txtMessage);
-        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        //vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 
         // Toogle Button
         tButton = findViewById(R.id.toggleTrip);
@@ -582,7 +580,6 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                         alertDialog.setCancelable(false);
                         alertDialog.setCanceledOnTouchOutside(false);
                         alertDialog.show();
-
                         break;
                     }
                     case R.id.navigation_info: {
@@ -598,7 +595,6 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                         break;
                     }
                     case R.id.navigation_trip: {
-
                         break;
                     }
                     case R.id.navigation_fleet: {

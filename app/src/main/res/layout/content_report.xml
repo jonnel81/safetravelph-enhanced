@@ -208,7 +208,7 @@
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageviewPhoto"
-        app:layout_constraintTop_toBottomOf="@id/btnPickPhoto" />
+        app:layout_constraintTop_toBottomOf="@id/btnTakePhoto" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>
