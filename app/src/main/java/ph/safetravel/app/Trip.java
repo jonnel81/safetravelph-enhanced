@@ -159,7 +159,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
         //        .add(R.id.fragmentHolder, currentFragment, "LOGIN_TAG")
         //        .commit();
 
-        // FAB
+        // Floating action bar
         bi = DataBindingUtil.setContentView(this, R.layout.activity_trip);
         ViewAnimation.init(bi.fabTripInfo);
         ViewAnimation.init(bi.fabTripFeeds);
@@ -197,27 +197,27 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
 
         // Tollbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
         toolbar.inflateMenu(R.menu.main_menu);
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                if(item.getItemId()==R.id.item1) {
+                if(item.getItemId()==R.id.scan) {
                     startActivity(new Intent(getApplicationContext(), BarcodeReader.class));
                 }
-                if(item.getItemId()==R.id.item2)
+                if(item.getItemId()==R.id.settings)
                 {
                     // do something
                 }
                 return false;
             }
         });
+
         //setSupportActionBar(toolbar);
         //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         //getSupportActionBar().setHomeButtonEnabled(true);
 
-        // Progress Bar
-        pgsBar =  (ProgressBar) findViewById(R.id.progressBar);
+        // Progress bar
+        pgsBar =  (ProgressBar) findViewById(R.id.progressBarTrip);
         pgsBar.setVisibility(View.INVISIBLE);
         pgsBar.setScaleY(3f);
 
@@ -440,8 +440,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
 
         // Map fragment
         mMapFragment = MapFragment.newInstance();
-        FragmentTransaction fragmentTransaction =
-                getFragmentManager().beginTransaction();
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
         fragmentTransaction.add(R.id.mapFragTrip, mMapFragment);
         fragmentTransaction.commit();
         mMapFragment.getMapAsync(this);
@@ -540,7 +539,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
             }
         }); // mqtt client callback
 
-        // BottomNavigation
+        // Bottom navigation
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav_view);
         bottomNavigationView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
         Menu menu = bottomNavigationView.getMenu();
@@ -613,6 +612,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
             }
         });
     } // onCreate
+
     /*
     private void setupTabIcons() {
         tabLayout.getTabAt(0).setIcon(tabIcons[0]);

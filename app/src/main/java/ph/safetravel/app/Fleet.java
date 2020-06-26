@@ -1,10 +1,13 @@
 package ph.safetravel.app;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+import androidx.databinding.DataBindingUtil;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
@@ -33,6 +36,7 @@ import android.view.View.OnClickListener;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -51,6 +55,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
+import com.google.android.material.navigation.NavigationView;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -70,6 +75,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import ph.safetravel.app.databinding.ActivityFleetBinding;
 import ph.safetravel.app.protos.Vehicle;
 
 
@@ -93,7 +99,7 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
     private boolean isContinue = false;
     ToggleButton tButton;
     Location mLastLocation;
-    MapFragment mMapFragment;
+    MapFragment mMapFragmentFleet;
     GoogleMap mMap;
     DBManager dbManager;
     private SensorManager sensorManager;
@@ -101,18 +107,58 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
     SensorEventListener acListener;
     Sensor gyroscope;
     Toolbar toolbar;
+    private DrawerLayout dl;
+    private ActionBarDrawerToggle t;
+    private NavigationView nv;
     ImageButton boardButton, alightButton;
     int numPass;
     TextView NumPassengers;
+    ProgressBar pgsBar;
+    ActivityFleetBinding bi;
+    boolean isRotate = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_fleet);
+        //setContentView(R.layout.activity_fleet);
         final MediaPlayer mp = new MediaPlayer();
 
-        NumPassengers = findViewById(R.id.txtNumPass);
-        NumPassengers.setText(String.valueOf(numPass));
+        // Floating action bar
+        bi = DataBindingUtil.setContentView(this, R.layout.activity_fleet);
+        ViewAnimation.init(bi.fabFleetInfo);
+        ViewAnimation.init(bi.fabFleetFeeds);
+
+        bi.fabFleetAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                isRotate = ViewAnimation.rotateFab(v, !isRotate);
+                if(isRotate){
+                    ViewAnimation.showIn(bi.fabFleetInfo);
+                    ViewAnimation.showIn(bi.fabFleetFeeds);
+                }else{
+                    ViewAnimation.showOut(bi.fabFleetInfo);
+                    ViewAnimation.showOut(bi.fabFleetFeeds);
+                }
+            }
+        });
+
+        bi.fabFleetInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(Fleet.this, "Info", Toast.LENGTH_SHORT).show();
+                //Snackbar.make(view, "Here's a Snackbar", Snackbar.LENGTH_LONG)
+                //        .setAction("Action", null).show();
+            }
+        });
+
+        bi.fabFleetFeeds.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Toast.makeText(Fleet.this, "Feeds", Toast.LENGTH_SHORT).show();
+            }
+        });
+
 
         // Tollbar
         toolbar = findViewById(R.id.toolbar);
@@ -120,16 +166,70 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                if(item.getItemId()==R.id.item1) {
+                if(item.getItemId()==R.id.scan) {
                     startActivity(new Intent(getApplicationContext(), BarcodeReader.class));
                 }
-                if(item.getItemId()==R.id.item2)
+                if(item.getItemId()==R.id.settings)
                 {
                     // do something
                 }
                 return false;
             }
         });
+
+        // Progress bar
+        pgsBar =  (ProgressBar) findViewById(R.id.progressBarFleet);
+        pgsBar.setVisibility(View.INVISIBLE);
+        pgsBar.setScaleY(3f);
+
+        // Drawer
+        dl = findViewById(R.id.drawer_layout);
+        t = new ActionBarDrawerToggle(this, dl, toolbar, R.string.Open, R.string.Close) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                //actions upon opening slider
+                //presently nothing
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                //actions upon closing slider
+                //presently nothing
+            }
+        };
+
+        t.setDrawerIndicatorEnabled(true);
+        dl.addDrawerListener(t);
+        t.syncState();
+
+        // Navigation
+        nv = (NavigationView)findViewById(R.id.nav_view);
+        nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                int id = menuItem.getItemId();
+                switch(id) {
+                    case R.id.myprofile:
+                    {
+                        Toast.makeText(Fleet.this, "My Profile", Toast.LENGTH_SHORT).show();
+                    }
+                    case R.id.settings:
+                    {
+                        Toast.makeText(Fleet.this, "Settings", Toast.LENGTH_SHORT).show();
+                    }
+                    case R.id.editprofile:
+                    {
+                        Toast.makeText(Fleet.this, "Edit Profile", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                return false;
+            }
+        });
+
+        NumPassengers = findViewById(R.id.txtNumPass);
+        NumPassengers.setText(String.valueOf(numPass));
 
         // Board button
         boardButton = findViewById(R.id.btnBoard);
@@ -237,11 +337,11 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
         //dbManager.open();
 
         // Map fragment
-        mMapFragment = MapFragment.newInstance();
+        mMapFragmentFleet = MapFragment.newInstance();
         FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.add(R.id.mapFragFleet, mMapFragment);
+        fragmentTransaction.add(R.id.mapFragFleet, mMapFragmentFleet);
         fragmentTransaction.commit();
-        mMapFragment.getMapAsync(this);
+        mMapFragmentFleet.getMapAsync(this);
 
         // FuseLocationProviderClient
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -268,9 +368,10 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
                     AppConstants.LOCATION_REQUEST);
         }
 
-        view = findViewById(android.R.id.content);
+        //view = findViewById(android.R.id.content);
         //subText = (EditText) findViewById(R.id.txtMessage);
-        vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+        //vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
+
         // BottomNavigation
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav_view);
         bottomNavigationView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
@@ -278,7 +379,7 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
         MenuItem menuItem = menu.getItem(4);
         menuItem.setChecked(true);
 
-        // Toogle Button
+        // Toogle button
         tButton = findViewById(R.id.toggleFleet);
         tButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -288,11 +389,13 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
                     startLocationUpdates();
                     boardButton.setOnClickListener(boardClickListener);
                     alightButton.setOnClickListener(alightClickListener);
+                    pgsBar.setVisibility(View.VISIBLE);
                 } else {
                     stopLocationUpdates();
                     disconnectBroker();
                     boardButton.setOnClickListener(null);
                     alightButton.setOnClickListener(null);
+                    pgsBar.setVisibility(View.INVISIBLE);
                 }
             }
         });
@@ -341,7 +444,7 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
             }
         }); // mqtt client callback
 
-        // BottomNavigation
+        // Bottom navigation
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -493,8 +596,6 @@ public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
             }
         }
     } // onActivityResult
-
-    //public void sendBoard
 
     public void subscribeTopic(String topic) {
         try {

@@ -6,77 +6,21 @@
     android:layout_height="match_parent"
     tools:context=".Info">
 
-    <androidx.drawerlayout.widget.DrawerLayout
+    <androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="false"
         android:layout_marginTop="?attr/actionBarSize"
         android:id="@+id/drawer_layout">
 
-
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/scroll_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fillViewport="true"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" >
-
-                <TextView
-                    android:id="@+id/info1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="8dp"
-                    android:fontFamily="@font/gothambook_font"
-                    android:lineSpacingExtra="3sp"
-                    android:text="@string/nav_info1"
-                    android:textSize="14sp"
-                    app:layout_constraintBottom_toTopOf="@+id/info2"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/info2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="8dp"
-                    android:fontFamily="@font/gothambook_font"
-                    android:lineSpacingExtra="3sp"
-                    android:text="@string/nav_info2"
-                    android:textSize="14sp"
-                    app:layout_constraintBottom_toTopOf="@+id/info3"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/info1" />
-
-                <TextView
-                    android:id="@+id/info3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="16dp"
-                    android:fontFamily="@font/gothambook_font"
-                    android:lineSpacingExtra="3sp"
-                    android:text="@string/nav_info3"
-                    android:textSize="14sp"
-                    android:visibility="visible"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/info2" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.core.widget.NestedScrollView>
+        <include
+            layout="@layout/content_info"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <com.google.android.material.navigation.NavigationView
             android:id="@+id/nav_view"
@@ -96,6 +40,7 @@
         android:layout_height="wrap_content"
         android:fitsSystemWindows="false"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" >
+
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
@@ -103,6 +48,7 @@
             app:titleTextColor="@color/blue"
             app:title="@string/app_name"
             app:titleTextAppearance="@style/ActionBarTextAppearance"
+            app:theme="@style/ToolBarStyle"
             android:background="?attr/colorPrimary">
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>

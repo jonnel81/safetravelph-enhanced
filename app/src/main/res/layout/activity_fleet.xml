@@ -1,120 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".Fleet">
-
-    <com.google.android.material.appbar.AppBarLayout
+<layout>
+    <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:titleTextColor="@color/blue"
-            app:title="@string/app_name"
-            app:titleTextAppearance="@style/ActionBarTextAppearance"
-            app:subtitleTextAppearance="@font/gothammedium_font"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-        </androidx.appcompat.widget.Toolbar>
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.core.widget.NestedScrollView
         android:layout_height="match_parent"
-        android:layout_width="match_parent"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+        android:fitsSystemWindows="true"
+        tools:context=".Fleet">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="top">
+            android:fitsSystemWindows="false"
+            android:layout_marginTop="?attr/actionBarSize"
+            android:id="@+id/drawer_layout">
 
-            <ToggleButton
-                android:id="@+id/toggleFleet"
+            <include
+                layout="@layout/content_fleet"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:background="@color/blue"
-                android:fontFamily="@font/gothammedium_font"
-                android:text="ToggleButton"
-                android:textColor="@color/white"
-                android:textOff="Start Fleet Tracking"
-                android:textOn="Stop Fleet Tracking"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toTopOf="@+id/mapFragFleet"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <fragment
-                android:id="@+id/mapFragFleet"
-                android:name="com.google.android.gms.maps.MapFragment"
-                android:layout_width="match_parent"
-                android:layout_height="460dp"
-                app:layout_constraintTop_toBottomOf="@+id/toggleFleet"
+                android:layout_height="0dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
-            <ImageButton
-                android:id="@+id/btnBoard"
+            <com.google.android.material.navigation.NavigationView
+                android:id="@+id/nav_view"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="start"
+                app:itemTextColor="@color/blue"
+                android:fitsSystemWindows="false"
+                app:menu="@menu/navigation_menu"
+                app:headerLayout="@layout/navigation_header" />
+        </androidx.drawerlayout.widget.DrawerLayout>
+
+        <com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="false"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" >
+
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                app:titleTextColor="@color/blue"
+                app:title="@string/app_name"
+                app:titleTextAppearance="@style/ActionBarTextAppearance"
+                app:theme="@style/ToolBarStyle"
+                android:background="?attr/colorPrimary">
+            </androidx.appcompat.widget.Toolbar>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <LinearLayout
+            android:gravity="center_horizontal"
+            android:layout_gravity="center_vertical|end|end"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabFleetInfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/ic_plus"
-                android:text="Board"
-                app:layout_constraintEnd_toStartOf="@id/btnAlight"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/mapFragFleet" />
+                android:layout_margin="10dp"
+                android:src="@drawable/ic_baseline_directions_bus_24"
+                android:tint="@color/blue"
+                app:backgroundTint="@color/white"
+                app:fabSize="normal"
+                app:rippleColor="@color/white" />
 
-            <ImageButton
-                android:id="@+id/btnAlight"
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabFleetFeeds"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:background="@drawable/ic_minus"
-                android:text="Alight"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/btnBoard"
-                app:layout_constraintTop_toBottomOf="@id/mapFragFleet" />
+                android:layout_margin="10dp"
+                android:src="@drawable/ic_notifications_black_24dp"
+                android:tint="@color/blue"
+                app:backgroundTint="@color/white"
+                app:fabSize="normal"
+                app:rippleColor="@color/white" />
 
-            <TextView
-                android:id="@+id/txtNumPass"
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabFleetAdd"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:background="@drawable/border"
-                android:text="#"
-                android:textSize="24sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/btnAlight"
-                app:layout_constraintStart_toEndOf="@+id/btnBoard"
-                app:layout_constraintTop_toBottomOf="@+id/mapFragFleet" />
+                android:layout_marginLeft="18dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="18dp"
+                android:layout_marginBottom="18dp"
+                android:src="@drawable/ic_baseline_add_24"
+                app:fabSize="normal"
+                android:tint="@color/white"
+                app:rippleColor="@color/white" />
+        </LinearLayout>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_nav_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toStartOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_gravity="bottom"
+            app:itemTextAppearanceActive="@style/BottomNavigation.ActiveItemTextAppearance"
+            app:itemTextAppearanceInactive="@style/BottomNavigation.InactiveItemTextAppearance"
+            android:background="?android:attr/windowBackground"
+            app:labelVisibilityMode="labeled"
+            app:itemBackground="@color/colorPrimary"
+            app:itemIconTint="@color/blue"
+            app:itemTextColor="@color/blue"
+            app:menu="@menu/bottom_nav_menu"/>
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_nav_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toStartOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_gravity="bottom"
-        app:itemTextAppearanceActive="@style/BottomNavigation.ActiveItemTextAppearance"
-        app:itemTextAppearanceInactive="@style/BottomNavigation.InactiveItemTextAppearance"
-        android:background="?android:attr/windowBackground"
-        app:labelVisibilityMode="labeled"
-        app:itemBackground="@color/colorPrimary"
-        app:itemIconTint="@color/blue"
-        app:itemTextColor="@color/blue"
-        app:menu="@menu/bottom_nav_menu"/>
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout >
+</layout>

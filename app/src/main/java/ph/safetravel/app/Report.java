@@ -1,8 +1,11 @@
 package ph.safetravel.app;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
@@ -54,6 +57,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
+import com.google.android.material.navigation.NavigationView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -90,6 +94,10 @@ public class Report extends FragmentActivity
     //private LocationManager locationManager;
     private boolean isContinue = false;
     private boolean isGPS = false;
+    private Toolbar toolbar;
+    private DrawerLayout dl;
+    private ActionBarDrawerToggle t;
+    private NavigationView nv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +112,55 @@ public class Report extends FragmentActivity
         lat = findViewById(R.id.etLat);
         lng = findViewById(R.id.etLng);
         view = findViewById(android.R.id.content);
+
+        // Tollbar
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        // Drawer
+        dl = findViewById(R.id.drawer_layout);
+        t = new ActionBarDrawerToggle(this, dl, toolbar, R.string.Open, R.string.Close) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                //actions upon opening slider
+                //presently nothing
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                //actions upon closing slider
+                //presently nothing
+            }
+        };
+
+        t.setDrawerIndicatorEnabled(true);
+        dl.addDrawerListener(t);
+        t.syncState();
+
+        // Navigation
+        nv = (NavigationView)findViewById(R.id.nav_view);
+        nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                int id = menuItem.getItemId();
+                switch(id) {
+                    case R.id.myprofile:
+                    {
+                        Toast.makeText(Report.this, "My Profile", Toast.LENGTH_SHORT).show();
+                    }
+                    case R.id.settings:
+                    {
+                        Toast.makeText(Report.this, "Settings", Toast.LENGTH_SHORT).show();
+                    }
+                    case R.id.editprofile:
+                    {
+                        Toast.makeText(Report.this, "Edit Profile", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                return false;
+            }
+        });
 
         // Avoid Uri issues
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
