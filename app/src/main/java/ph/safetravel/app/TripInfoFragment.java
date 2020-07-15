@@ -1,56 +1,25 @@
 package ph.safetravel.app;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 //import android.app.Fragment;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.databinding.adapters.TextViewBindingAdapter;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
-import com.google.android.gms.common.api.Status;
-import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.PlacesClient;
-import com.google.android.libraries.places.widget.Autocomplete;
-import com.google.android.libraries.places.widget.AutocompleteActivity;
-import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
-import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
-import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 
-public class TripDetailsFragment extends Fragment {
+public class TripInfoFragment extends Fragment {
     AutoCompleteTextView origin, destination, purpose;
     ImageButton origPostButton, destPostButton, origDeleteButton, destDeleteButton;
     Spinner spinnerPurpose;
@@ -63,19 +32,18 @@ public class TripDetailsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        final View view = inflater.inflate(R.layout.fragment_tripdetails, container, false);
+        final View view = inflater.inflate(R.layout.fragment_tripinfo, container, false);
         //layout = (FrameLayout) findViewById(R.id.container_frame);
 
         closeButton = (ImageButton) view.findViewById(R.id.btnClose);
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Close fragment view
                 container.removeView(view);
-                //getActivity().getFragmentManager().beginTransaction().remove(view.this).commit();
-                //getView().setVisibility(View.INVISIBLE);
-                //container.setVisibility(View.INVISIBLE);
-                //FragmentTransaction ft = getChildFragmentManager().beginTransaction();
-                //ft.hide(mapFragment);
+                container.setVisibility(View.GONE);
+                // Restore Fab
+
             }
         });
 /*

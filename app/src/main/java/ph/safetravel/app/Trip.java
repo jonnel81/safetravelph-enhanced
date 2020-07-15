@@ -53,8 +53,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 //import androidx.viewpager.widget.ViewPager;
@@ -120,78 +118,26 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
     boolean isRotate = false;
     FragmentManager fragmentManager;
     //TripInfoFragment mTripInfoFragment;
-    //FrameLayout layout;
-    FragmentTransaction ft, ft2;
-    TripDetailsFragment tripDetailsFragment;
     FrameLayout layout;
+    FragmentTransaction ft;
+    TripInfoFragment tripInfoFragment;
 
     @SuppressLint({"ServiceCast", "WrongViewCast"})
     @Override
-    protected void onCreate(Bundle  savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_trip);
 
-        //tripDetailsFragment = new TripDetailsFragment();
-        //final FragmentTransaction ft = getFragmentManager().beginTransaction();
-        //ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
-        //ft.add(R.id.container_frame, tripDetailsFragment);
-        //ft.hide(tripDetailsFragment);
-        //ft.commit();
-
-        //FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        //mTripInfoFragment = TripInfoFragment.newInstance();
-        //fragmentTransaction.replace(R.id.FragTrip, mTripInfoFragment);
-        //fragmentTransaction.addToBackStack(null);
-        //fragmentTransaction.commit();
-
-        //mTripInfoFragment = new TripInfoFragment();
-        //ft = getFragmentManager().beginTransaction();
-        //ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
-        //ft.add(R.id.container_frame, mTripInfoFragment, "Info");
-        //ft.hide(mTripInfoFragment);
-        //ft.attach(mTripInfoFragment);
-        //layout.setVisibility(View.GONE);
-        //ft.commit();
-
-        // Map fragment
-        //mMapFragment = MapFragment.newInstance();
-        //FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        //fragmentTransaction.replace(R.id.mapFragTrip, mMapFragment);
-        //fragmentTransaction.commit();
-        //mMapFragment.getMapAsync(this);
-
-        // Add map fragment
-        //FragmentManager fm = getSupportFragmentManager();
+        // Add Map Fragment
         final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
         final SupportMapFragment mapFragment = new SupportMapFragment();
         ft.replace(R.id.mapFragTrip, mapFragment);
+        TripInfoFragment tripInfoFragment = new TripInfoFragment();
         ft.commit();
         mapFragment.getMapAsync(this);
 
-        //final TripDetailsFragment tripDetailsFragment = new TripDetailsFragment();
-        //layout = (FrameLayout) findViewById(R.id.container_frame);
-        //FragmentTransaction ft2 = getSupportFragmentManager().beginTransaction();
-        //ft2.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
-        //ft.add(R.id.container_frame, tripDetailsFragment);
-        //ft.addToBackStack(null);
-        //ft.hide(tripDetailsFragment);
-        //layout.setVisibility(View.GONE);
-        //ft.commit();
-
-        //final View fragmentTripDetailsView = findViewById(R.id.container_frame);
-        //fragmentTripDetailsView.setVisibility(View.GONE);
-
-        //mapFragment.getMapAsync(this);
-
-        //final TripDetailsFragment tripDetailsFragment = new TripDetailsFragment();
-        //ft.add(R.id.container_frame, tripDetailsFragment).addToBackStack(null);
-        //ft.hide(tripDetailsFragment);
-        //layout.setVisibility(View.GONE);
-        //ft.commit();
-        //ft.show(tripDetailsFragment);
-
-        // Floating action bar
+        // Add Fab
         bi = DataBindingUtil.setContentView(this, R.layout.activity_trip);
         ViewAnimation.init(bi.fabTripInfo);
         ViewAnimation.init(bi.fabTripFeeds);
@@ -213,28 +159,26 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
         bi.fabTripInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //startActivity(new Intent(getApplicationContext(), TripDetails.class));
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                //ft.hide(mapFragment);
-                //FragmentTransaction ft2 = getSupportFragmentManager().beginTransaction();
-                ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
-                TripDetailsFragment tripDetailsFragment = new TripDetailsFragment();
-                //layout = (FrameLayout) findViewById(R.id.container_frame);
-                //layout.setVisibility(View.VISIBLE);
-
-                if (tripDetailsFragment.isAdded()) {
-                    //layout.setVisibility(View.VISIBLE);
-                    ft.show(tripDetailsFragment);
-                    //fragmentTripDetailsView.setVisibility(View.VISIBLE);
-                    //layout.setVisibility(View.VISIBLE);
-                } else {
-                    //layout.setVisibility(View.VISIBLE);
-                    ft.add(R.id.container_frame, tripDetailsFragment);
-                    ft.show(tripDetailsFragment);
-                    //fragmentTripDetailsView.setVisibility(View.VISIBLE);
-                    //layout.setVisibility(View.VISIBLE);
+                // Hide Fab
+                if(isRotate){
+                    bi.fabTripAdd.hide();
+                    bi.fabTripInfo.hide();
+                    bi.fabTripFeeds.hide();
+                    isRotate=true;
+                } else{
+                    bi.fabTripAdd.hide();
                 }
-                //fragmentTripDetailsView.setVisibility(View.VISIBLE);
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+                TripInfoFragment tripInfoFragment = new TripInfoFragment();
+                FrameLayout layout = (FrameLayout) findViewById(R.id.container_frame);
+                layout.setVisibility(View.VISIBLE);
+                if (tripInfoFragment.isAdded()) {
+                    ft.show(tripInfoFragment);
+                } else {
+                    ft.add(R.id.container_frame, tripInfoFragment);
+                    ft.show(tripInfoFragment);
+                }
                 ft.commit();
 
                 //ft.hide(tripDetailsFragment);
@@ -296,15 +240,28 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                //actions upon opening slider
-                //presently nothing
+                // Hide Fab
+                if(isRotate){
+                    bi.fabTripAdd.hide();
+                    bi.fabTripInfo.hide();
+                    bi.fabTripFeeds.hide();
+                } else{
+                    bi.fabTripAdd.hide();
+                }
             }
 
             @Override
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
-                //actions upon closing slider
-                //presently nothing
+                // Show Fab
+                if(isRotate){
+                    bi.fabTripAdd.show();
+                    bi.fabTripInfo.show();
+                    bi.fabTripFeeds.show();
+                    //isRotate=false;
+                } else{
+                    bi.fabTripAdd.show();
+                }
             }
         };
         t.setDrawerIndicatorEnabled(true);

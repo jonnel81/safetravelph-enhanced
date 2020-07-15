@@ -2,6 +2,7 @@ package ph.safetravel.app;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -65,12 +66,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
-public class Report extends FragmentActivity
-        implements OnMapReadyCallback,
-        GoogleMap.OnMapClickListener,
-        GoogleMap.OnMapLongClickListener,
-        GoogleMap.OnMarkerDragListener,
-        AsyncResponse {
+public class Report extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnMapClickListener, GoogleMap.OnMapLongClickListener,
+        GoogleMap.OnMarkerDragListener, AsyncResponse {
     EditText street, landmarks, barangay, city, description, lat, lng;
     MapFragment mMapFragment;
     SharedPreferences myPrefs;

@@ -21,12 +21,10 @@ public class ViewAnimation {
     public static void showIn(final View v) {
         v.setVisibility(View.VISIBLE);
         v.setAlpha(0f);
-        //v.setTranslationY(v.getHeight());
-        v.setTranslationX(v.getWidth());
+        v.setTranslationY(v.getHeight());
         v.animate()
                 .setDuration(200)
-                //.translationY(0)
-                .translationX(0)
+                .translationY(0)
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
@@ -39,12 +37,10 @@ public class ViewAnimation {
     public static void showOut(final View v) {
         v.setVisibility(View.VISIBLE);
         v.setAlpha(1f);
-        //v.setTranslationY(0);
-        v.setTranslationX(0);
+        v.setTranslationY(0);
         v.animate()
                 .setDuration(200)
-                //.translationY(v.getHeight())
-                .translationX(v.getWidth())
+                .translationY(v.getHeight())
                 .setListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {

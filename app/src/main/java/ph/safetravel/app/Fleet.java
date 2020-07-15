@@ -79,7 +79,7 @@ import ph.safetravel.app.databinding.ActivityFleetBinding;
 import ph.safetravel.app.protos.Vehicle;
 
 
-public class Fleet extends FragmentActivity implements OnMapReadyCallback  {
+public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
     SharedPreferences myPrefs;
     View view;
     MqttAndroidClient client;
