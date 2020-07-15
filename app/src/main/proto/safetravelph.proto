@@ -9,7 +9,13 @@ message Passenger {
     string lng = 3;
     string timestamp = 4;
     string userId = 5;
-    string vehicleId = 6;
+    string origlat = 6;
+    string origlng = 7;
+    string destlat = 8;
+    string destlng = 9;
+    string purpose = 10;
+    string vehicle = 11;
+    string vehicleId = 12;
 }
 
 message Vehicle {
@@ -22,4 +28,15 @@ message Vehicle {
     bool board = 7;
     bool alight = 8;
     int32 numPass = 9;
+}
+
+message Report {
+    string deviceId = 1;
+    string lat = 2;
+    string lng = 3;
+    string street = 4;
+    string landmark = 5;
+    string barangay = 6;
+    string citymun = 7;
+    string description = 8;
 }

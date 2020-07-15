@@ -17,7 +17,7 @@ public class DBHelper extends SQLiteOpenHelper
 {
     private SQLiteDatabase myDataBase;
     private final Context myContext;
-    private static final String DATABASE_NAME = "covid19.db";
+    private static final String DATABASE_NAME = "safetravelph.db";
     public final static String DATABASE_PATH ="/data/data/ph.safetravel.app/databases/";
     public static final int DATABASE_VERSION = 1;
     //public static final int DATABASE_VERSION_old = 1;

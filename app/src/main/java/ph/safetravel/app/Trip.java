@@ -2,17 +2,14 @@ package ph.safetravel.app;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.FragmentTransaction;
+//import android.app.FragmentTransaction;
+//import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
 import android.os.Vibrator;
@@ -20,18 +17,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.ImageButton;
 
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -44,8 +34,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -53,14 +43,10 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.tabs.TabLayout;
-import com.google.protobuf.CodedOutputStream;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
 import androidx.appcompat.widget.Toolbar;
 //import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
@@ -69,7 +55,9 @@ import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.viewpager.widget.ViewPager;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+//import androidx.viewpager.widget.ViewPager;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -82,31 +70,15 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
 
 import ph.safetravel.app.databinding.ActivityTripBinding;
 import ph.safetravel.app.protos.Passenger;
-
 
 public class Trip extends AppCompatActivity implements OnMapReadyCallback, AdapterView.OnItemClickListener {
     SharedPreferences myPrefs;
@@ -146,6 +118,12 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
     ProgressBar pgsBar;
     ActivityTripBinding bi;
     boolean isRotate = false;
+    FragmentManager fragmentManager;
+    //TripInfoFragment mTripInfoFragment;
+    //FrameLayout layout;
+    FragmentTransaction ft, ft2;
+    TripDetailsFragment tripDetailsFragment;
+    FrameLayout layout;
 
     @SuppressLint({"ServiceCast", "WrongViewCast"})
     @Override
@@ -153,11 +131,65 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
         super.onCreate(savedInstanceState);
         //setContentView(R.layout.activity_trip);
 
-        //currentFragment = LoginFragment.getInstance("Rohit");
-        //getSupportFragmentManager()
-        //        .beginTransaction()
-        //        .add(R.id.fragmentHolder, currentFragment, "LOGIN_TAG")
-        //        .commit();
+        //tripDetailsFragment = new TripDetailsFragment();
+        //final FragmentTransaction ft = getFragmentManager().beginTransaction();
+        //ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+        //ft.add(R.id.container_frame, tripDetailsFragment);
+        //ft.hide(tripDetailsFragment);
+        //ft.commit();
+
+        //FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        //mTripInfoFragment = TripInfoFragment.newInstance();
+        //fragmentTransaction.replace(R.id.FragTrip, mTripInfoFragment);
+        //fragmentTransaction.addToBackStack(null);
+        //fragmentTransaction.commit();
+
+        //mTripInfoFragment = new TripInfoFragment();
+        //ft = getFragmentManager().beginTransaction();
+        //ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+        //ft.add(R.id.container_frame, mTripInfoFragment, "Info");
+        //ft.hide(mTripInfoFragment);
+        //ft.attach(mTripInfoFragment);
+        //layout.setVisibility(View.GONE);
+        //ft.commit();
+
+        // Map fragment
+        //mMapFragment = MapFragment.newInstance();
+        //FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        //fragmentTransaction.replace(R.id.mapFragTrip, mMapFragment);
+        //fragmentTransaction.commit();
+        //mMapFragment.getMapAsync(this);
+
+        // Add map fragment
+        //FragmentManager fm = getSupportFragmentManager();
+        final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+        final SupportMapFragment mapFragment = new SupportMapFragment();
+        ft.replace(R.id.mapFragTrip, mapFragment);
+        ft.commit();
+        mapFragment.getMapAsync(this);
+
+        //final TripDetailsFragment tripDetailsFragment = new TripDetailsFragment();
+        //layout = (FrameLayout) findViewById(R.id.container_frame);
+        //FragmentTransaction ft2 = getSupportFragmentManager().beginTransaction();
+        //ft2.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+        //ft.add(R.id.container_frame, tripDetailsFragment);
+        //ft.addToBackStack(null);
+        //ft.hide(tripDetailsFragment);
+        //layout.setVisibility(View.GONE);
+        //ft.commit();
+
+        //final View fragmentTripDetailsView = findViewById(R.id.container_frame);
+        //fragmentTripDetailsView.setVisibility(View.GONE);
+
+        //mapFragment.getMapAsync(this);
+
+        //final TripDetailsFragment tripDetailsFragment = new TripDetailsFragment();
+        //ft.add(R.id.container_frame, tripDetailsFragment).addToBackStack(null);
+        //ft.hide(tripDetailsFragment);
+        //layout.setVisibility(View.GONE);
+        //ft.commit();
+        //ft.show(tripDetailsFragment);
 
         // Floating action bar
         bi = DataBindingUtil.setContentView(this, R.layout.activity_trip);
@@ -181,7 +213,44 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
         bi.fabTripInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(Trip.this, "Info", Toast.LENGTH_SHORT).show();
+                //startActivity(new Intent(getApplicationContext(), TripDetails.class));
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                //ft.hide(mapFragment);
+                //FragmentTransaction ft2 = getSupportFragmentManager().beginTransaction();
+                ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+                TripDetailsFragment tripDetailsFragment = new TripDetailsFragment();
+                //layout = (FrameLayout) findViewById(R.id.container_frame);
+                //layout.setVisibility(View.VISIBLE);
+
+                if (tripDetailsFragment.isAdded()) {
+                    //layout.setVisibility(View.VISIBLE);
+                    ft.show(tripDetailsFragment);
+                    //fragmentTripDetailsView.setVisibility(View.VISIBLE);
+                    //layout.setVisibility(View.VISIBLE);
+                } else {
+                    //layout.setVisibility(View.VISIBLE);
+                    ft.add(R.id.container_frame, tripDetailsFragment);
+                    ft.show(tripDetailsFragment);
+                    //fragmentTripDetailsView.setVisibility(View.VISIBLE);
+                    //layout.setVisibility(View.VISIBLE);
+                }
+                //fragmentTripDetailsView.setVisibility(View.VISIBLE);
+                ft.commit();
+
+                //ft.hide(tripDetailsFragment);
+                //ft.show(tripDetailsFragment);
+                //ft.show(tripDetailsFragment);
+                //Toast.makeText(Trip.this, "Info", Toast.LENGTH_SHORT).show();
+                //ft.attach(mTripInfoFragment);
+                //ft.show(mTripInfoFragment);
+                //mTripInfoFragment = TripInfoFragment.newInstance();
+                //FragmentTransaction ft = getFragmentManager().beginTransaction();
+                //fragmentTransaction.add(R.id.mapFragTrip, mTripInfoFragment)
+                //    .addToBackStack("test")
+                //    .commit();
+                //mTripInfoFragment = TripInfoFragment.newInstance();
+                //fragmentManager.beginTransaction().replace(R.id.FragTrip, mTripInfoFragment);
+                //fragmentTransaction.commit();
                 //Snackbar.make(view, "Here's a Snackbar", Snackbar.LENGTH_LONG)
                 //        .setAction("Action", null).show();
             }
@@ -437,12 +506,19 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
         });
         */
 
+        /*
+        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        mTripInfoFragment = TripInfoFragment.newInstance();
+        fragmentTransaction.add(R.id.mapFragTrip, mTripInfoFragment);
+        fragmentTransaction.addToBackStack(null);
+
         // Map fragment
         mMapFragment = MapFragment.newInstance();
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.add(R.id.mapFragTrip, mMapFragment);
+        //FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.mapFragTrip, mMapFragment);
         fragmentTransaction.commit();
-        mMapFragment.getMapAsync(this);
+        mMapFragment.getMapAsync(this); */
+
         // FuseLocationProviderClient
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
@@ -609,22 +685,6 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
             }
         });
     } // onCreate
-
-    /*
-    private void setupTabIcons() {
-        tabLayout.getTabAt(0).setIcon(tabIcons[0]);
-        tabLayout.getTabAt(1).setIcon(tabIcons[1]);
-        tabLayout.getTabAt(2).setIcon(tabIcons[2]);
-    }
-
-    private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFrag(new TripInfoFragment(), "Test");
-        adapter.addFrag(new TripInfoFragment(), "Info");
-        adapter.addFrag(new TripInfoFragment(), "Feeds");
-        viewPager.setAdapter(adapter);
-    }
-    */
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -807,8 +867,9 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                     //String vehicleId = myPrefs.getString("vehicleId",null);
                     //String vehCode = vehicleId;
                     String vehicleId = "None";
+                    String purpose = "None";
                     // Publish message
-                    publishMessage(passengerMessage(androidId, lat, lng, timeStamp, userId, vehicleId));
+                    publishMessage(passengerMessage(androidId, lat, lng, timeStamp, userId, vehicleId, purpose));
 
                     // Place location marker
                     if (mCurrLocationMarker != null) {
@@ -868,7 +929,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
         }
     }
 
-    public byte[] passengerMessage(String deviceId, String lat, String lng, String timestamp, String userId, String vehId) {
+    public byte[] passengerMessage(String deviceId, String lat, String lng, String timestamp, String userId, String vehId, String purpose) {
         Passenger passenger = Passenger.newBuilder()
                 .setDeviceId(deviceId)
                 .setLat(lat)
@@ -876,6 +937,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                 .setTimestamp(timestamp)
                 .setUserId(userId)
                 .setVehicleId(vehId)
+                .setPurpose(purpose)
                 .build();
         byte message[] = passenger.toByteArray();
         return message;
@@ -1003,14 +1065,14 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
         mapUiSettings.setMyLocationButtonEnabled(true);
 
         // Get permission for location
-        //if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-        //        && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-        //    ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
-        //            AppConstants.LOCATION_REQUEST);
-        //} else {
-        //    mMap.setMyLocationEnabled(true);
-        //    mMap.setTrafficEnabled(true);
-        //}
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                    AppConstants.LOCATION_REQUEST);
+        } else {
+            mMap.setMyLocationEnabled(true);
+            mMap.setTrafficEnabled(true);
+        }
 
         // Initialize marker array
         mMarkerArrayList = new ArrayList<>();
