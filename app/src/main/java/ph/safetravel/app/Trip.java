@@ -126,7 +126,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_trip);
+        setContentView(R.layout.activity_trip);
 
         // Add Map Fragment
         final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -168,6 +168,8 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                 } else{
                     bi.fabTripAdd.hide();
                 }
+
+                // Show Trip Info Fragment
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
                 TripInfoFragment tripInfoFragment = new TripInfoFragment();
@@ -208,8 +210,8 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
             }
         });
 
-        // Tollbar
-        toolbar = (Toolbar) findViewById(R.id.toolbarTrip);
+        // Toolbar
+        toolbar = findViewById(R.id.toolbarTrip);
         toolbar.inflateMenu(R.menu.main_menu);
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
@@ -230,7 +232,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
         //getSupportActionBar().setHomeButtonEnabled(true);
 
         // Progress bar
-        pgsBar =  (ProgressBar) findViewById(R.id.progressBarTrip);
+        pgsBar = findViewById(R.id.progressBarTrip);
         pgsBar.setVisibility(View.INVISIBLE);
         pgsBar.setScaleY(3f);
 
@@ -258,7 +260,6 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                     bi.fabTripAdd.show();
                     bi.fabTripInfo.show();
                     bi.fabTripFeeds.show();
-                    //isRotate=false;
                 } else{
                     bi.fabTripAdd.show();
                 }
@@ -269,7 +270,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
         t.syncState();
 
         // Navigation
-        nv = (NavigationView)findViewById(R.id.nav_view);
+        nv = findViewById(R.id.nav_view);
         nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -618,7 +619,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                     }
                     case R.id.navigation_info: {
                         closeApp();
-                        Intent intent1 = new Intent(Trip.this, Report.class);
+                        Intent intent1 = new Intent(Trip.this, Info.class);
                         startActivity(intent1);
                         break;
                     }
@@ -642,6 +643,17 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
             }
         });
     } // onCreate
+
+    public void restoreFab(){
+        // Show Fab
+        if(isRotate){
+            bi.fabTripAdd.show();
+            bi.fabTripInfo.show();
+            bi.fabTripFeeds.show();
+        } else{
+            bi.fabTripAdd.show();
+        }
+    }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -808,7 +820,6 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                 Location location = locationList.get(locationList.size() - 1);
                 //Log.i("MapsActivity", "Location: " + location.getLatitude() + " " + location.getLongitude());
                 mLastLocation = location;
-                //sendTrack();
                 if (mLastLocation != null) {
                     String lat = String.valueOf(location.getLatitude());
                     String lng = String.valueOf(location.getLongitude());

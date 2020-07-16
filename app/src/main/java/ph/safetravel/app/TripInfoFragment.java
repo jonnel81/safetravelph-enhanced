@@ -43,7 +43,7 @@ public class TripInfoFragment extends Fragment {
                 container.removeView(view);
                 container.setVisibility(View.GONE);
                 // Restore Fab
-
+                ((Trip) getActivity()).restoreFab();
             }
         });
 /*

@@ -158,7 +158,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
             }
         });
 
-        // Tollbar
+        // Toolbar
         toolbar = findViewById(R.id.toolbarFleet);
         toolbar.inflateMenu(R.menu.main_menu);
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
