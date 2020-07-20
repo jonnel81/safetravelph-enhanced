@@ -51,6 +51,7 @@ public class TripInfoFragment extends Fragment {
         View.OnClickListener scanClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Scan QR code
                 Intent intent = new Intent(getContext(), Scan.class);
                 startActivity(intent);
             }
@@ -69,6 +70,7 @@ public class TripInfoFragment extends Fragment {
             }
         });
 
+        // Extract vehicle ID ---
         String str = "***Plate:TYS814***";
         //Pattern pattern = Pattern.compile("\\w+\\s+\\w+\\s+(\\w+)\\s+\\w+");
         Pattern pattern = Pattern.compile("Plate:(.*?)814");
