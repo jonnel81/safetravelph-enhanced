@@ -28,6 +28,8 @@ import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class TripInfoFragment extends Fragment {
@@ -67,6 +69,13 @@ public class TripInfoFragment extends Fragment {
             }
         });
 
+        String str = "***Plate:TYS814***";
+        //Pattern pattern = Pattern.compile("\\w+\\s+\\w+\\s+(\\w+)\\s+\\w+");
+        Pattern pattern = Pattern.compile("Plate:(.*?)814");
+        Matcher matcher = pattern.matcher(str);
+        while (matcher.find()) {
+            System.out.println(matcher.group(1));
+        }
 
         // Places API
         //String apiKey = getString(R.string.api_key);
