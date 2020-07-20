@@ -56,14 +56,20 @@
     </style>
 
     <style name="ToolBarStyle" parent="Theme.AppCompat">
-        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="android:textColorPrimary">@color/blue</item>
         <item name="android:textColorSecondary">@color/blue</item>
         <item name="android:fontFamily">@font/gothammedium_font</item>
         <item name="android:background">@color/colorPrimary</item>
         <item name="android:backgroundTint">@color/colorPrimary</item>
-        <item name="android:popupBackground">@color/blue</item>
+        <item name="android:popupBackground">@color/white</item>
         <item name="android:itemBackground">@color/blue</item>
         <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="CardViewStyle" parent="CardView">
+        <item name="android:fontFamily">@font/gothammedium_font</item>
+        <item name="android:textSize">14dp</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
 </resources>

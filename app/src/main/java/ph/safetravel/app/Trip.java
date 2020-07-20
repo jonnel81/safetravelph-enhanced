@@ -116,11 +116,6 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
     ProgressBar pgsBar;
     ActivityTripBinding bi;
     boolean isRotate = false;
-    FragmentManager fragmentManager;
-    //TripInfoFragment mTripInfoFragment;
-    FrameLayout layout;
-    FragmentTransaction ft;
-    TripInfoFragment tripInfoFragment;
 
     @SuppressLint({"ServiceCast", "WrongViewCast"})
     @Override
@@ -182,23 +177,6 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                     ft.show(tripInfoFragment);
                 }
                 ft.commit();
-
-                //ft.hide(tripDetailsFragment);
-                //ft.show(tripDetailsFragment);
-                //ft.show(tripDetailsFragment);
-                //Toast.makeText(Trip.this, "Info", Toast.LENGTH_SHORT).show();
-                //ft.attach(mTripInfoFragment);
-                //ft.show(mTripInfoFragment);
-                //mTripInfoFragment = TripInfoFragment.newInstance();
-                //FragmentTransaction ft = getFragmentManager().beginTransaction();
-                //fragmentTransaction.add(R.id.mapFragTrip, mTripInfoFragment)
-                //    .addToBackStack("test")
-                //    .commit();
-                //mTripInfoFragment = TripInfoFragment.newInstance();
-                //fragmentManager.beginTransaction().replace(R.id.FragTrip, mTripInfoFragment);
-                //fragmentTransaction.commit();
-                //Snackbar.make(view, "Here's a Snackbar", Snackbar.LENGTH_LONG)
-                //        .setAction("Action", null).show();
             }
         });
 
