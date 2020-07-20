@@ -22,56 +22,9 @@
         android:text="Close"
         android:fontFamily="@font/gothammedium_font"
         android:textSize="14sp"
-        app:layout_constraintBottom_toTopOf="@id/cardviewOrig"
+        app:layout_constraintBottom_toTopOf="@id/txtOrigin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <Spinner
-        android:id="@+id/spinnerPurpose"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/edit_text_border"
-        android:fontFamily="@font/gothammedium_font"
-        android:textSize="14sp"
-        android:theme="@style/SpinnerTheme"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtDest" />
-
-    <Spinner
-        android:id="@+id/spinnerMode"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/edit_text_border"
-        android:fontFamily="@font/gothammedium_font"
-        android:textSize="14sp"
-        android:theme="@style/SpinnerTheme"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/spinnerPurpose" />
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cardviewOrig"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnClose">
-
-        <fragment android:id="@+id/autocomplete_fragment_orig"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment" />
-    </com.google.android.material.card.MaterialCardView>
 
     <TextView
         android:id="@+id/txtOrigin"
@@ -88,7 +41,7 @@
         android:lines="2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cardviewOrig"/>
+        app:layout_constraintTop_toBottomOf="@id/btnClose"/>
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardviewDest"
@@ -99,7 +52,7 @@
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtOrigin">
+        app:layout_constraintTop_toBottomOf="@id/txtDest">
 
         <fragment android:id="@+id/autocomplete_fragment_dest"
             android:layout_width="match_parent"
@@ -122,7 +75,7 @@
         android:lines="2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cardviewDest"/>
+        app:layout_constraintTop_toBottomOf="@id/cardviewOrig"/>
 
     <TextView
         android:id="@+id/txtVehicleId"
@@ -167,6 +120,53 @@
         app:layout_constraintEnd_toStartOf="@id/btnScan"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txtVehicleId"/>
+
+    <Spinner
+        android:id="@+id/spinnerPurpose"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/edit_text_border"
+        android:fontFamily="@font/gothammedium_font"
+        android:textSize="14sp"
+        android:theme="@style/SpinnerTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cardviewDest" />
+
+    <Spinner
+        android:id="@+id/spinnerMode"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/edit_text_border"
+        android:fontFamily="@font/gothammedium_font"
+        android:textSize="14sp"
+        android:theme="@style/SpinnerTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/spinnerPurpose" />
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardviewOrig"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtOrigin">
+
+        <fragment android:id="@+id/autocomplete_fragment_orig"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment" />
+    </com.google.android.material.card.MaterialCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>
