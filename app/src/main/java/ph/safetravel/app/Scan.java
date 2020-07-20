@@ -31,10 +31,10 @@ public class Scan extends AppCompatActivity implements ZXingScannerView.ResultHa
     @Override
     public void handleResult(Result rawResult) {
         // Do something with the result here
-        BarcodeReader.tvresult.setText(rawResult.getText());
+        TripInfoFragment.tvresult.setText(rawResult.getText());
 
-        Log.v("tag", rawResult.getText()); // Prints scan results
-        Log.v("tag", rawResult.getBarcodeFormat().toString()); // Prints the scan format (qrcode, pdf417 etc.)
+        //Log.v("tag", rawResult.getText()); // Prints scan results
+        //Log.v("tag", rawResult.getBarcodeFormat().toString()); // Prints the scan format (qrcode, pdf417 etc.)
         //BarcodeReader.tvresult.setText(rawResult.getText());
         onBackPressed();
         // If you would like to resume scanning, call this method below:

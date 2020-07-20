@@ -1,5 +1,6 @@
 package ph.safetravel.app;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -35,14 +36,24 @@ public class TripInfoFragment extends Fragment {
     private ArrayAdapter<String> adapterOrig;
     PlacesClient placesClient;
     Button closeButton;
+    ImageButton scanButton;
+    public static TextView tvresult;
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_tripinfo, container, false);
 
-        origin = view.findViewById(R.id.txtOrigin);
-        destination = view.findViewById(R.id.txtDest);
+        tvresult = (TextView) view.findViewById(R.id.txtVehicleDetails);
+        scanButton = (ImageButton) view.findViewById(R.id.btnScan);
+        View.OnClickListener scanClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), Scan.class);
+                startActivity(intent);
+            }
+        };
+        scanButton.setOnClickListener(scanClickListener);
 
         closeButton = (Button) view.findViewById(R.id.btnClose);
         closeButton.setOnClickListener(new View.OnClickListener() {
@@ -51,7 +62,6 @@ public class TripInfoFragment extends Fragment {
                 // Close fragment view
                 container.removeView(view);
                 container.setVisibility(View.GONE);
-
                 // Restore Fab
                 ((Trip) getActivity()).restoreFab();
             }
@@ -65,6 +75,9 @@ public class TripInfoFragment extends Fragment {
         if (!Places.isInitialized()) {
             Places.initialize(getContext(), apiKey);
         }
+
+        origin = view.findViewById(R.id.txtOrigin);
+        destination = view.findViewById(R.id.txtDest);
 
         // Create a new Places client instance.
         placesClient = Places.createClient(getContext());
@@ -118,84 +131,10 @@ public class TripInfoFragment extends Fragment {
             }
         });
 
-        //mGoogleApiClient = new GoogleApiClient.Builder(getContext())
-        //        .enableAutoManage(getActivity(), (GoogleApiClient.OnConnectionFailedListener) this)
-        //        .addApi(Places.GEO_DATA_API)
-        //        .addConnectionCallbacks((GoogleApiClient.ConnectionCallbacks) this)
-        //        .build();
-
-        //mGoogleApiClient = new GoogleApiClient.Builder(getActivity())
-        //        .addConnectionCallbacks(this)
-        //        .addOnConnectionFailedListener(this)
-        //        .addConnectionCallbacks(this)
-        //        //.addApi(LocationServices.API)
-        //        .addApi(Places.GEO_DATA_API)
-        //        .build();
-
-        //AutoCompleteTextView origText = view.findViewById(R.id.atvOrig);
-        //adapterOrig = new ArrayAdapter<>(getContext(), android.R.layout.simple_dropdown_item_1line);
-        //origText.setAdapter(adapterOrig);
-
-        /*
-        origText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String query = s.toString();
-
-                //mMap is a GoogleMap object. Alternatively, you can initialize a
-                //LatLngBounds object directly through its constructor
-
-                //FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                //SupportMapFragment supportMapFragment = (SupportMapFragment) fragmentManager
-                //        .findFragmentById(R.id.mapFragTrip);
-                //mMap = supportMapFragment.getMap();
-
-
-                ((SupportMapFragment)  getActivity().getSupportFragmentManager().findFragmentById(R.id.mapFragTrip)).getMapAsync(new OnMapReadyCallback() {
-                    @Override
-                    public void onMapReady(GoogleMap googleMap) {
-                        mMap  = googleMap;
-                    }
-                });
-
-                LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
-                Log.e("TEST", bounds.toString());
-
-                AutocompleteFilter filter = new AutocompleteFilter.Builder()
-                    .setTypeFilter(AutocompleteFilter.TYPE_FILTER_NONE)
-                    .build();
-
-                PendingResult<AutocompletePredictionBuffer> autocompleteResult =
-                    Places.GeoDataApi.getAutocompletePredictions(mGoogleApiClient, query, bounds, filter);
-
-                autocompleteResult.setResultCallback(new ResultCallback<AutocompletePredictionBuffer>() {
-                    @Override
-                    public void onResult(@NonNull AutocompletePredictionBuffer autocompletePredictions) {
-                        for (int i = 0; i < autocompletePredictions.getCount(); i++) {
-                            adapterOrig.add(autocompletePredictions.get(0).getFullText(null).toString());
-                        }
-                        autocompletePredictions.release();
-                        adapterOrig.notifyDataSetChanged();
-                    }
-                });
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                //
-
-            }
-
-        });*/
-
         //-----------------------------------------------------------
         spinnerPurpose = view.findViewById(R.id.spinnerPurpose);
         String[] purpose = new String[]{
-                "Select a purpose...",
+                "Trip Purpose",
                 "Government work",
                 "Private sector job",
                 "Return to province",
@@ -255,7 +194,7 @@ public class TripInfoFragment extends Fragment {
         //-----------------------------------------------------------
         spinnerMode = view.findViewById(R.id.spinnerMode);
         String[] mode = new String[]{
-                "Select a mode...",
+                "Trip Mode",
                 "PUB",
                 "Modern PUJ",
                 "Traditional PUJ",
