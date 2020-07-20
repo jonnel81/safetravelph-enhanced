@@ -107,6 +107,7 @@ public class TripInfoFragment extends Fragment {
             @Override
             public void onPlaceSelected(Place place) {
                 origin.setText(String.format(place.getName()));
+                autocompleteFragmentOrig.getView().setVisibility(View.GONE);
                 //Log.i("Places", "Place: " + place.getName() + ", " + place.getId());
             }
 
@@ -116,7 +117,7 @@ public class TripInfoFragment extends Fragment {
             }
         });
 
-        AutocompleteSupportFragment autocompleteFragmentDest = (AutocompleteSupportFragment)
+        final AutocompleteSupportFragment autocompleteFragmentDest = (AutocompleteSupportFragment)
                 getChildFragmentManager().findFragmentById(R.id.autocomplete_fragment_dest);
 
         //((EditText)autocompleteFragmentDest.getView().findViewById(R.id.places_autocomplete_search_input)).setTextSize(14.0f);
@@ -131,12 +132,31 @@ public class TripInfoFragment extends Fragment {
             @Override
             public void onPlaceSelected(Place place) {
                 destination.setText(String.format(place.getName()));
+                autocompleteFragmentDest.getView().setVisibility(View.GONE);
                 Log.i("Places", "Place: " + place.getName() + ", " + place.getId());
             }
 
             @Override
             public void onError(Status status) {
-                Log.i("Places", "An error occurred: " + status);
+                //Log.i("Places", "An error occurred: " + status);
+            }
+        });
+
+        // Hide placeautocomplete fragments
+        autocompleteFragmentOrig.getView().setVisibility(View.GONE);
+        autocompleteFragmentDest.getView().setVisibility(View.GONE);
+
+        origin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                autocompleteFragmentOrig.getView().setVisibility(View.VISIBLE);
+            }
+        });
+
+        destination.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                autocompleteFragmentDest.getView().setVisibility(View.VISIBLE);
             }
         });
 
