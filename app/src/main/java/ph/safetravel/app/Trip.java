@@ -52,6 +52,7 @@ import androidx.appcompat.widget.Toolbar;
 //import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
@@ -131,6 +132,15 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
         //tvfeedscount.setText("5");
         //tvfeedscount.setVisibility(View.GONE);
 
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "test")
+                .setSmallIcon(R.drawable.ic_baseline_notifications_24)
+                .setContentTitle("My notification")
+                .setContentText("Much longer text that cannot fit one line...")
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText("Much longer text that cannot fit one line..."))
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+
         // Add Map Fragment
         final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
@@ -160,7 +170,11 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                     ViewAnimation.showIn(bi.fabTripAlert);
                     if(feedsCount!=0){
                         ViewAnimation.showIn(bi.txtFeedsCount);
-                        bi.txtFeedsCount.setText(String.valueOf(feedsCount));
+                        if(feedsCount<=99) {
+                            bi.txtFeedsCount.setText(String.valueOf(feedsCount));
+                        } else {
+                            bi.txtFeedsCount.setText("99+");
+                        }
                     }
                 }else{
                     ViewAnimation.showOut(bi.fabTripInfo);
