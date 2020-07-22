@@ -46,6 +46,7 @@ public class TripInfoFragment extends Fragment {
                              Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_tripinfo, container, false);
 
+        // Scan results
         tvresult = (TextView) view.findViewById(R.id.txtVehicleDetails);
         scanButton = (ImageButton) view.findViewById(R.id.btnScan);
         View.OnClickListener scanClickListener = new View.OnClickListener() {
@@ -58,6 +59,7 @@ public class TripInfoFragment extends Fragment {
         };
         scanButton.setOnClickListener(scanClickListener);
 
+        // Close button
         closeButton = (Button) view.findViewById(R.id.btnClose);
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,7 +99,6 @@ public class TripInfoFragment extends Fragment {
         final AutocompleteSupportFragment autocompleteFragmentOrig = (AutocompleteSupportFragment)
                 getChildFragmentManager().findFragmentById(R.id.autocomplete_fragment_orig);
 
-        //((EditText)autocompleteFragment.getView().findViewById(R.id.places_autocomplete_search_input)).setTextSize(14.0f);
         final EditText etPlaceOrig = (EditText)autocompleteFragmentOrig.getView().findViewById(R.id.places_autocomplete_search_input);
         etPlaceOrig.setTextSize(14.0f);
 
@@ -122,7 +123,6 @@ public class TripInfoFragment extends Fragment {
         final AutocompleteSupportFragment autocompleteFragmentDest = (AutocompleteSupportFragment)
                 getChildFragmentManager().findFragmentById(R.id.autocomplete_fragment_dest);
 
-        //((EditText)autocompleteFragmentDest.getView().findViewById(R.id.places_autocomplete_search_input)).setTextSize(14.0f);
         final EditText etPlaceDest = (EditText)autocompleteFragmentDest.getView().findViewById(R.id.places_autocomplete_search_input);
         etPlaceDest.setTextSize(14.0f);
 
@@ -162,7 +162,7 @@ public class TripInfoFragment extends Fragment {
             }
         });
 
-        //-----------------------------------------------------------
+        // Purpose
         spinnerPurpose = view.findViewById(R.id.spinnerPurpose);
         String[] purpose = new String[]{
                 "Trip Purpose",
@@ -222,7 +222,7 @@ public class TripInfoFragment extends Fragment {
             }
         });
 
-        //-----------------------------------------------------------
+        // Mode
         spinnerMode = view.findViewById(R.id.spinnerMode);
         String[] mode = new String[]{
                 "Trip Mode",

@@ -22,6 +22,7 @@ import android.widget.CompoundButton;
 
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -105,7 +106,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
     //ImageButton origPostButton, destPostButton, origDeleteButton, destDeleteButton;
     //Spinner spinnerPurpose;
     //LatLng origLatLng, destLatLng;
-    //MarkerOptions markerOptions;
+    //    //MarkerOptions markerOptions;
     private Toolbar toolbar;
     private DrawerLayout dl;
     private ActionBarDrawerToggle t;
@@ -116,12 +117,19 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
     ProgressBar pgsBar;
     ActivityTripBinding bi;
     boolean isRotate = false;
+    TextView txtFeedsCount;
+    int feedsCount;
 
     @SuppressLint({"ServiceCast", "WrongViewCast"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip);
+
+        // Fab Feeds Count
+        //txtFeedsCount = (TextView) view.findViewById(R.id.txtFeedsCount);
+        //tvfeedscount.setText("5");
+        //tvfeedscount.setVisibility(View.GONE);
 
         // Add Map Fragment
         final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -136,6 +144,11 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
         bi = DataBindingUtil.setContentView(this, R.layout.activity_trip);
         ViewAnimation.init(bi.fabTripInfo);
         ViewAnimation.init(bi.fabTripFeeds);
+        ViewAnimation.init(bi.fabTripAlert);
+        ViewAnimation.init(bi.txtFeedsCount);
+
+        // Get feedsCount
+        feedsCount=10;
 
         bi.fabTripAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,9 +157,18 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                 if(isRotate){
                     ViewAnimation.showIn(bi.fabTripInfo);
                     ViewAnimation.showIn(bi.fabTripFeeds);
+                    ViewAnimation.showIn(bi.fabTripAlert);
+                    if(feedsCount!=0){
+                        ViewAnimation.showIn(bi.txtFeedsCount);
+                        bi.txtFeedsCount.setText(String.valueOf(feedsCount));
+                    }
                 }else{
                     ViewAnimation.showOut(bi.fabTripInfo);
                     ViewAnimation.showOut(bi.fabTripFeeds);
+                    ViewAnimation.showOut(bi.fabTripAlert);
+                    if(feedsCount!=0){
+                        ViewAnimation.showOut(bi.txtFeedsCount);
+                    }
                 }
             }
         });
@@ -159,6 +181,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                     bi.fabTripAdd.hide();
                     bi.fabTripInfo.hide();
                     bi.fabTripFeeds.hide();
+                    bi.fabTripAlert.hide();
                     isRotate=true;
                 } else{
                     bi.fabTripAdd.hide();
@@ -225,6 +248,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                     bi.fabTripAdd.hide();
                     bi.fabTripInfo.hide();
                     bi.fabTripFeeds.hide();
+                    bi.fabTripAlert.hide();
                 } else{
                     bi.fabTripAdd.hide();
                 }
@@ -238,6 +262,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                     bi.fabTripAdd.show();
                     bi.fabTripInfo.show();
                     bi.fabTripFeeds.show();
+                    bi.fabTripAlert.show();
                 } else{
                     bi.fabTripAdd.show();
                 }
@@ -628,6 +653,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
             bi.fabTripAdd.show();
             bi.fabTripInfo.show();
             bi.fabTripFeeds.show();
+            bi.fabTripAlert.show();
         } else{
             bi.fabTripAdd.show();
         }

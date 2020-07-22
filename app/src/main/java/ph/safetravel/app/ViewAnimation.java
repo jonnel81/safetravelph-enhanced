@@ -25,7 +25,7 @@ public class ViewAnimation {
         v.animate()
                 .setDuration(200)
                 .translationY(0)
-                .setListener(new AnimatorListenerAdapter() {
+                .setListener( new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
                         super.onAnimationEnd(animation);

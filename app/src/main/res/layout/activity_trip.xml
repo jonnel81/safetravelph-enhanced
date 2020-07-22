@@ -74,7 +74,7 @@
                 app:rippleColor="@color/white" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fabTripFeeds"
+                android:id="@+id/fabTripAlert"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
@@ -83,6 +83,44 @@
                 app:backgroundTint="@color/white"
                 app:fabSize="normal"
                 app:rippleColor="@color/white" />
+
+        <LinearLayout
+            android:gravity="center_horizontal"
+            android:layout_gravity="center_vertical|end|end"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabTripFeeds"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:src="@drawable/ic_baseline_message_24"
+                android:tint="@color/blue"
+                app:backgroundTint="@color/white"
+                app:fabSize="normal"
+                app:rippleColor="@color/white" />
+
+            <TextView
+                android:id="@+id/txtFeedsCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="-85dp"
+                android:layout_toEndOf="@id/fabTripFeeds"
+                android:background="@drawable/floating_action_button_label"
+                android:gravity="center"
+                android:paddingBottom="4dp"
+                android:paddingEnd="6dp"
+                android:paddingStart="6dp"
+                android:paddingTop="4dp"
+                android:elevation="7dp"
+                android:text="99"
+                android:textSize="12sp"
+                android:textColor="@color/white"
+                android:textStyle="normal" />
+        </LinearLayout>
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fabTripAdd"
