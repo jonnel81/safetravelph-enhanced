@@ -39,7 +39,8 @@ public class TripInfoFragment extends Fragment {
     PlacesClient placesClient;
     Button closeButton;
     ImageButton scanButton;
-    public static TextView tvresult;
+    public static TextView txtVehDetails;
+    public static TextView txtVehId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
@@ -47,7 +48,8 @@ public class TripInfoFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_tripinfo, container, false);
 
         // Scan results
-        tvresult = (TextView) view.findViewById(R.id.txtVehicleDetails);
+        txtVehDetails = (TextView) view.findViewById(R.id.txtVehicleDetails);
+        txtVehId = (TextView) view.findViewById(R.id.txtVehicleId);
         scanButton = (ImageButton) view.findViewById(R.id.btnScan);
         View.OnClickListener scanClickListener = new View.OnClickListener() {
             @Override
@@ -72,18 +74,9 @@ public class TripInfoFragment extends Fragment {
             }
         });
 
-        // Extract vehicle ID ---
-        String str = "***Plate:TYS814***";
-        //Pattern pattern = Pattern.compile("\\w+\\s+\\w+\\s+(\\w+)\\s+\\w+");
-        Pattern pattern = Pattern.compile("Plate:(.*?)814");
-        Matcher matcher = pattern.matcher(str);
-        while (matcher.find()) {
-            System.out.println(matcher.group(1));
-        }
-
         // Places API
-        //String apiKey = getString(R.string.api_key);
-        String apiKey = getString(R.string.google_maps_key);
+        String apiKey = getString(R.string.api_key);
+        //String apiKey = getString(R.string.google_maps_key);
 
         if (!Places.isInitialized()) {
             Places.initialize(getContext(), apiKey);
