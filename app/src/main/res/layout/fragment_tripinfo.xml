@@ -98,7 +98,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="6dp"
         android:layout_marginEnd="16dp"
-        android:background="@drawable/ic_qrcode_phone"
+        android:background="@drawable/ic_magnifier"
         android:text="Scan"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/txtVehicleId"
