@@ -36,12 +36,13 @@ public class Scan extends AppCompatActivity implements ZXingScannerView.ResultHa
         // Do something with the result here
         TripInfoFragment.txtVehDetails.setText(rawResult.getText());
 
-        // Extract vehicle ID
+        // Extract Vehicle Id
         String str = rawResult.getText();
         Pattern pattern = Pattern.compile("Plate:(.*?)\\*\\*\\*");
         Matcher matcher = pattern.matcher(str);
         while (matcher.find()) {
             TripInfoFragment.txtVehId.setText(matcher.group(1));
+            Log.d("Veh Id", matcher.group(1));
         }
 
         //Log.v("tag", rawResult.getText()); // Prints scan results

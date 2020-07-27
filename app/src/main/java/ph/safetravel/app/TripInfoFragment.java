@@ -33,7 +33,7 @@ import java.util.regex.Pattern;
 
 
 public class TripInfoFragment extends Fragment {
-    TextView origin, destination, purpose;
+    TextView txtOrigin, txtDestination;
     Spinner spinnerPurpose, spinnerMode;
     private ArrayAdapter<String> adapterOrig;
     PlacesClient placesClient;
@@ -82,8 +82,8 @@ public class TripInfoFragment extends Fragment {
             Places.initialize(getContext(), apiKey);
         }
 
-        origin = view.findViewById(R.id.txtOrigin);
-        destination = view.findViewById(R.id.txtDest);
+        txtOrigin = view.findViewById(R.id.txtOrigin);
+        txtDestination = view.findViewById(R.id.txtDest);
 
         // Create a new Places client instance.
         placesClient = Places.createClient(getContext());
@@ -102,7 +102,7 @@ public class TripInfoFragment extends Fragment {
         autocompleteFragmentOrig.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-                origin.setText(String.format(place.getName()));
+                txtOrigin.setText(String.format(place.getName()));
                 autocompleteFragmentOrig.getView().setVisibility(View.GONE);
                 //Log.i("Places", "Place: " + place.getName() + ", " + place.getId());
             }
@@ -126,7 +126,7 @@ public class TripInfoFragment extends Fragment {
         autocompleteFragmentDest.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
-                destination.setText(String.format(place.getName()));
+                txtDestination.setText(String.format(place.getName()));
                 autocompleteFragmentDest.getView().setVisibility(View.GONE);
                 Log.i("Places", "Place: " + place.getName() + ", " + place.getId());
             }
@@ -141,14 +141,14 @@ public class TripInfoFragment extends Fragment {
         autocompleteFragmentOrig.getView().setVisibility(View.GONE);
         autocompleteFragmentDest.getView().setVisibility(View.GONE);
 
-        origin.setOnClickListener(new View.OnClickListener() {
+        txtOrigin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 autocompleteFragmentOrig.getView().setVisibility(View.VISIBLE);
             }
         });
 
-        destination.setOnClickListener(new View.OnClickListener() {
+        txtDestination.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 autocompleteFragmentDest.getView().setVisibility(View.VISIBLE);
