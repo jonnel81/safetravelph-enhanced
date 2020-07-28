@@ -14,6 +14,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import androidx.fragment.app.Fragment;
 
@@ -40,7 +41,9 @@ public class TripAlertFragment extends Fragment {
         View.OnClickListener scanClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((Trip) getActivity()).sendAlert();
+                if(((Trip) getActivity()).connected()) {
+                    ((Trip) getActivity()).sendAlert();
+                }
             }
         };
         sendButton.setOnClickListener(scanClickListener);

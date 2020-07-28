@@ -2,8 +2,6 @@ package ph.safetravel.app;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-//import android.app.FragmentTransaction;
-//import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
@@ -101,6 +100,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
     private boolean isGPS = false;
     private boolean isContinue = false;
     ToggleButton tButton;
+    Button sendAlertButton;
     Location mLastLocation;
     Marker mCurrLocationMarker;
     //MapFragment mMapFragment;
@@ -113,7 +113,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
     private NavigationView nv;
     //private Marker mCurrentMarker;
     private ArrayList<Marker> mMarkerArrayList;
-    //Spinner spinnerPurpose;
+    Boolean brokerIsConnected = false;
     ProgressBar pgsBar;
     ActivityTripBinding bi;
     boolean isRotate = false;
@@ -124,11 +124,6 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip);
-
-        // Fab Feeds Count
-        //txtFeedsCount = (TextView) view.findViewById(R.id.txtFeedsCount);
-        //tvfeedscount.setText("5");
-        //tvfeedscount.setVisibility(View.GONE);
 
         // Add Map Fragment
         final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -389,12 +384,11 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                     AppConstants.LOCATION_REQUEST);
         }
 
-        //view = findViewById(android.R.id.content);
-        //subText = (EditText) findViewById(R.id.txtMessage);
         //vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 
         // Toogle Button
         tButton = findViewById(R.id.toggleTrip);
+        final Button sendAlertButton = (Button) findViewById(R.id.btnSendAlert);
         tButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -422,15 +416,13 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
             token.setActionCallback(new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    // We are connected
                     Toast.makeText(getApplicationContext(),"Connected", Toast.LENGTH_SHORT).show();
                     subscribeTopic("#");
                 }
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    // Something went wrong e.g. connection timeout or firewall problems
-                    Toast.makeText(getApplicationContext(),"Connected Failed", Toast.LENGTH_SHORT).show();
                     exception.printStackTrace();
+                    Toast.makeText(getApplicationContext(),"Connected Failed", Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (MqttException e) {
@@ -440,7 +432,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
         client.setCallback(new MqttCallback() {
             @Override
             public void connectionLost(Throwable cause) {
-                Log.i(TAG, "connection lost");
+                //Log.i(TAG, "connection lost");
             }
 
             @Override
@@ -450,14 +442,14 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
 
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
-                //Log.i(TAG, "topic: " + topic + ", msg: " + new String(message.getPayload()));
+                Log.i(TAG, "topic: " + topic + ", msg: " + new String(message.getPayload()));
             }
 
             @Override
             public void deliveryComplete(IMqttDeliveryToken token) {
                 //Log.i(TAG, "msg delivered");
             }
-        }); // mqtt client callback
+        }); // Mqtt client callback
 
         // Bottom navigation
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav_view);
@@ -531,7 +523,6 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
         });
     } // onCreate
 
-
     public void sendAlert() {
         CheckBox checkbox = (CheckBox) findViewById(R.id.checkBox);
         CheckBox checkbox1 = (CheckBox) findViewById(R.id.checkBox1);
@@ -543,36 +534,65 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
         CheckBox checkbox7 = (CheckBox) findViewById(R.id.checkBox7);
         CheckBox checkbox8 = (CheckBox) findViewById(R.id.checkBox8);
 
-        StringBuilder result=new StringBuilder();
+        StringBuilder alertString = new StringBuilder();
         if(checkbox.isChecked()) {
-            result.append(checkbox.getText());
+            alertString.append(checkbox.getText());
         }
         if(checkbox1.isChecked()) {
-            result.append("," + checkbox1.getText());
+            alertString.append("," + checkbox1.getText());
         }
         if(checkbox2.isChecked()) {
-            result.append("," + checkbox2.getText());
+            alertString.append("," + checkbox2.getText());
         }
         if(checkbox3.isChecked()) {
-            result.append("," + checkbox3.getText());
+            alertString.append("," + checkbox3.getText());
         }
         if(checkbox4.isChecked()) {
-            result.append("," + checkbox4.getText());
+            alertString.append("," + checkbox4.getText());
         }
         if(checkbox5.isChecked()) {
-            result.append("," + checkbox5.getText());
+            alertString.append("," + checkbox5.getText());
         }
         if(checkbox6.isChecked()) {
-            result.append("," + checkbox6.getText());
+            alertString.append("," + checkbox6.getText());
         }
         if(checkbox7.isChecked()) {
-            result.append("," + checkbox7.getText());
+            alertString.append("," + checkbox7.getText());
         }
         if(checkbox8.isChecked()) {
-            result.append("," + checkbox8.getText());
+            alertString.append("," + checkbox8.getText());
         }
+
+        if (mLastLocation != null) {
+            String lat = String.valueOf(mLastLocation.getLatitude());
+            String lng = String.valueOf(mLastLocation.getLongitude());
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+            sdf.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
+            String timeStamp = sdf.format(new Date());
+
+            // Get shared preferences
+            myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
+            String username = myPrefs.getString("username", null);
+            String androidId = myPrefs.getString("androidId", null);
+            String userId = username;
+            String description = alertString.toString();
+
+            // Publish message
+            publishAlert(alertMessage(androidId, lat, lng, timeStamp, userId, description));
+            System.out.println(alertMessage(androidId, lat, lng, timeStamp, userId, description));
+        }
+
         Toast.makeText(getApplicationContext(), "Alert sent.", Toast.LENGTH_SHORT).show();
+
     } // sendAlert
+
+    public boolean connected() {
+        if (brokerIsConnected) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     public void restoreFab() {
         // Show Fab
@@ -595,7 +615,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
         // create Toast with user selected value
         Toast.makeText(Trip.this, "Selected Item is: \t" + item, Toast.LENGTH_LONG).show();
         // set user selected value to the TextView
-        //tvDisplay.setText(item);
+
     }
 
     /*
@@ -752,6 +772,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                 //The last location in the list is the newest
                 Location location = locationList.get(locationList.size() - 1);
                 //Log.i("MapsActivity", "Location: " + location.getLatitude() + " " + location.getLongitude());
+
                 mLastLocation = location;
                 if (mLastLocation != null) {
                     String lat = String.valueOf(location.getLatitude());
@@ -765,13 +786,31 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                     String username = myPrefs.getString("username",null);
                     String androidId = myPrefs.getString("androidId",null);
                     String userId = username;
-                    String origin = myPrefs.getString("origin",null);
-                    String destination = myPrefs.getString("origin",null);
-                    String purpose = myPrefs.getString("purpose",null);
-                    String mode = myPrefs.getString("mode",null);
-                    String vehicleId = myPrefs.getString("vehicleId",null);
-                    String vehicleDetails = myPrefs.getString("vehicleDetails",null);
 
+                    String origin = myPrefs.getString("origin",null);
+                    if (origin==null) {
+                        origin = "None";
+                    }
+                    String destination = myPrefs.getString("origin",null);
+                    if (destination==null) {
+                        destination = "None";
+                    }
+                    String purpose = myPrefs.getString("purpose",null);
+                    if (purpose==null) {
+                        purpose = "None";
+                    }
+                    String mode = myPrefs.getString("mode",null);
+                    if (mode==null) {
+                        mode = "None";
+                    }
+                    String vehicleId = myPrefs.getString("vehicleId",null);
+                    if (vehicleId==null) {
+                        vehicleId = "None";
+                    }
+                    String vehicleDetails = myPrefs.getString("vehicleDetails",null);
+                    if (vehicleDetails==null) {
+                        vehicleDetails = "None";
+                    }
                     // Publish message
                     publishMessage(passengerMessage(androidId, lat, lng, timeStamp, userId, origin, destination, purpose, mode, vehicleId, vehicleDetails));
 
@@ -831,7 +870,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
         } catch (MqttException e) {
             e.printStackTrace();
         }
-    }
+    } // subscribeTopic
 
     public byte[] passengerMessage(String deviceId, String lat, String lng, String timestamp, String userId, String origin, String destination, String purpose, String mode, String vehicleId, String vehicleDetails) {
         Passenger passenger = Passenger.newBuilder()
@@ -848,19 +887,6 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                 .setVehicleDetails(vehicleDetails)
                 .build();
         byte message[] = passenger.toByteArray();
-        return message;
-    } // passengerMessage
-
-    public byte[] alertMessage(String deviceId, String lat, String lng, String timestamp, String userId, String description) {
-        Alert alert = Alert.newBuilder()
-                .setDeviceId(deviceId)
-                .setLat(lat)
-                .setLng(lng)
-                .setTimestamp(timestamp)
-                .setUserId(userId)
-                .setDescription(description)
-                .build();
-        byte message[] = alert.toByteArray();
         return message;
     } // passengerMessage
 
@@ -885,7 +911,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
             //} catch (IOException e) {
             //    e.printStackTrace();
             //}
-            
+
             message.setPayload(payload);
             message.setQos(0);
             client.publish("passengers", message,null, new IMqttActionListener() {
@@ -900,25 +926,62 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                 }
             });
         } catch (MqttException e) {
-            //Log.e(TAG, e.toString());
             e.printStackTrace();
         }
-    }
+    } // publishMessage
+
+    public byte[] alertMessage(String deviceId, String lat, String lng, String timestamp, String userId, String description) {
+        Alert alert = Alert.newBuilder()
+                .setDeviceId(deviceId)
+                .setLat(lat)
+                .setLng(lng)
+                .setTimestamp(timestamp)
+                .setUserId(userId)
+                .setDescription(description)
+                .build();
+        byte message[] = alert.toByteArray();
+        return message;
+    } // alertMessage
+
+    public void publishAlert(byte[] payload) {
+        try {
+            if (!client.isConnected()) {
+                client.connect();
+            }
+            MqttMessage message = new MqttMessage();
+            message.setPayload(payload);
+            message.setQos(0);
+            client.publish("alerts", message,null, new IMqttActionListener() {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+                    //
+                }
+
+                @Override
+                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                    //
+                }
+            });
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+    } // publishAlert
 
     public void connectBroker() {
-        // Connect to Mqtt broker
         try {
             IMqttToken token = client.connect(options);
             token.setActionCallback(new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     Toast.makeText(getApplicationContext(),"Connected", Toast.LENGTH_SHORT).show();
+                    brokerIsConnected = true;
                     //vibrator.vibrate(500);
                 }
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
                     exception.printStackTrace();
                     Toast.makeText(getApplicationContext(),"Connect Failed", Toast.LENGTH_SHORT).show();
+                    brokerIsConnected = false;
                 }
             });
         } catch (MqttException e) {
@@ -927,21 +990,20 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
     } // connectBroker
 
     public void disconnectBroker() {
-        // Disconnect Mqtt broker
         try {
             IMqttToken token = client.disconnect();
             token.setActionCallback(new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    // We are connected
                     Toast.makeText(getApplicationContext(),"Disconnected", Toast.LENGTH_SHORT).show();
+                    brokerIsConnected = false;
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    // Something went wrong e.g. connection timeout or firewall problems
+                    exception.printStackTrace();
                     Toast.makeText(getApplicationContext(),"Could Not Disconnect", Toast.LENGTH_SHORT).show();
-
+                    brokerIsConnected = true;
                 }
             });
         } catch (MqttException e) {

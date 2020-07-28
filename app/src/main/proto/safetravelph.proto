@@ -52,4 +52,10 @@ message Alert {
     string description = 6;
 }
 
+message Feed {
+    string topic = 1;
+    string timestamp = 2;
+    string message = 3;
+}
+
 

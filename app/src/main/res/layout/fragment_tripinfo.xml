@@ -190,12 +190,14 @@
         android:layout_marginLeft="64dp"
         android:layout_marginRight="64dp"
         android:layout_marginTop="16dp"
+        android:layout_marginBottom="24dp"
         android:text="SET TRIP INFO"
         android:fontFamily="@font/gothammedium_font"
         android:textSize="14sp"
         android:background="@color/blue"
         android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtVehicleDetails" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
