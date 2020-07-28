@@ -9,13 +9,12 @@ message Passenger {
     string lng = 3;
     string timestamp = 4;
     string userId = 5;
-    string origlat = 6;
-    string origlng = 7;
-    string destlat = 8;
-    string destlng = 9;
-    string purpose = 10;
-    string vehicle = 11;
-    string vehicleId = 12;
+    string orig = 6;
+    string dest = 7;
+    string purpose = 8;
+    string mode = 9;
+    string vehicleId = 10;
+    string vehicleDetails = 11;
 }
 
 message Vehicle {
@@ -25,18 +24,32 @@ message Vehicle {
     string timestamp = 4;
     string userId = 5;
     string vehicleId = 6;
-    bool board = 7;
-    bool alight = 8;
-    int32 numPass = 9;
+    string vehicleDetails = 7;
+    bool board = 8;
+    bool alight = 9;
+    int32 numPass = 10;
 }
 
 message Report {
     string deviceId = 1;
     string lat = 2;
     string lng = 3;
-    string street = 4;
-    string landmark = 5;
-    string barangay = 6;
-    string citymun = 7;
-    string description = 8;
+    string timestamp = 4;
+    string userId = 5;
+    string street = 6;
+    string landmark = 7;
+    string barangay = 8;
+    string citymun = 9;
+    string description = 10;
 }
+
+message Alert {
+    string deviceId = 1;
+    string lat = 2;
+    string lng = 3;
+    string timestamp = 4;
+    string userId = 5;
+    string description = 6;
+}
+
+

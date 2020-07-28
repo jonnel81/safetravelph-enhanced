@@ -1,6 +1,10 @@
 package ph.safetravel.app;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +20,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 //import android.app.Fragment;
 import androidx.fragment.app.Fragment;
@@ -33,19 +38,99 @@ import java.util.regex.Pattern;
 
 
 public class TripInfoFragment extends Fragment {
+    SharedPreferences myPrefs;
     TextView txtOrigin, txtDestination;
     Spinner spinnerPurpose, spinnerMode;
-    private ArrayAdapter<String> adapterOrig;
     PlacesClient placesClient;
     Button closeButton;
+    Button setTripInfoButton, clearTripInfoButton;
     ImageButton scanButton;
     public static TextView txtVehDetails;
     public static TextView txtVehId;
+    String origin, destination, purpose, mode, vehicleId, vehicleDetails;
+    AlertDialog.Builder builder;
+    AlertDialog alertDialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_tripinfo, container, false);
+
+        // Clear trip info
+        clearTripInfoButton = (Button) view.findViewById(R.id.btnClear);
+        View.OnClickListener cleartripinfoClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                // Dialog
+                builder = new AlertDialog.Builder(getContext());
+                builder.setMessage("Clear the Trip Info?");
+                builder.setCancelable(false);
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // Clear shared preferences
+                        myPrefs = getActivity().getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = myPrefs.edit();
+                        editor.remove("origin");
+                        editor.remove("destination");
+                        editor.remove("purpose");
+                        editor.remove("mode");
+                        editor.remove("vehicleId");
+                        editor.remove("vehicleDetails");
+                        editor.apply();
+                        txtOrigin.setText("");
+                        txtDestination.setText("");
+                        spinnerPurpose.setSelection(0);
+                        spinnerMode.setSelection(0);
+                        txtVehId.setText("");
+                        txtVehDetails.setText("");
+                    }
+                });
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                AlertDialog alertDialog = builder.create();
+                alertDialog.setTitle("Status");
+                alertDialog.setCancelable(false);
+                alertDialog.setCanceledOnTouchOutside(false);
+                alertDialog.show();
+            }
+        };
+        clearTripInfoButton.setOnClickListener(cleartripinfoClickListener);
+
+        // Set trip info
+        setTripInfoButton = (Button) view.findViewById(R.id.btnSetTripInfo);
+        View.OnClickListener tripinfoClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                myPrefs = getActivity().getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = myPrefs.edit();
+
+                // Get info
+                origin = txtOrigin.getText().toString();
+                destination = txtDestination.getText().toString();
+                purpose = spinnerPurpose.getSelectedItem().toString();
+                mode = spinnerMode.getSelectedItem().toString();
+                vehicleId = txtVehId.getText().toString();
+                vehicleDetails = txtVehDetails.getText().toString();
+
+                // Save to shared preferences
+                editor.putString("origin", origin);
+                editor.putString("destination", destination);
+                editor.putString("purpose", purpose);
+                editor.putString("mode", mode);
+                editor.putString("vehicleId", vehicleId);
+                editor.putString("vehicleDetails", vehicleDetails);
+                editor.apply();
+
+                Toast.makeText(getContext(), "Trip Info set successfully.", Toast.LENGTH_SHORT).show();
+            }
+        };
+        setTripInfoButton.setOnClickListener(tripinfoClickListener);
 
         // Scan results
         txtVehDetails = (TextView) view.findViewById(R.id.txtVehicleDetails);
@@ -69,6 +154,7 @@ public class TripInfoFragment extends Fragment {
                 // Close fragment view
                 container.removeView(view);
                 container.setVisibility(View.GONE);
+
                 // Restore Fab
                 ((Trip) getActivity()).restoreFab();
             }
@@ -76,7 +162,6 @@ public class TripInfoFragment extends Fragment {
 
         // Places API
         String apiKey = getString(R.string.api_key);
-        //String apiKey = getString(R.string.google_maps_key);
 
         if (!Places.isInitialized()) {
             Places.initialize(getContext(), apiKey);
@@ -206,7 +291,7 @@ public class TripInfoFragment extends Fragment {
                 // First item is disable and it is used for hint
                 if (position > 0) {
                     // Notify the selected item text
-                    //Toast.makeText(getApplicationContext(), "Selected : " + selectedItemText, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Selected : " + selectedItemText, Toast.LENGTH_SHORT).show();
                 }
             }
             @Override
@@ -224,6 +309,10 @@ public class TripInfoFragment extends Fragment {
                 "Traditional PUJ",
                 "UV Express",
                 "P2P",
+                "Grab",
+                "Ordinary Taxi",
+                "Angkes",
+                "Tricycle",
                 "Walk",
                 "Bike",
                 "Company Service",
@@ -274,6 +363,22 @@ public class TripInfoFragment extends Fragment {
                 // Do nothing
             }
         });
+
+        // Get shared preferences
+        myPrefs = getActivity().getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
+        txtOrigin.setText(myPrefs.getString("origin",null));
+        txtDestination.setText(myPrefs.getString("destination",null));
+
+        if(myPrefs.getString("purpose",null)!=null) {
+            int selectionPurpose= purposeAdapter.getPosition(myPrefs.getString("purpose",null));
+            spinnerPurpose.setSelection(selectionPurpose);
+        }
+        if(myPrefs.getString("mode",null)!=null) {
+            int selectionMode = modeAdapter.getPosition(myPrefs.getString("mode", null));
+            spinnerMode.setSelection(selectionMode);
+        }
+        txtVehId.setText(myPrefs.getString("vehicleId",null));
+        txtVehDetails.setText(myPrefs.getString("vehicleDetails",null));
 
         return view;
 

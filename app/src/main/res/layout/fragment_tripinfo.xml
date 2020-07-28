@@ -12,6 +12,21 @@
     android:layout_height="match_parent">
 
     <Button
+        android:id="@+id/btnClear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_gravity="center"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="@font/gothammedium_font"
+        android:text="Clear"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toTopOf="@id/txtOrigin"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
         android:id="@+id/btnClose"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -42,6 +57,23 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btnClose"/>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardviewOrig"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtOrigin">
+
+        <fragment android:id="@+id/autocomplete_fragment_orig"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment" />
+    </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardviewDest"
@@ -86,7 +118,7 @@
         android:layout_marginEnd="8dp"
         android:background="@drawable/edit_text_border"
         android:fontFamily="@font/gothammedium_font"
-        android:hint="Vehicle ID"
+        android:hint="Vehicle Id"
         app:layout_constraintEnd_toStartOf="@id/btnScan"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/spinnerMode"/>
@@ -116,7 +148,7 @@
         android:gravity="start|top"
         android:hint="Vehicle Details"
         android:inputType="textMultiLine"
-        android:lines="9"
+        android:lines="8"
         app:layout_constraintEnd_toStartOf="@id/btnScan"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txtVehicleId"/>
@@ -151,22 +183,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/spinnerPurpose" />
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cardviewOrig"
+    <Button
+        android:id="@+id/btnSetTripInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="0dp"
-        android:layout_marginEnd="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginLeft="64dp"
+        android:layout_marginRight="64dp"
+        android:layout_marginTop="16dp"
+        android:text="SET TRIP INFO"
+        android:fontFamily="@font/gothammedium_font"
+        android:textSize="14sp"
+        android:background="@color/blue"
+        android:textColor="@color/white"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtOrigin">
-
-        <fragment android:id="@+id/autocomplete_fragment_orig"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment" />
-    </com.google.android.material.card.MaterialCardView>
+        app:layout_constraintTop_toBottomOf="@+id/txtVehicleDetails" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

@@ -40,9 +40,15 @@ android {
         }
     }
 
-    dataBinding {
-        enabled = true
+    android {
+        buildFeatures{
+            dataBinding = true
+        }
     }
+
+    //dataBinding {
+    //    enabled = true
+    //}
 
     //buildFeatures {
         // Determines whether to support View Binding.

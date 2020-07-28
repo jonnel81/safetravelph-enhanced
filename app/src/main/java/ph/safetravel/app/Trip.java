@@ -18,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
 import android.widget.FrameLayout;
@@ -79,17 +80,18 @@ import java.util.TimeZone;
 
 import ph.safetravel.app.databinding.ActivityTripBinding;
 import ph.safetravel.app.protos.Passenger;
+import ph.safetravel.app.protos.Alert;
 
 public class Trip extends AppCompatActivity implements OnMapReadyCallback, AdapterView.OnItemClickListener {
     SharedPreferences myPrefs;
-    View view;
+    //View view;
     MqttAndroidClient client;
     MqttConnectOptions options;
-    MqttClientPersistence clientPersistence;
-    Vibrator vibrator;
-    String topicStr = "test";
+    //MqttClientPersistence clientPersistence;
+    //Vibrator vibrator;
+    //String topicStr = "test";
     String TAG="Mqtt";
-    Context context;
+    //Context context;
     String MqttHost = "tcp://mqtt.safetravel.ph:8883";
     final String Username = "mqtt";
     final String Password = "mqtt";
@@ -101,11 +103,8 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
     ToggleButton tButton;
     Location mLastLocation;
     Marker mCurrLocationMarker;
-    MapFragment mMapFragment;
+    //MapFragment mMapFragment;
     GoogleMap mMap;
-    //AutoCompleteTextView origin, destination, purpose;
-    //ImageButton origPostButton, destPostButton, origDeleteButton, destDeleteButton;
-    //Spinner spinnerPurpose;
     //LatLng origLatLng, destLatLng;
     //    //MarkerOptions markerOptions;
     private Toolbar toolbar;
@@ -131,21 +130,11 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
         //tvfeedscount.setText("5");
         //tvfeedscount.setVisibility(View.GONE);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "test")
-                .setSmallIcon(R.drawable.ic_baseline_notifications_24)
-                .setContentTitle("My notification")
-                .setContentText("Much longer text that cannot fit one line...")
-                .setStyle(new NotificationCompat.BigTextStyle()
-                        .bigText("Much longer text that cannot fit one line..."))
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-
-
         // Add Map Fragment
         final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
         final SupportMapFragment mapFragment = new SupportMapFragment();
         ft.replace(R.id.mapFragTrip, mapFragment);
-        TripInfoFragment tripInfoFragment = new TripInfoFragment();
         ft.commit();
         mapFragment.getMapAsync(this);
 
@@ -156,9 +145,10 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
         ViewAnimation.init(bi.fabTripAlert);
         ViewAnimation.init(bi.txtFeedsCount);
 
-        // Get feedsCount
-        feedsCount=10;
+        // Get feeds count
+        feedsCount=9;
 
+        // Trip Add Fab
         bi.fabTripAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -186,6 +176,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
             }
         });
 
+        // Trip Info Fab
         bi.fabTripInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -200,27 +191,91 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                     bi.fabTripAdd.hide();
                 }
 
-                // Show Trip Info Fragment
+                // Show fragment
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+
                 TripInfoFragment tripInfoFragment = new TripInfoFragment();
+
                 FrameLayout layout = (FrameLayout) findViewById(R.id.container_frame);
                 layout.setVisibility(View.VISIBLE);
+
                 if (tripInfoFragment.isAdded()) {
                     ft.show(tripInfoFragment);
                 } else {
                     ft.add(R.id.container_frame, tripInfoFragment);
                     ft.show(tripInfoFragment);
                 }
+
                 ft.commit();
             }
         });
 
+        // Trip Alert Fab
+        bi.fabTripAlert.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Hide Fab
+                if(isRotate){
+                    bi.fabTripAdd.hide();
+                    bi.fabTripInfo.hide();
+                    bi.fabTripFeeds.hide();
+                    bi.fabTripAlert.hide();
+                    isRotate=true;
+                } else{
+                    bi.fabTripAdd.hide();
+                }
+
+                // Show fragment
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+
+                TripAlertFragment tripAlertFragment = new TripAlertFragment();
+
+                FrameLayout layout = (FrameLayout) findViewById(R.id.container_frame);
+                layout.setVisibility(View.VISIBLE);
+
+                if (tripAlertFragment.isAdded()) {
+                    ft.show(tripAlertFragment);
+                } else {
+                    ft.add(R.id.container_frame, tripAlertFragment);
+                    ft.show(tripAlertFragment);
+                }
+                ft.commit();
+            }
+        });
+
+        // Trip Feeds Fab
         bi.fabTripFeeds.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Toast.makeText(Trip.this, "Feeds", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(getApplicationContext(), BarcodeReader.class));
+                // Hide Fab
+                if(isRotate){
+                    bi.fabTripAdd.hide();
+                    bi.fabTripInfo.hide();
+                    bi.fabTripFeeds.hide();
+                    bi.fabTripAlert.hide();
+                    isRotate=true;
+                } else{
+                    bi.fabTripAdd.hide();
+                }
+
+                // Show fragment
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+
+                TripFeedsFragment tripFeedsFragment = new TripFeedsFragment();
+
+                FrameLayout layout = (FrameLayout) findViewById(R.id.container_frame);
+                layout.setVisibility(View.VISIBLE);
+
+                if (tripFeedsFragment.isAdded()) {
+                    ft.show(tripFeedsFragment);
+                } else {
+                    ft.add(R.id.container_frame, tripFeedsFragment);
+                    ft.show(tripFeedsFragment);
+                }
+                ft.commit();
             }
         });
 
@@ -425,7 +480,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                             public void onClick(DialogInterface dialog, int which) {
                                 // Clear shared preferences
                                 myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
-                                SharedPreferences.Editor editor = myPrefs.edit();
+                                SharedPreferences.Editor editor = myPrefs  .edit();
                                 editor.clear();
                                 editor.apply();
                                 closeApp();
@@ -476,7 +531,50 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
         });
     } // onCreate
 
-    public void restoreFab(){
+
+    public void sendAlert() {
+        CheckBox checkbox = (CheckBox) findViewById(R.id.checkBox);
+        CheckBox checkbox1 = (CheckBox) findViewById(R.id.checkBox1);
+        CheckBox checkbox2 = (CheckBox) findViewById(R.id.checkBox2);
+        CheckBox checkbox3 = (CheckBox) findViewById(R.id.checkBox3);
+        CheckBox checkbox4 = (CheckBox) findViewById(R.id.checkBox4);
+        CheckBox checkbox5 = (CheckBox) findViewById(R.id.checkBox5);
+        CheckBox checkbox6 = (CheckBox) findViewById(R.id.checkBox6);
+        CheckBox checkbox7 = (CheckBox) findViewById(R.id.checkBox7);
+        CheckBox checkbox8 = (CheckBox) findViewById(R.id.checkBox8);
+
+        StringBuilder result=new StringBuilder();
+        if(checkbox.isChecked()) {
+            result.append(checkbox.getText());
+        }
+        if(checkbox1.isChecked()) {
+            result.append("," + checkbox1.getText());
+        }
+        if(checkbox2.isChecked()) {
+            result.append("," + checkbox2.getText());
+        }
+        if(checkbox3.isChecked()) {
+            result.append("," + checkbox3.getText());
+        }
+        if(checkbox4.isChecked()) {
+            result.append("," + checkbox4.getText());
+        }
+        if(checkbox5.isChecked()) {
+            result.append("," + checkbox5.getText());
+        }
+        if(checkbox6.isChecked()) {
+            result.append("," + checkbox6.getText());
+        }
+        if(checkbox7.isChecked()) {
+            result.append("," + checkbox7.getText());
+        }
+        if(checkbox8.isChecked()) {
+            result.append("," + checkbox8.getText());
+        }
+        Toast.makeText(getApplicationContext(), "Alert sent.", Toast.LENGTH_SHORT).show();
+    } // sendAlert
+
+    public void restoreFab() {
         // Show Fab
         if(isRotate){
             bi.fabTripAdd.show();
@@ -486,8 +584,10 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
         } else{
             bi.fabTripAdd.show();
         }
-    }
+    } // restoreFab
 
+
+    // Drawerlayout menu item clicked
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         // fetch the user selected value
@@ -656,21 +756,24 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                 if (mLastLocation != null) {
                     String lat = String.valueOf(location.getLatitude());
                     String lng = String.valueOf(location.getLongitude());
-                    //double lat = location.getLatitude();
-                    //double lng = location.getLongitude();
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
                     sdf.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
                     String timeStamp = sdf.format(new Date());
+
+                    // Get shared preferences
                     myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
                     String username = myPrefs.getString("username",null);
                     String androidId = myPrefs.getString("androidId",null);
                     String userId = username;
-                    //String vehicleId = myPrefs.getString("vehicleId",null);
-                    //String vehCode = vehicleId;
-                    String vehicleId = "None";
-                    String purpose = "None";
+                    String origin = myPrefs.getString("origin",null);
+                    String destination = myPrefs.getString("origin",null);
+                    String purpose = myPrefs.getString("purpose",null);
+                    String mode = myPrefs.getString("mode",null);
+                    String vehicleId = myPrefs.getString("vehicleId",null);
+                    String vehicleDetails = myPrefs.getString("vehicleDetails",null);
+
                     // Publish message
-                    publishMessage(passengerMessage(androidId, lat, lng, timeStamp, userId, vehicleId, purpose));
+                    publishMessage(passengerMessage(androidId, lat, lng, timeStamp, userId, origin, destination, purpose, mode, vehicleId, vehicleDetails));
 
                     // Place location marker
                     if (mCurrLocationMarker != null) {
@@ -730,21 +833,36 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
         }
     }
 
-    public byte[] passengerMessage(String deviceId, String lat, String lng, String timestamp, String userId, String vehId, String purpose) {
+    public byte[] passengerMessage(String deviceId, String lat, String lng, String timestamp, String userId, String origin, String destination, String purpose, String mode, String vehicleId, String vehicleDetails) {
         Passenger passenger = Passenger.newBuilder()
                 .setDeviceId(deviceId)
                 .setLat(lat)
                 .setLng(lng)
                 .setTimestamp(timestamp)
                 .setUserId(userId)
-                .setVehicleId(vehId)
+                .setOrig(origin)
+                .setDest(destination)
                 .setPurpose(purpose)
+                .setMode(mode)
+                .setVehicleId(vehicleId)
+                .setVehicleDetails(vehicleDetails)
                 .build();
         byte message[] = passenger.toByteArray();
         return message;
-        //String message = passenger.toString();
-        //Log.i("pb", message);
-    }
+    } // passengerMessage
+
+    public byte[] alertMessage(String deviceId, String lat, String lng, String timestamp, String userId, String description) {
+        Alert alert = Alert.newBuilder()
+                .setDeviceId(deviceId)
+                .setLat(lat)
+                .setLng(lng)
+                .setTimestamp(timestamp)
+                .setUserId(userId)
+                .setDescription(description)
+                .build();
+        byte message[] = alert.toByteArray();
+        return message;
+    } // passengerMessage
 
     public void publishMessage(byte[] payload) {
         try {
@@ -767,6 +885,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
             //} catch (IOException e) {
             //    e.printStackTrace();
             //}
+            
             message.setPayload(payload);
             message.setQos(0);
             client.publish("passengers", message,null, new IMqttActionListener() {

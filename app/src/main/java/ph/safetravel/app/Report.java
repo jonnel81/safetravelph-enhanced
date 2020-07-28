@@ -348,7 +348,6 @@ public class Report extends AppCompatActivity implements OnMapReadyCallback, Goo
         startActivityForResult(Intent.createChooser(intent, "Select Photo"),AppConstants.PICK_PHOTO_REQUEST);
     } // onPickPhoto
 
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
