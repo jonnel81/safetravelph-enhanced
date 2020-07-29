@@ -18,7 +18,7 @@
             android:id="@+id/drawer_layout">
 
             <include
-                layout="@layout/content_fleet"
+                layout="@layout/content_data"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -54,73 +54,6 @@
                 android:background="?attr/colorPrimary">
             </androidx.appcompat.widget.Toolbar>
         </com.google.android.material.appbar.AppBarLayout>
-
-        <LinearLayout
-            android:gravity="center_horizontal"
-            android:layout_gravity="center_vertical|end|end"
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fabFleetInfo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:src="@drawable/ic_baseline_directions_24"
-                android:tint="@color/blue"
-                app:backgroundTint="@color/white"
-                app:fabSize="normal"
-                app:rippleColor="@color/white" />
-
-            <LinearLayout
-                android:gravity="center_horizontal"
-                android:layout_gravity="center_vertical|end|end"
-                android:orientation="vertical"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
-
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/fabFleetFeeds"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="20dp"
-                    android:src="@drawable/ic_baseline_message_24"
-                    android:tint="@color/blue"
-                    app:backgroundTint="@color/white"
-                    app:fabSize="normal"
-                    app:rippleColor="@color/white" />
-
-                <TextView
-                    android:id="@+id/txtFeedsCount"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginTop="-80dp"
-                    android:layout_toEndOf="@id/fabTripFeeds"
-                    android:layout_alignParentTop="true"
-                    android:background="@drawable/floating_action_button_label"
-                    android:gravity="center"
-                    android:elevation="7dp"
-                    android:text="99+"
-                    android:textSize="14dp"
-                    android:textColor="@color/white"
-                    android:textStyle="bold" />
-            </LinearLayout>
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fabFleetAdd"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="18dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="18dp"
-                android:layout_marginBottom="18dp"
-                android:src="@drawable/ic_baseline_add_24"
-                app:fabSize="normal"
-                android:tint="@color/white"
-                app:rippleColor="@color/white" />
-        </LinearLayout>
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_nav_view"

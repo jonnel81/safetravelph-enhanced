@@ -33,6 +33,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -75,7 +76,6 @@ public class Report extends AppCompatActivity implements OnMapReadyCallback, Goo
     View view;
     AsyncResponse aR = Report.this;
     BackgroundWorker backgroundWorker = new BackgroundWorker(Report.this, aR);
-    Context context;
     AlertDialog.Builder builder;
     AlertDialog alertDialog;
     Button buttonReport;
@@ -88,7 +88,6 @@ public class Report extends AppCompatActivity implements OnMapReadyCallback, Goo
     Marker mCurrLocationMarker;
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationRequest locationRequest;
-    //private LocationManager locationManager;
     private boolean isContinue = false;
     private boolean isGPS = false;
     private Toolbar toolbar;
@@ -144,7 +143,7 @@ public class Report extends AppCompatActivity implements OnMapReadyCallback, Goo
                 switch(id) {
                     case R.id.profile:
                     {
-                        Toast.makeText(Report.this, "My Profile", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Report.this, "Profile", Toast.LENGTH_SHORT).show();
                     }
                     case R.id.settings:
                     {
@@ -152,7 +151,9 @@ public class Report extends AppCompatActivity implements OnMapReadyCallback, Goo
                     }
                     case R.id.about:
                     {
-                        Toast.makeText(Report.this, "Edit Profile", Toast.LENGTH_SHORT).show();
+                        dl.closeDrawer(Gravity.LEFT);
+                        Intent intent = new Intent(Report.this, About.class);
+                        startActivity(intent);
                     }
                 }
                 return false;
@@ -239,17 +240,14 @@ public class Report extends AppCompatActivity implements OnMapReadyCallback, Goo
                                 SharedPreferences.Editor editor = myPrefs.edit();
                                 editor.clear();
                                 editor.apply();
-                                // Go to main activity
-                                Intent intent0 = new Intent(Report.this, MainActivity.class);
-                                startActivity(intent0);
+                                startActivity(new Intent(Report.this, MainActivity.class));
                             }
                         });
                         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
-                                Intent intent2 = new Intent(Report.this, Report.class);
-                                startActivity(intent2);
+                                startActivity(new Intent(Report.this, Report.class));
                             }
                         });
                         androidx.appcompat.app.AlertDialog alertDialog = builder.create();
@@ -260,9 +258,8 @@ public class Report extends AppCompatActivity implements OnMapReadyCallback, Goo
 
                         break;
                     }
-                    case R.id.navigation_info: {
-                        Intent intent1 = new Intent(Report.this, Info.class);
-                        startActivity(intent1);
+                    case R.id.navigation_data: {
+                        startActivity(new Intent(Report.this, Data.class));
                         break;
                     }
                     case R.id.navigation_report: {
@@ -270,13 +267,11 @@ public class Report extends AppCompatActivity implements OnMapReadyCallback, Goo
                         break;
                     }
                     case R.id.navigation_trip: {
-                        Intent intent3 = new Intent(Report.this, Trip.class);
-                        startActivity(intent3);
+                        startActivity(new Intent(Report.this, Trip.class));
                         break;
                     }
                     case R.id.navigation_fleet: {
-                        Intent intent4 = new Intent(Report.this, Fleet.class);
-                        startActivity(intent4);
+                        startActivity(new Intent(Report.this, Fleet.class));
                         break;
                     }
                 }
@@ -526,14 +521,12 @@ public class Report extends AppCompatActivity implements OnMapReadyCallback, Goo
         SharedPreferences.Editor editor = myPrefs.edit();
         editor.clear();
         editor.apply();
-        // Go to main activity
         startActivity(new Intent(this, MainActivity.class));
     } // onLogout
 
     @Override
     public void onBackPressed() {
-        // Go to info
-        startActivity(new Intent(this, Info.class));
+
     } // onBackPressed
 
     @SuppressLint("DefaultLocale")

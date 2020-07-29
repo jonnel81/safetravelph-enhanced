@@ -8,10 +8,10 @@
         android:title="Logout" />
 
     <item
-        android:id="@+id/navigation_info"
+        android:id="@+id/navigation_data"
         android:icon="@drawable/ic_bigdata"
         android:enabled="true"
-        android:title="@string/title_info" />
+        android:title="@string/title_data" />
 
     <item
         android:id="@+id/navigation_report"

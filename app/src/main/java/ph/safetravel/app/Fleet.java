@@ -29,6 +29,7 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.os.Vibrator;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -50,6 +51,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -81,14 +83,8 @@ import ph.safetravel.app.protos.Vehicle;
 
 public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
     SharedPreferences myPrefs;
-    View view;
     MqttAndroidClient client;
     MqttConnectOptions options;
-    MqttClientPersistence clientPersistence;
-    Vibrator vibrator;
-    String mqttTopic = "";
-    String TAG="Mqtt";
-    Context context;
     String MqttHost = "tcp://mqtt.safetravel.ph:8883";
     final String Username = "mqtt";
     final String Password = "mqtt";
@@ -116,17 +112,31 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
     ProgressBar pgsBar;
     ActivityFleetBinding bi;
     boolean isRotate = false;
+    int feedsCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_fleet);
+        setContentView(R.layout.activity_fleet);
+
         final MediaPlayer mp = new MediaPlayer();
+
+        // Map Fragment
+        final androidx.fragment.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+        final SupportMapFragment mapFragment = new SupportMapFragment();
+        ft.replace(R.id.mapFragFleet, mapFragment);
+        ft.commit();
+        mapFragment.getMapAsync(this);
 
         // Floating action bar
         bi = DataBindingUtil.setContentView(this, R.layout.activity_fleet);
         ViewAnimation.init(bi.fabFleetInfo);
         ViewAnimation.init(bi.fabFleetFeeds);
+        ViewAnimation.init(bi.txtFeedsCount);
+
+        // Get feeds count
+        feedsCount=9;
 
         bi.fabFleetAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -135,9 +145,20 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                 if(isRotate){
                     ViewAnimation.showIn(bi.fabFleetInfo);
                     ViewAnimation.showIn(bi.fabFleetFeeds);
+                    if(feedsCount!=0){
+                        ViewAnimation.showIn(bi.txtFeedsCount);
+                        if(feedsCount<=99) {
+                            bi.txtFeedsCount.setText(String.valueOf(feedsCount));
+                        } else {
+                            bi.txtFeedsCount.setText("99+");
+                        }
+                    }
                 }else{
                     ViewAnimation.showOut(bi.fabFleetInfo);
                     ViewAnimation.showOut(bi.fabFleetFeeds);
+                    if(feedsCount!=0){
+                        ViewAnimation.showOut(bi.txtFeedsCount);
+                    }
                 }
             }
         });
@@ -159,7 +180,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
         });
 
         // Toolbar
-        toolbar = findViewById(R.id.toolbarFleet);
+        toolbar = findViewById(R.id.toolbar);
         toolbar.inflateMenu(R.menu.main_menu);
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
@@ -215,7 +236,9 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                     }
                     case R.id.about:
                     {
-                        Toast.makeText(Fleet.this, "Edit Profile", Toast.LENGTH_SHORT).show();
+                        dl.closeDrawer(Gravity.LEFT);
+                        Intent intent = new Intent(Fleet.this, About.class);
+                        startActivity(intent);
                     }
                 }
                 return false;
@@ -237,7 +260,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                 try {
                     mp.reset();
                     AssetFileDescriptor afd;
-                    afd = getAssets().openFd("beep.mp3");
+                    afd = getAssets().openFd("beep-high.mp3");
                     mp.setDataSource(afd.getFileDescriptor(),afd.getStartOffset(),afd.getLength());
                     mp.prepare();
                     mp.start();
@@ -278,7 +301,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                 try {
                     mp.reset();
                     AssetFileDescriptor afd;
-                    afd = getAssets().openFd("beep.mp3");
+                    afd = getAssets().openFd("beep-low.mp3");
                     mp.setDataSource(afd.getFileDescriptor(),afd.getStartOffset(),afd.getLength());
                     mp.prepare();
                     mp.start();
@@ -331,11 +354,11 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
         //dbManager.open();
 
         // Map fragment
-        mMapFragmentFleet = MapFragment.newInstance();
-        FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        fragmentTransaction.add(R.id.mapFragFleet, mMapFragmentFleet);
-        fragmentTransaction.commit();
-        mMapFragmentFleet.getMapAsync(this);
+        //mMapFragmentFleet = MapFragment.newInstance();
+        //FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+        //fragmentTransaction.add(R.id.mapFragFleet, mMapFragmentFleet);
+        //fragmentTransaction.commit();
+        //mMapFragmentFleet.getMapAsync(this);
 
         // FuseLocationProviderClient
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -472,9 +495,9 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                         alertDialog.show();
                         break;
                     }
-                    case R.id.navigation_info: {
+                    case R.id.navigation_data: {
                         closeApp();
-                        Intent intent1 = new Intent(Fleet.this, Info.class);
+                        Intent intent1 = new Intent(Fleet.this, Data.class);
                         startActivity(intent1);
                         break;
                     }
@@ -669,13 +692,11 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
             token.setActionCallback(new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    // We are connected
                     Toast.makeText(getApplicationContext(),"Disconnected", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    // Something went wrong e.g. connection timeout or firewall problems
                     Toast.makeText(getApplicationContext(),"Could Not Disconnect", Toast.LENGTH_SHORT).show();
 
                 }
@@ -687,8 +708,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
 
     @Override
     public void onBackPressed() {
-        // Go to trip activity
-        startActivity(new Intent(this, Trip.class));
+;
     } // onBackPressed
 
     @Override
@@ -718,7 +738,6 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         LatLng mmla = new LatLng(14.6091, 121.0223);
-        //mMap.addMarker(new MarkerOptions().position(mmla).title("Marker Position"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mmla, 10));
     } // onMapReady
 

@@ -44,7 +44,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //supportRequestWindowFeature(WindowCompat.FEATURE_ACTION_BAR);
 
         UserNameEt = findViewById(R.id.etUserName);
         PasswordEt = findViewById(R.id.etPassword);
@@ -70,7 +69,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
     //    return super.onOptionsItemSelected(item);
     //}
 
-    // Click login button
     public void OnLogin(View view) {
         username = UserNameEt.getText().toString();
         password = PasswordEt.getText().toString();
@@ -129,7 +127,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         }
     } // processFinish
 
-    // Click register button
     public void OpenReg(View view) {
         // start register activity
         startActivity(new Intent(this,Register.class));

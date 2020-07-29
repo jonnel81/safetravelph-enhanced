@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.os.Vibrator;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -125,7 +126,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip);
 
-        // Add Map Fragment
+        // Map Fragment
         final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
         final SupportMapFragment mapFragment = new SupportMapFragment();
@@ -133,7 +134,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
         ft.commit();
         mapFragment.getMapAsync(this);
 
-        // Add Fab
+        // Floating action bar
         bi = DataBindingUtil.setContentView(this, R.layout.activity_trip);
         ViewAnimation.init(bi.fabTripInfo);
         ViewAnimation.init(bi.fabTripFeeds);
@@ -275,7 +276,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
         });
 
         // Toolbar
-        toolbar = findViewById(R.id.toolbarTrip);
+        toolbar = findViewById(R.id.toolbar);
         toolbar.inflateMenu(R.menu.main_menu);
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
@@ -287,10 +288,6 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                 return false;
             }
         });
-
-        //setSupportActionBar(toolbar);
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //getSupportActionBar().setHomeButtonEnabled(true);
 
         // Progress bar
         pgsBar = findViewById(R.id.progressBarTrip);
@@ -349,7 +346,9 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                     }
                     case R.id.about:
                     {
-                        Toast.makeText(Trip.this, "Edit Profile", Toast.LENGTH_SHORT).show();
+                        dl.closeDrawer(Gravity.LEFT);
+                        Intent intent = new Intent(Trip.this, About.class);
+                        startActivity(intent);
                     }
                 }
                 return false;
@@ -473,17 +472,14 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                                 editor.clear();
                                 editor.apply();
                                 closeApp();
-                                // Go to main activity
-                                Intent intent0 = new Intent(Trip.this, MainActivity.class);
-                                startActivity(intent0);
+                                startActivity(new Intent(Trip.this, MainActivity.class));
                             }
                         });
                         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
-                                Intent intent3 = new Intent(Trip.this, Trip.class);
-                                startActivity(intent3);
+                                startActivity(new Intent(Trip.this, Trip.class));
                             }
                         });
                         AlertDialog alertDialog = builder.create();
@@ -493,16 +489,14 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                         alertDialog.show();
                         break;
                     }
-                    case R.id.navigation_info: {
+                    case R.id.navigation_data: {
                         closeApp();
-                        Intent intent1 = new Intent(Trip.this, Info.class);
-                        startActivity(intent1);
+                        startActivity(new Intent(Trip.this, Data.class));
                         break;
                     }
                     case R.id.navigation_report: {
                         closeApp();
-                        Intent intent2 = new Intent(Trip.this, Report.class);
-                        startActivity(intent2);
+                        startActivity(new Intent(Trip.this, Report.class));
                         break;
                     }
                     case R.id.navigation_trip: {
@@ -510,14 +504,14 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                     }
                     case R.id.navigation_fleet: {
                         closeApp();
-                        Intent intent4 = new Intent(Trip.this, Fleet.class);
-                        startActivity(intent4);
+                        startActivity(new Intent(Trip.this, Fleet.class));
                         break;
                     }
                 }
                 return true;
             }
         });
+
     } // onCreate
 
     public void sendAlert() {
@@ -1010,8 +1004,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
 
     @Override
     public void onBackPressed() {
-        // Go to report activity
-        startActivity(new Intent(this, Report.class));
+
     } // onBackPressed
 
     @Override

@@ -44,7 +44,7 @@ public class Navigation extends AppCompatActivity {
                         startActivity(intent0);
                         break;
                     }
-                    case R.id.navigation_info: {
+                    case R.id.navigation_data: {
                         Intent intent1 = new Intent(Navigation.this, Report.class);
                         startActivity(intent1);
                         break;
