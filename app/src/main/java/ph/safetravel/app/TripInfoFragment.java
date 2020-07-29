@@ -61,7 +61,6 @@ public class TripInfoFragment extends Fragment {
         View.OnClickListener cleartripinfoClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 // Dialog
                 builder = new AlertDialog.Builder(getContext());
                 builder.setMessage("Clear the Trip Info?");
@@ -118,16 +117,22 @@ public class TripInfoFragment extends Fragment {
                 vehicleId = txtVehId.getText().toString();
                 vehicleDetails = txtVehDetails.getText().toString();
 
-                // Save to shared preferences
-                editor.putString("origin", origin);
-                editor.putString("destination", destination);
-                editor.putString("purpose", purpose);
-                editor.putString("mode", mode);
-                editor.putString("vehicleId", vehicleId);
-                editor.putString("vehicleDetails", vehicleDetails);
-                editor.apply();
+                if(origin.equals("") || destination.equals("") || purpose.equals("") || mode.equals("")) {
+                    Toast.makeText(getContext(), "Please complete required fields.", Toast.LENGTH_SHORT).show();
+                } else {
+                    // Save to shared preferences
+                    editor.putString("origin", origin);
+                    editor.putString("destination", destination);
+                    editor.putString("purpose", purpose);
+                    editor.putString("mode", mode);
+                    editor.putString("vehicleId", vehicleId);
+                    editor.putString("vehicleDetails", vehicleDetails);
+                    editor.apply();
+                    Toast.makeText(getContext(), "Trip Info set successfully.", Toast.LENGTH_SHORT).show();
 
-                Toast.makeText(getContext(), "Trip Info set successfully.", Toast.LENGTH_SHORT).show();
+                    // Save to database
+
+                }
             }
         };
         setTripInfoButton.setOnClickListener(tripinfoClickListener);

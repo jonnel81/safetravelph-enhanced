@@ -20,7 +20,6 @@ public class DBHelper extends SQLiteOpenHelper
     private static final String DATABASE_NAME = "safetravelph.db";
     public final static String DATABASE_PATH ="/data/data/ph.safetravel.app/databases/";
     public static final int DATABASE_VERSION = 1;
-    //public static final int DATABASE_VERSION_old = 1;
 
     // Constructor
     public DBHelper(Context context)

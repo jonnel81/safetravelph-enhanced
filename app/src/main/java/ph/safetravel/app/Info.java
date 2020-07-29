@@ -71,7 +71,7 @@ public class Info extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 int id = menuItem.getItemId();
                 switch(id) {
-                    case R.id.myprofile:
+                    case R.id.profile:
                     {
                         //Toast.makeText(MainActivity.this, "My Profile", Toast.LENGTH_SHORT).show();
                     }
@@ -79,8 +79,10 @@ public class Info extends AppCompatActivity {
                     {
                         //Toast.makeText(MainActivity.this, "Settings", Toast.LENGTH_SHORT).show();
                     }
-                    case R.id.editprofile:
+                    case R.id.about:
                     {
+                        Intent intent1 = new Intent(Info.this, Info.class);
+                        startActivity(intent1);
                         //Toast.makeText(MainActivity.this, "Edit Profile", Toast.LENGTH_SHORT).show();
                     }
                 }

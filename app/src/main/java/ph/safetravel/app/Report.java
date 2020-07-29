@@ -142,7 +142,7 @@ public class Report extends AppCompatActivity implements OnMapReadyCallback, Goo
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 int id = menuItem.getItemId();
                 switch(id) {
-                    case R.id.myprofile:
+                    case R.id.profile:
                     {
                         Toast.makeText(Report.this, "My Profile", Toast.LENGTH_SHORT).show();
                     }
@@ -150,7 +150,7 @@ public class Report extends AppCompatActivity implements OnMapReadyCallback, Goo
                     {
                         Toast.makeText(Report.this, "Settings", Toast.LENGTH_SHORT).show();
                     }
-                    case R.id.editprofile:
+                    case R.id.about:
                     {
                         Toast.makeText(Report.this, "Edit Profile", Toast.LENGTH_SHORT).show();
                     }

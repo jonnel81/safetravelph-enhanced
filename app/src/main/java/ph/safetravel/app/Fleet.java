@@ -164,9 +164,6 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                if(item.getItemId()==R.id.scan) {
-                    startActivity(new Intent(getApplicationContext(), BarcodeReader.class));
-                }
                 if(item.getItemId()==R.id.settings)
                 {
                     // do something
@@ -208,7 +205,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 int id = menuItem.getItemId();
                 switch(id) {
-                    case R.id.myprofile:
+                    case R.id.profile:
                     {
                         Toast.makeText(Fleet.this, "My Profile", Toast.LENGTH_SHORT).show();
                     }
@@ -216,7 +213,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                     {
                         Toast.makeText(Fleet.this, "Settings", Toast.LENGTH_SHORT).show();
                     }
-                    case R.id.editprofile:
+                    case R.id.about:
                     {
                         Toast.makeText(Fleet.this, "Edit Profile", Toast.LENGTH_SHORT).show();
                     }

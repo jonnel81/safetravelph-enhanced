@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/myprofile"
-        android:title="My Profile"
+        android:id="@+id/profile"
+        android:title="Profile"
         android:icon="@drawable/ic_baseline_person_24">
     </item>
     <item
@@ -11,8 +11,8 @@
         android:icon="@drawable/ic_baseline_settings_24">
     </item>
     <item
-        android:id="@+id/editprofile"
-        android:title="Edit Profile"
-        android:icon="@drawable/ic_baseline_edit_24">
+        android:id="@+id/about"
+        android:title="About"
+        android:icon="@drawable/ic_baseline_info_24">
     </item>
 </menu>

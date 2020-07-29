@@ -41,6 +41,7 @@ public class TripAlertFragment extends Fragment {
         View.OnClickListener scanClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // Check if broker is connected
                 if(((Trip) getActivity()).connected()) {
                     ((Trip) getActivity()).sendAlert();
                 }
