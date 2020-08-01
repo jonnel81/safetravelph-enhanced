@@ -1,5 +1,6 @@
 package ph.safetravel.app;
 
+
 import android.content.Context;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
@@ -13,73 +14,58 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class DBHelper extends SQLiteOpenHelper
-{
+public class DBHelper extends SQLiteOpenHelper {
     private SQLiteDatabase myDataBase;
     private final Context myContext;
-    private static final String DATABASE_NAME = "safetravelph.db";
-    public final static String DATABASE_PATH ="/data/data/ph.safetravel.app/databases/";
-    public static final int DATABASE_VERSION = 1;
+    private static final String DB_NAME = "safetravelph.db";
+    public final static String DB_PATH ="/data/data/ph.safetravel.app/databases/";
+    public static final int DB_VERSION = 1;
 
     // Constructor
-    public DBHelper(Context context)
-    {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        this.myContext = context;
+    public DBHelper(Context context) {
+        super(context, DB_NAME,null, DB_VERSION);
+        this.myContext=context;
+        boolean dbexist = checkdatabase();
+        if (dbexist) {
+            System.out.println("Database exists");
+            opendatabase();
+        } else {
+            System.out.println("Database doesn't exist");
+            createdatabase();
+        }
     }
 
-    //Create a empty database on the system
-    public void createDatabase() throws IOException
-    {
-        boolean dbExist = checkDataBase();
-
-        if(dbExist)
-        {
-            Log.v("DB Exists", "db exists");
-            // By calling this method here onUpgrade will be called on a
-            // writeable database, but only if the version number has been
-            // bumped
-            //onUpgrade(myDataBase, DATABASE_VERSION_old, DATABASE_VERSION);
-        }
-
-        boolean dbExist1 = checkDataBase();
-        if(!dbExist1)
-        {
+    public void createdatabase() {
+        boolean dbExist = checkdatabase();
+        if(dbExist) {
+            System.out.println(" Database exists.");
+        } else {
             this.getReadableDatabase();
-            try
-            {
-                this.close();
-                copyDataBase();
-            }
-            catch (IOException e)
-            {
+            try {
+                copydatabase();
+            } catch(IOException e) {
                 throw new Error("Error copying database");
             }
         }
     }
 
-    //Check database already exist or not
-    private boolean checkDataBase()
-    {
-        boolean checkDB = false;
-        try
-        {
-            String myPath = DATABASE_PATH + DATABASE_NAME;
+    private boolean checkdatabase() {
+        // Check the database
+        boolean checkDb = false;
+        try {
+            String myPath = DB_PATH + DB_NAME;
             File dbfile = new File(myPath);
-            checkDB = dbfile.exists();
+            checkDb = dbfile.exists();
+        } catch(SQLiteException e) {
+            System.out.println("Database doesn't exist");
         }
-        catch(SQLiteException e)
-        {
-        }
-        return checkDB;
+        return checkDb;
     }
 
-    // Copies your database from your local assets-folder to the just created empty database in the system folder
-    private void copyDataBase() throws IOException
-    {
-        String outFileName = DATABASE_PATH + DATABASE_NAME;
+    private void copydatabase() throws IOException {
+        String outFileName = DB_PATH + DB_NAME;
         OutputStream myOutput = new FileOutputStream(outFileName);
-        InputStream myInput = myContext.getAssets().open(DATABASE_NAME);
+        InputStream myInput = myContext.getAssets().open(DB_NAME);
 
         byte[] buffer = new byte[1024];
         int length;
@@ -87,54 +73,55 @@ public class DBHelper extends SQLiteOpenHelper
         {
             myOutput.write(buffer, 0, length);
         }
+
         myInput.close();
         myOutput.flush();
         myOutput.close();
         Log.v("Database", "Database copied.");
     }
 
-    // Delete database
-    public void db_delete()
-    {
-        File file = new File(DATABASE_PATH + DATABASE_NAME);
-        if(file.exists())
-        {
-            file.delete();
-            System.out.println("delete database file.");
-        }
-    }
-
-    // Open database
-    public void openDatabase() throws SQLException
-    {
-        String myPath = DATABASE_PATH + DATABASE_NAME;
+    public void opendatabase() throws SQLException {
+        // Open the database
+        String myPath = DB_PATH + DB_NAME;
         myDataBase = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READWRITE);
     }
 
-    public synchronized void closeDataBase()throws SQLException
+    public synchronized void close() {
+        if(myDataBase != null) {
+            myDataBase.close();
+        }
+        super.close();
+    }
+
+    // Delete database
+    public void databasedelete()
+    {
+        File file = new File(DB_PATH + DB_NAME);
+        if(file.exists())
+        {
+            file.delete();
+            System.out.println("Delete database file.");
+        }
+    }
+
+    public synchronized void closedataBase()throws SQLException
     {
         if(myDataBase != null)
             myDataBase.close();
         super.close();
     }
 
-    public void onCreate(SQLiteDatabase db)
-    {
-        try {
-            createDatabase();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void onCreate(SQLiteDatabase db) {
+        createdatabase();
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
     {
         if (newVersion > oldVersion)
         {
-            Log.v("Database Upgrade", "Database version higher than old.");
-            db_delete();
+            Log.v("Database upgrade", "Database version higher than old.");
+            databasedelete();
         }
     }
 
-    //add your public methods for insert, get, delete and update data in database.
 }

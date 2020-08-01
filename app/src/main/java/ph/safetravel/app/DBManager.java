@@ -17,7 +17,8 @@ public class DBManager {
 
     public DBManager open() throws SQLException {
         dbHelper = new DBHelper(context);
-        dbHelper.openDatabase();
+        //dbHelper.opendatabase();
+        database = dbHelper.getWritableDatabase();
         return this;
     }
 

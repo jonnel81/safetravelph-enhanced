@@ -34,6 +34,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -118,6 +119,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fleet);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         final MediaPlayer mp = new MediaPlayer();
 
@@ -136,7 +138,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
         ViewAnimation.init(bi.txtFeedsCount);
 
         // Get feeds count
-        feedsCount=9;
+        feedsCount=0;
 
         bi.fabFleetAdd.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -350,8 +352,8 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
         //gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 
         // Open dbase
-        //dbManager = new DBManager(this);
-        //dbManager.open();
+        dbManager = new DBManager(this);
+        dbManager.open();
 
         // Map fragment
         //mMapFragmentFleet = MapFragment.newInstance();
