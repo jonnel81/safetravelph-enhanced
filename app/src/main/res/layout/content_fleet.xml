@@ -39,7 +39,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="0dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="24dp"
         app:layout_constraintBottom_toTopOf="@id/txtNumPass"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -57,45 +57,90 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/progressBarFleet" />
 
-        <ImageButton
-            android:id="@+id/btnBoard"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="80dp"
-            android:background="@drawable/ic_plus"
-            android:text="Board"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/btnAlight"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/mapFragFleet" />
+    <TextView
+        android:id="@+id/txtBoard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="@font/gothambook_font"
+        android:text="Boarding"
+        android:textColor="@color/blue"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@id/btnBoard"
+        app:layout_constraintEnd_toStartOf="@+id/txtPass"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mapFragFleet" />
 
-        <ImageButton
-            android:id="@+id/btnAlight"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="80dp"
-            android:background="@drawable/ic_minus"
-            android:text="Alight"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/btnBoard"
-            app:layout_constraintTop_toBottomOf="@id/mapFragFleet" />
+    <TextView
+        android:id="@+id/txtPass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="@font/gothambook_font"
+        android:textColor="@color/blue"
+        android:text="Total Pax"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toStartOf="@+id/txtAlight"
+        app:layout_constraintStart_toEndOf="@id/txtBoard"
+        app:layout_constraintTop_toBottomOf="@+id/mapFragFleet" />
 
-        <TextView
-            android:id="@+id/txtNumPass"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="0dp"
-            android:layout_marginBottom="80dp"
-            android:background="@drawable/border"
-            android:text="#"
-            android:textSize="24sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btnAlight"
-            app:layout_constraintStart_toEndOf="@+id/btnBoard"
-            app:layout_constraintTop_toBottomOf="@+id/mapFragFleet" />
+    <TextView
+        android:id="@+id/txtAlight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="@font/gothambook_font"
+        android:text="Alighting"
+        android:textColor="@color/blue"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@id/btnAlight"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/txtPass"
+        app:layout_constraintTop_toBottomOf="@+id/mapFragFleet" />
+
+    <ImageButton
+        android:id="@+id/btnBoard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="80dp"
+        android:background="@drawable/ic_plus"
+        android:text="Board"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/txtNumPass"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/mapFragFleet" />
+
+    <ImageButton
+        android:id="@+id/btnAlight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="80dp"
+        android:background="@drawable/ic_minus"
+        android:text="Alight"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/txtNumPass"
+        app:layout_constraintTop_toBottomOf="@id/mapFragFleet" />
+
+    <TextView
+        android:id="@+id/txtNumPass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="90dp"
+        android:background="@drawable/border"
+        android:text="#"
+        android:textSize="36sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnAlight"
+        app:layout_constraintStart_toEndOf="@+id/btnBoard"
+        app:layout_constraintTop_toBottomOf="@+id/mapFragFleet" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

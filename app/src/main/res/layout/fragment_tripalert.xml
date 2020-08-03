@@ -22,12 +22,28 @@
         android:text="Close"
         android:fontFamily="@font/gothammedium_font"
         android:textSize="14sp"
-        app:layout_constraintBottom_toTopOf="@id/checkBox"
+        app:layout_constraintBottom_toTopOf="@id/checkBox1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <CheckBox
-        android:id="@+id/checkBox"
+        android:id="@+id/checkBox1"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/edit_text_border"
+        android:drawableRight="@drawable/ic_nopt"
+        android:fontFamily="@font/gothammedium_font"
+        android:text="Lack of public transport"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnClose" />
+
+    <CheckBox
+        android:id="@+id/checkBox2"
         android:layout_width="280dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -36,14 +52,30 @@
         android:background="@drawable/edit_text_border"
         android:drawableRight="@drawable/ic_covid19"
         android:fontFamily="@font/gothammedium_font"
-        android:text="Lack of health protocols"
+        android:text="Violation of minimum health standards"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnClose" />
+        app:layout_constraintTop_toBottomOf="@id/checkBox1" />
 
     <CheckBox
-        android:id="@+id/checkBox1"
+        android:id="@+id/checkBox3"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/edit_text_border"
+        android:drawableRight="@drawable/ic_overpricing"
+        android:fontFamily="@font/gothammedium_font"
+        android:text="Fare overpricing"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/checkBox2" />
+
+    <CheckBox
+        android:id="@+id/checkBox4"
         android:layout_width="280dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -56,52 +88,7 @@
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/checkBox" />
-
-    <CheckBox
-        android:id="@+id/checkBox2"
-        android:layout_width="280dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="24dp"
-        android:background="@drawable/edit_text_border"
-        android:drawableRight="@drawable/ic_overspeeding"
-        android:fontFamily="@font/gothammedium_font"
-        android:text="Overspeeding"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/checkBox1" />
-
-    <CheckBox
-        android:id="@+id/checkBox3"
-        android:layout_width="280dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="24dp"
-        android:background="@drawable/edit_text_border"
-        android:drawableRight="@drawable/ic_repair"
-        android:fontFamily="@font/gothammedium_font"
-        android:text="Poor vehicle quality"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/checkBox2" />
-
-    <CheckBox
-        android:id="@+id/checkBox4"
-        android:layout_width="280dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="24dp"
-        android:background="@drawable/edit_text_border"
-        android:drawableRight="@drawable/ic_driver"
-        android:fontFamily="@font/gothammedium_font"
-        android:text="Unprofessional driver"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/checkBox3" />
+        app:layout_constraintTop_toBottomOf="@id/checkBox3" />
 
     <CheckBox
         android:id="@+id/checkBox5"
@@ -111,9 +98,9 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
         android:background="@drawable/edit_text_border"
-        android:drawableRight="@drawable/ic_flattire"
+        android:drawableRight="@drawable/ic_overspeeding"
         android:fontFamily="@font/gothammedium_font"
-        android:text="Overloading"
+        android:text="Overspeeding"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/checkBox4" />
@@ -126,9 +113,9 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
         android:background="@drawable/edit_text_border"
-        android:drawableRight="@drawable/ic_route"
+        android:drawableRight="@drawable/ic_repair"
         android:fontFamily="@font/gothammedium_font"
-        android:text="Out of line operation"
+        android:text="Poor vehicle quality"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/checkBox5" />
@@ -141,9 +128,9 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
         android:background="@drawable/edit_text_border"
-        android:drawableRight="@drawable/ic_crash"
+        android:drawableRight="@drawable/ic_driver"
         android:fontFamily="@font/gothammedium_font"
-        android:text="Road crash"
+        android:text="Unprofessional driver"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/checkBox6" />
@@ -156,12 +143,57 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
         android:background="@drawable/edit_text_border"
+        android:drawableRight="@drawable/ic_flattire"
+        android:fontFamily="@font/gothammedium_font"
+        android:text="Overloading"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/checkBox7" />
+
+    <CheckBox
+        android:id="@+id/checkBox9"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/edit_text_border"
+        android:drawableRight="@drawable/ic_route"
+        android:fontFamily="@font/gothammedium_font"
+        android:text="Out-of-line operation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/checkBox8" />
+
+    <CheckBox
+        android:id="@+id/checkBox10"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/edit_text_border"
+        android:drawableRight="@drawable/ic_crash"
+        android:fontFamily="@font/gothammedium_font"
+        android:text="Road crash"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/checkBox9" />
+
+    <CheckBox
+        android:id="@+id/checkBox11"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/edit_text_border"
         android:drawableRight="@drawable/ic_police"
         android:fontFamily="@font/gothammedium_font"
         android:text="Crime event"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/checkBox7" />
+        app:layout_constraintTop_toBottomOf="@+id/checkBox10" />
 
     <Button
         android:id="@+id/btnSendAlert"
@@ -179,7 +211,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/checkBox8" />
+        app:layout_constraintTop_toBottomOf="@+id/checkBox11" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

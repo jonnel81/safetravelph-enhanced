@@ -85,14 +85,10 @@ import ph.safetravel.app.protos.Alert;
 
 public class Trip extends AppCompatActivity implements OnMapReadyCallback, AdapterView.OnItemClickListener {
     SharedPreferences myPrefs;
-    //View view;
     MqttAndroidClient client;
     MqttConnectOptions options;
-    //MqttClientPersistence clientPersistence;
     //Vibrator vibrator;
-    //String topicStr = "test";
     String TAG="Mqtt";
-    //Context context;
     String MqttHost = "tcp://mqtt.safetravel.ph:8883";
     final String Username = "mqtt";
     final String Password = "mqtt";
@@ -102,13 +98,11 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
     private boolean isGPS = false;
     private boolean isContinue = false;
     ToggleButton tButton;
-    Button sendAlertButton;
     Location mLastLocation;
     Marker mCurrLocationMarker;
-    //MapFragment mMapFragment;
     GoogleMap mMap;
     //LatLng origLatLng, destLatLng;
-    //    //MarkerOptions markerOptions;
+    //MarkerOptions markerOptions;
     private Toolbar toolbar;
     private DrawerLayout dl;
     private ActionBarDrawerToggle t;
@@ -119,7 +113,6 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
     ProgressBar pgsBar;
     ActivityTripBinding bi;
     boolean isRotate = false;
-    TextView txtFeedsCount;
     int feedsCount;
 
     @Override
@@ -144,7 +137,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
         ViewAnimation.init(bi.txtFeedsCount);
 
         // Get feeds count
-        feedsCount=9;
+        feedsCount=0;
 
         // Trip Add Fab
         bi.fabTripAdd.setOnClickListener(new View.OnClickListener() {
@@ -517,7 +510,6 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
     } // onCreate
 
     public void sendAlert() {
-        CheckBox checkbox = (CheckBox) findViewById(R.id.checkBox);
         CheckBox checkbox1 = (CheckBox) findViewById(R.id.checkBox1);
         CheckBox checkbox2 = (CheckBox) findViewById(R.id.checkBox2);
         CheckBox checkbox3 = (CheckBox) findViewById(R.id.checkBox3);
@@ -526,13 +518,13 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
         CheckBox checkbox6 = (CheckBox) findViewById(R.id.checkBox6);
         CheckBox checkbox7 = (CheckBox) findViewById(R.id.checkBox7);
         CheckBox checkbox8 = (CheckBox) findViewById(R.id.checkBox8);
+        CheckBox checkbox9 = (CheckBox) findViewById(R.id.checkBox9);
+        CheckBox checkbox10 = (CheckBox) findViewById(R.id.checkBox10);
+        CheckBox checkbox11 = (CheckBox) findViewById(R.id.checkBox11);
 
         StringBuilder alertString = new StringBuilder();
-        if(checkbox.isChecked()) {
-            alertString.append(checkbox.getText());
-        }
         if(checkbox1.isChecked()) {
-            alertString.append("," + checkbox1.getText());
+            alertString.append(checkbox1.getText());
         }
         if(checkbox2.isChecked()) {
             alertString.append("," + checkbox2.getText());
@@ -555,6 +547,15 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
         if(checkbox8.isChecked()) {
             alertString.append("," + checkbox8.getText());
         }
+        if(checkbox9.isChecked()) {
+            alertString.append("," + checkbox9.getText());
+        }
+        if(checkbox10.isChecked()) {
+            alertString.append("," + checkbox10.getText());
+        }
+        if(checkbox11.isChecked()) {
+            alertString.append("," + checkbox11.getText());
+        }
 
         if (mLastLocation != null) {
             String lat = String.valueOf(mLastLocation.getLatitude());
@@ -574,7 +575,6 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
             publishAlert(alertMessage(androidId, lat, lng, timeStamp, userId, description));
             System.out.println(alertMessage(androidId, lat, lng, timeStamp, userId, description));
         }
-
         Toast.makeText(getApplicationContext(), "Alert sent.", Toast.LENGTH_SHORT).show();
 
     } // sendAlert
