@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -67,12 +68,11 @@ public class BackgroundWorker extends AsyncTask<String,String,String> {
                 bufferedReader.close();
                 httpURLConnection.disconnect();
                 return result;
-                //return true;
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
-            } // catch for login
+            }
         } // for login
 
         // register activity
@@ -84,6 +84,12 @@ public class BackgroundWorker extends AsyncTask<String,String,String> {
                 String username = params[4];
                 String password = params[5];
                 String role = params[6];
+                String question1 = params[7];
+                String answer1 = params[8];
+                String question2 = params[9];
+                String answer2 = params[10];
+                String question3 = params[11];
+                String answer3 = params[12];
                 URL url = new URL(register_url);
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
                 httpURLConnection.setRequestMethod("POST");
@@ -95,8 +101,14 @@ public class BackgroundWorker extends AsyncTask<String,String,String> {
                         +URLEncoder.encode("lastname","UTF-8")+"="+URLEncoder.encode(lastname,"UTF-8")+"&"
                         +URLEncoder.encode("age","UTF-8")+"="+URLEncoder.encode(age,"UTF-8")+"&"
                         +URLEncoder.encode("username","UTF-8")+"="+URLEncoder.encode(username,"UTF-8")+"&"
-                        +URLEncoder.encode("password","UTF-8")+"="+URLEncoder.encode(password,"UTF-8")
-                        +URLEncoder.encode("role","UTF-8")+"="+URLEncoder.encode(role,"UTF-8");
+                        +URLEncoder.encode("password","UTF-8")+"="+URLEncoder.encode(password,"UTF-8")+"&"
+                        +URLEncoder.encode("role","UTF-8")+"="+URLEncoder.encode(role,"UTF-8")+"&"
+                        +URLEncoder.encode("question1","UTF-8")+"="+URLEncoder.encode(question1,"UTF-8")+"&"
+                        +URLEncoder.encode("answer1","UTF-8")+"="+URLEncoder.encode(answer1,"UTF-8")+"&"
+                        +URLEncoder.encode("question2","UTF-8")+"="+URLEncoder.encode(question2,"UTF-8")+"&"
+                        +URLEncoder.encode("answer2","UTF-8")+"="+URLEncoder.encode(answer2,"UTF-8")+"&"
+                        +URLEncoder.encode("question3","UTF-8")+"="+URLEncoder.encode(question3,"UTF-8")+"&"
+                        +URLEncoder.encode("answer3","UTF-8")+"="+URLEncoder.encode(answer3,"UTF-8");
                 bufferedWriter.write(post_data);
                 bufferedWriter.flush();
                 bufferedWriter.close();
@@ -115,7 +127,7 @@ public class BackgroundWorker extends AsyncTask<String,String,String> {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
-            } // catch for register
+            }
         } // for register
 
         // report activity
@@ -164,7 +176,7 @@ public class BackgroundWorker extends AsyncTask<String,String,String> {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
-            } // catch for report
+            }
         } // for report
         return null;
     } //doInBackground

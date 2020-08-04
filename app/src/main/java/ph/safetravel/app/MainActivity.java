@@ -87,7 +87,9 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             SharedPreferences.Editor editor = myPrefs.edit();
             editor.putString("username", username);
             editor.putString("password", password);
-            androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID); // UUID
+            // AndroidID
+            androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+            // UUID
             //androidId = UUID.randomUUID().toString();
             editor.putString("androidId", androidId);
             Log.d("prefs", androidId);

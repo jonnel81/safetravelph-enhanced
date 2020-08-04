@@ -53,6 +53,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -73,6 +74,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -738,8 +740,35 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        //mMap = googleMap;
+        //LatLng mmla = new LatLng(14.6091, 121.0223);
+        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mmla, 10));
         mMap = googleMap;
+        mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        //mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+
+        UiSettings mapUiSettings = mMap.getUiSettings();
+        mapUiSettings.setZoomControlsEnabled(true);
+        mapUiSettings.setMapToolbarEnabled(true);
+        mapUiSettings.setCompassEnabled(true);
+        mapUiSettings.setIndoorLevelPickerEnabled(true);
+        mapUiSettings.setMyLocationButtonEnabled(true);
+
+        // Get permission for location
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                    AppConstants.LOCATION_REQUEST);
+        } else {
+            mMap.setMyLocationEnabled(true);
+            mMap.setTrafficEnabled(true);
+        }
+
+        // Initialize marker array
+        //mMarkerArrayList = new ArrayList<>();
+
         LatLng mmla = new LatLng(14.6091, 121.0223);
+        //mMap.addMarker(new MarkerOptions().position(mmla).title("Marker Position"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mmla, 10));
     } // onMapReady
 

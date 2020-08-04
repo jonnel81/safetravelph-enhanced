@@ -296,7 +296,7 @@ public class TripInfoFragment extends Fragment {
                 // First item is disable and it is used for hint
                 if (position > 0) {
                     // Notify the selected item text
-                    Toast.makeText(getContext(), "Selected : " + selectedItemText, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getContext(), "Selected : " + selectedItemText, Toast.LENGTH_SHORT).show();
                 }
             }
             @Override

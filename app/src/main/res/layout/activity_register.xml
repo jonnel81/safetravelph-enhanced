@@ -48,7 +48,7 @@
             android:textSize="14sp"
             app:layout_constraintBottom_toTopOf="@+id/etLastName"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textViewRegister" />
+            app:layout_constraintTop_toBottomOf="@+id/txtRegister" />
 
         <EditText
             android:id="@+id/etLastName"
@@ -115,10 +115,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:layout_marginBottom="40dp"
+            android:fontFamily="@font/gothammedium_font"
             android:onClick="OnReg"
             android:text="Register"
-            android:fontFamily="@font/gothammedium_font"
             android:textSize="14sp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/chkRegister" />
@@ -143,18 +145,18 @@
             android:layout_width="180dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
-            android:layout_marginBottom="32dp"
+            android:layout_marginBottom="16dp"
             android:background="@drawable/edit_text_border"
             android:fontFamily="@font/gothammedium_font"
             android:hint="Retype Password"
             android:inputType="textPassword"
             android:textSize="14sp"
-            app:layout_constraintBottom_toTopOf="@+id/chkRegister"
+            app:layout_constraintBottom_toTopOf="@+id/txtPasswordRecovery"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/etPassword" />
 
         <TextView
-            android:id="@+id/textViewRegister"
+            android:id="@+id/txtRegister"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -171,6 +173,114 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:id="@+id/txtPasswordRecovery"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:fontFamily="@font/gothambook_font"
+            android:lineSpacingExtra="3sp"
+            android:text="@string/notice_password"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@+id/spinnerQuestion1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/etRetypePassword" />
+
+        <Spinner
+            android:id="@+id/spinnerQuestion1"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/edit_text_border"
+            android:fontFamily="@font/gothammedium_font"
+            android:textSize="14sp"
+            android:theme="@style/SpinnerTheme"
+            app:layout_constraintBottom_toTopOf="@id/etAnswer1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtPasswordRecovery" />
+
+        <EditText
+            android:id="@+id/etAnswer1"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/edit_text_border"
+            android:fontFamily="@font/gothammedium_font"
+            android:hint="Your answer"
+            android:inputType="textPassword"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@id/spinnerQuestion2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/spinnerQuestion1" />
+
+        <Spinner
+            android:id="@+id/spinnerQuestion2"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/edit_text_border"
+            android:fontFamily="@font/gothammedium_font"
+            android:textSize="14sp"
+            android:theme="@style/SpinnerTheme"
+            app:layout_constraintBottom_toTopOf="@+id/etAnswer2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/etAnswer1" />
+
+        <EditText
+            android:id="@+id/etAnswer2"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/edit_text_border"
+            android:fontFamily="@font/gothammedium_font"
+            android:hint="Your answer"
+            android:inputType="textPassword"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@+id/spinnerQuestion3"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/spinnerQuestion2" />
+
+        <Spinner
+            android:id="@+id/spinnerQuestion3"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/edit_text_border"
+            android:fontFamily="@font/gothammedium_font"
+            android:textSize="14sp"
+            android:theme="@style/SpinnerTheme"
+            app:layout_constraintBottom_toTopOf="@+id/etAnswer3"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/etAnswer2" />
+
+        <EditText
+            android:id="@+id/etAnswer3"
+            android:layout_width="180dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/edit_text_border"
+            android:fontFamily="@font/gothammedium_font"
+            android:hint="Your answer"
+            android:inputType="textPassword"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@id/chkRegister"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/spinnerQuestion3" />
+
         <CheckBox
             android:id="@+id/chkRegister"
             android:layout_width="0dp"
@@ -183,7 +293,7 @@
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etRetypePassword" />
+            app:layout_constraintTop_toBottomOf="@+id/etAnswer3" />
     </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 

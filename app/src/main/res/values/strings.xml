@@ -5,6 +5,7 @@
     <string name="find_location">[Long press to select and drag the marker]</string>
     <string name="notice_login">Please log in using your account.</string>
     <string name="notice_request">Please register for an account.  All fields are required.</string>
+    <string name="notice_password">Specify Password Recovery Questions:</string>
     <string name="notice_developer">Copyright © University of the Philippines 2020. Developed by DARE-Project 3 Team of UP National College of Public Administration and Governance (UP-NCPAG).</string>
     <string name="notice_contact">Visit www.safetravel.ph. For comments and suggestions, send email at admin@safetravel.ph</string>
     <string name="notice_intro">This app is part of the efforts of the UP COVID-19 Pandemic Response Team spearheaded by the UP Resilience Institute (UPRI). Visit www.safetravel.ph. For comments and suggestions, send email at admin@safetravel.ph</string>

@@ -443,7 +443,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
         }); // Mqtt client callback
 
         // Bottom navigation
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav_view);
+        final BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav_view);
         bottomNavigationView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
         Menu menu = bottomNavigationView.getMenu();
         MenuItem menuItem = menu.getItem(3);
@@ -451,7 +451,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+            public boolean onNavigationItemSelected(@NonNull final MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
                     case R.id.navigation_logout: {
                         // Dialog
@@ -474,32 +474,95 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
-                                startActivity(new Intent(Trip.this, Trip.class));
+                                bottomNavigationView.setSelectedItemId(R.id.navigation_trip);
                             }
                         });
                         AlertDialog alertDialog = builder.create();
-                        alertDialog.setTitle("Status");
+                        alertDialog.setTitle("Confirm");
                         alertDialog.setCancelable(false);
                         alertDialog.setCanceledOnTouchOutside(false);
                         alertDialog.show();
                         break;
                     }
                     case R.id.navigation_data: {
-                        closeApp();
-                        startActivity(new Intent(Trip.this, Data.class));
+                        // Dialog
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Trip.this);
+                        builder.setMessage("Are you sure you want to exit Trip Tracking?");
+                        builder.setCancelable(false);
+                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                closeApp();
+                                startActivity(new Intent(Trip.this, Data.class));
+                            }
+                        });
+                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                bottomNavigationView.setSelectedItemId(R.id.navigation_trip);
+                            }
+                        });
+                        AlertDialog alertDialog = builder.create();
+                        alertDialog.setTitle("Confirm");
+                        alertDialog.setCancelable(false);
+                        alertDialog.setCanceledOnTouchOutside(false);
+                        alertDialog.show();
                         break;
                     }
                     case R.id.navigation_report: {
-                        closeApp();
-                        startActivity(new Intent(Trip.this, Report.class));
+                        // Dialog
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Trip.this);
+                        builder.setMessage("Are you sure you want to exit Trip Tracking?");
+                        builder.setCancelable(false);
+                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                closeApp();
+                                startActivity(new Intent(Trip.this, Report.class));
+                            }
+                        });
+                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                bottomNavigationView.setSelectedItemId(R.id.navigation_trip);
+                            }
+                        });
+                        AlertDialog alertDialog = builder.create();
+                        alertDialog.setTitle("Confirm");
+                        alertDialog.setCancelable(false);
+                        alertDialog.setCanceledOnTouchOutside(false);
+                        alertDialog.show();
                         break;
                     }
                     case R.id.navigation_trip: {
                         break;
                     }
                     case R.id.navigation_fleet: {
-                        closeApp();
-                        startActivity(new Intent(Trip.this, Fleet.class));
+                        // Dialog
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Trip.this);
+                        builder.setMessage("Are you sure you want to exit Trip Tracking?");
+                        builder.setCancelable(false);
+                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                closeApp();
+                                startActivity(new Intent(Trip.this, Fleet.class));
+                            }
+                        });
+                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                bottomNavigationView.setSelectedItemId(R.id.navigation_trip);
+                             }
+                        });
+                        AlertDialog alertDialog = builder.create();
+                        alertDialog.setTitle("Confirm");
+                        alertDialog.setCancelable(false);
+                        alertDialog.setCanceledOnTouchOutside(false);
+                        alertDialog.show();
                         break;
                     }
                 }
