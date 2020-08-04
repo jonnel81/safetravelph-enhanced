@@ -456,7 +456,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                     case R.id.navigation_logout: {
                         // Dialog
                         AlertDialog.Builder builder = new AlertDialog.Builder(Trip.this);
-                        builder.setMessage("Are you sure you want to logout?");
+                        builder.setMessage("Are you sure you want to Logout?");
                         builder.setCancelable(false);
                         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
@@ -487,7 +487,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                     case R.id.navigation_data: {
                         // Dialog
                         AlertDialog.Builder builder = new AlertDialog.Builder(Trip.this);
-                        builder.setMessage("Are you sure you want to exit Trip Tracking?");
+                        builder.setMessage("Are you sure you want to exit Trip?");
                         builder.setCancelable(false);
                         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
@@ -513,7 +513,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                     case R.id.navigation_report: {
                         // Dialog
                         AlertDialog.Builder builder = new AlertDialog.Builder(Trip.this);
-                        builder.setMessage("Are you sure you want to exit Trip Tracking?");
+                        builder.setMessage("Are you sure you want to exit Trip?");
                         builder.setCancelable(false);
                         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
@@ -542,7 +542,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                     case R.id.navigation_fleet: {
                         // Dialog
                         AlertDialog.Builder builder = new AlertDialog.Builder(Trip.this);
-                        builder.setMessage("Are you sure you want to exit Trip Tracking?");
+                        builder.setMessage("Are you sure you want to exit Trip?");
                         builder.setCancelable(false);
                         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override

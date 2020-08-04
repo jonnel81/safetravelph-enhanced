@@ -217,7 +217,7 @@ public class Report extends AppCompatActivity implements OnMapReadyCallback, Goo
         });
 
         // BottomNavigation
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav_view);
+        final BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav_view);
         bottomNavigationView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
         Menu menu = bottomNavigationView.getMenu();
         MenuItem menuItem = menu.getItem(2);
@@ -230,7 +230,7 @@ public class Report extends AppCompatActivity implements OnMapReadyCallback, Goo
                     case R.id.navigation_logout: {
                         // Dialog
                         androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(Report.this);
-                        builder.setMessage("Are you sure you want to logout?");
+                        builder.setMessage("Are you sure you want to Logout?");
                         builder.setCancelable(false);
                         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
@@ -247,7 +247,7 @@ public class Report extends AppCompatActivity implements OnMapReadyCallback, Goo
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
-                                startActivity(new Intent(Report.this, Report.class));
+                                bottomNavigationView.setSelectedItemId(R.id.navigation_report);
                             }
                         });
                         androidx.appcompat.app.AlertDialog alertDialog = builder.create();
@@ -259,19 +259,84 @@ public class Report extends AppCompatActivity implements OnMapReadyCallback, Goo
                         break;
                     }
                     case R.id.navigation_data: {
-                        startActivity(new Intent(Report.this, Data.class));
+                        // Dialog
+                        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(Report.this);
+                        builder.setMessage("Are you sure you want to exit Report?");
+                        builder.setCancelable(false);
+                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //closeApp();
+                                startActivity(new Intent(Report.this, Data.class));
+                            }
+                        });
+                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                bottomNavigationView.setSelectedItemId(R.id.navigation_report);
+                            }
+                        });
+                        androidx.appcompat.app.AlertDialog alertDialog = builder.create();
+                        alertDialog.setTitle("Confirm");
+                        alertDialog.setCancelable(false);
+                        alertDialog.setCanceledOnTouchOutside(false);
+                        alertDialog.show();
                         break;
                     }
                     case R.id.navigation_report: {
-
                         break;
                     }
                     case R.id.navigation_trip: {
-                        startActivity(new Intent(Report.this, Trip.class));
+                        // Dialog
+                        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(Report.this);
+                        builder.setMessage("Are you sure you want to exit Report?");
+                        builder.setCancelable(false);
+                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //closeApp();
+                                startActivity(new Intent(Report.this, Trip.class));
+                            }
+                        });
+                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                bottomNavigationView.setSelectedItemId(R.id.navigation_report);
+                            }
+                        });
+                        androidx.appcompat.app.AlertDialog alertDialog = builder.create();
+                        alertDialog.setTitle("Confirm");
+                        alertDialog.setCancelable(false);
+                        alertDialog.setCanceledOnTouchOutside(false);
+                        alertDialog.show();
                         break;
                     }
                     case R.id.navigation_fleet: {
-                        startActivity(new Intent(Report.this, Fleet.class));
+                        // Dialog
+                        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(Report.this);
+                        builder.setMessage("Are you sure you want to exit Report?");
+                        builder.setCancelable(false);
+                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //closeApp();
+                                startActivity(new Intent(Report.this, Fleet.class));
+                            }
+                        });
+                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                bottomNavigationView.setSelectedItemId(R.id.navigation_report);
+                            }
+                        });
+                        androidx.appcompat.app.AlertDialog alertDialog = builder.create();
+                        alertDialog.setTitle("Confirm");
+                        alertDialog.setCancelable(false);
+                        alertDialog.setCanceledOnTouchOutside(false);
+                        alertDialog.show();
                         break;
                     }
                 }

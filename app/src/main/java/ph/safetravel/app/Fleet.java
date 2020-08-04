@@ -455,7 +455,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
         }); // mqtt client callback
 
         // Bottom navigation
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav_view);
+        final BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav_view);
         bottomNavigationView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
         Menu menu = bottomNavigationView.getMenu();
         MenuItem menuItem = menu.getItem(4);
@@ -468,7 +468,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                     case R.id.navigation_logout: {
                         // Dialog
                         AlertDialog.Builder builder = new AlertDialog.Builder(Fleet.this);
-                        builder.setMessage("Are you sure you want to logout?");
+                        builder.setMessage("Are you sure you want to Logout?");
                         builder.setCancelable(false);
                         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
@@ -488,8 +488,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
-                                Intent intent4 = new Intent(Fleet.this, Fleet.class);
-                                startActivity(intent4);
+                                bottomNavigationView.setSelectedItemId(R.id.navigation_fleet);
                             }
                         });
                         AlertDialog alertDialog = builder.create();
@@ -500,21 +499,81 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                         break;
                     }
                     case R.id.navigation_data: {
-                        closeApp();
-                        Intent intent1 = new Intent(Fleet.this, Data.class);
-                        startActivity(intent1);
+                        // Dialog
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Fleet.this);
+                        builder.setMessage("Are you sure you want to exit Fleet?");
+                        builder.setCancelable(false);
+                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                closeApp();
+                                startActivity(new Intent(Fleet.this, Data.class));
+                            }
+                        });
+                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                bottomNavigationView.setSelectedItemId(R.id.navigation_fleet);
+                            }
+                        });
+                        AlertDialog alertDialog = builder.create();
+                        alertDialog.setTitle("Confirm");
+                        alertDialog.setCancelable(false);
+                        alertDialog.setCanceledOnTouchOutside(false);
+                        alertDialog.show();
                         break;
                     }
                     case R.id.navigation_report: {
-                        closeApp();
-                        Intent intent2 = new Intent(Fleet.this, Report.class);
-                        startActivity(intent2);
+                        // Dialog
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Fleet.this);
+                        builder.setMessage("Are you sure you want to exit Fleet?");
+                        builder.setCancelable(false);
+                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                closeApp();
+                                startActivity(new Intent(Fleet.this, Report.class));
+                            }
+                        });
+                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                bottomNavigationView.setSelectedItemId(R.id.navigation_fleet);
+                            }
+                        });
+                        AlertDialog alertDialog = builder.create();
+                        alertDialog.setTitle("Confirm");
+                        alertDialog.setCancelable(false);
+                        alertDialog.setCanceledOnTouchOutside(false);
+                        alertDialog.show();
                         break;
                     }
                     case R.id.navigation_trip: {
-                        closeApp();
-                        Intent intent3 = new Intent(Fleet.this, Trip.class);
-                        startActivity(intent3);
+                        // Dialog
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Fleet.this);
+                        builder.setMessage("Are you sure you want to exit Fleet?");
+                        builder.setCancelable(false);
+                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                closeApp();
+                                startActivity(new Intent(Fleet.this, Trip.class));
+                            }
+                        });
+                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                bottomNavigationView.setSelectedItemId(R.id.navigation_fleet);
+                            }
+                        });
+                        AlertDialog alertDialog = builder.create();
+                        alertDialog.setTitle("Confirm");
+                        alertDialog.setCancelable(false);
+                        alertDialog.setCanceledOnTouchOutside(false);
+                        alertDialog.show();
                         break;
                     }
                     case R.id.navigation_fleet: {

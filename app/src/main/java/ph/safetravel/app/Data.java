@@ -92,7 +92,7 @@ public class Data extends AppCompatActivity {
         });
 
         // Bottom navigation
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav_view);
+        final BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav_view);
         bottomNavigationView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
         Menu menu = bottomNavigationView.getMenu();
         MenuItem menuItem = menu.getItem(1);
@@ -123,7 +123,7 @@ public class Data extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
-                                startActivity(new Intent(Data.this, Data.class));
+                                bottomNavigationView.setSelectedItemId(R.id.navigation_data);
                             }
                         });
                         AlertDialog alertDialog = builder.create();

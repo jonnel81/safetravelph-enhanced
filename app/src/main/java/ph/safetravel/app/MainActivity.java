@@ -57,9 +57,9 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         String androidId = myPrefs.getString("androidId",null);
         String vehicleId = myPrefs.getString("vehicleId",null);
 
-        // Check if shared preferences contains username and password then redirect to report activity
+        // Check if shared preferences contains username and password then redirect to dashboard activity
         if(username != null && password != null ){
-            startActivity(new Intent(this,Report.class));
+            startActivity(new Intent(this, Data.class));
         }
     } // onCreate
 
