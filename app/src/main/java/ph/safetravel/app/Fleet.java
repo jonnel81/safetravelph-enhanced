@@ -39,6 +39,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -111,7 +112,9 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
     private NavigationView nv;
     ImageButton boardButton, alightButton;
     int numPass;
+    double speed;
     TextView NumPassengers;
+    TextView Speed, Distance;
     ProgressBar pgsBar;
     ActivityFleetBinding bi;
     boolean isRotate = false;
@@ -251,6 +254,8 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
 
         NumPassengers = findViewById(R.id.txtNumPass);
         NumPassengers.setText(String.valueOf(numPass));
+        Speed = findViewById(R.id.txtSpeedNum);
+        //Speed.setText(String.valueOf(speed));
 
         // Board button
         boardButton = findViewById(R.id.btnBoard);
@@ -406,6 +411,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                     boardButton.setOnClickListener(null);
                     alightButton.setOnClickListener(null);
                     pgsBar.setVisibility(View.INVISIBLE);
+                    speed=0.0f;
                 }
             }
         });
@@ -635,12 +641,28 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
             if (locationList.size() > 0) {
                 //The last location in the list is the newest
                 Location location = locationList.get(locationList.size() - 1);
-                //Log.i("MapsActivity", "Location: " + location.getLatitude() + " " + location.getLongitude());
-                mLastLocation = location;
-                //sendTrack();
+
+                if(mLastLocation != null) {
+                    // Get loc1 and loc2
+                    Location loc1 = mLastLocation;
+                    Location loc2 = location;
+                    speed = avgspeed(loc1, loc2);
+                    Log.d("Loc", String.valueOf(loc1.getLatitude()) + String.valueOf(loc2.getLatitude()));
+                }
+
+                mLastLocation = location;  // update the last location
+
                 if (mLastLocation != null) {
                     String lat = String.valueOf(location.getLatitude());
                     String lng = String.valueOf(location.getLongitude());
+
+                    //Location loc1 = mLastLocation;
+                    //Location loc2 = location;
+                    //speed = avgspeed(loc1, loc2);
+                    //speed = location.getSpeed()*3.6f;
+                    //Speed.setText(String.valueOf(speed));
+                    Speed.setText(String.format("%.2f", speed));
+
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
                     sdf.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
                     String timeStamp = sdf.format(new Date());
@@ -657,6 +679,25 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
             }
         }
     }; // locationCallback
+
+    static double distance (Location loc1, Location loc2) {
+        double R = 6371000;
+        double la1 = loc1.getLatitude()* Math.PI/180;
+        double la2 = loc2.getLatitude()* Math.PI/180;
+        double lo1 = loc1.getLongitude()* Math.PI/180;
+        double lo2 = loc2.getLongitude()* Math.PI/180;
+        double tmp1 = Math.sin((la1-la2)/2)*Math.sin((la1-la2)/2) + Math.cos(la1)*Math.cos(la2) * Math.sin((lo1-lo2)/2) * Math.sin((lo1-lo2)/2);
+        double tmp2 = Math.sqrt(tmp1);
+        double d = Math.abs(2 * R * Math.asin(tmp2) * 100000) / 100000;
+
+        return d;
+    } // distance
+
+    static double avgspeed (Location loc1, Location loc2) {
+        double s = distance(loc1, loc2) / (loc2.getTime() - loc1.getTime());
+
+        return s;
+    } // avgspeed
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

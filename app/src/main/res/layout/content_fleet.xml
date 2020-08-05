@@ -73,7 +73,7 @@
         android:id="@+id/txtPass"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="2dp"
+        android:layout_marginBottom="10dp"
         android:fontFamily="@font/gothambook_font"
         android:text="Total Pax"
         android:textColor="@color/blue"
@@ -117,7 +117,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="40dp"
+        android:layout_marginEnd="48dp"
         android:layout_marginBottom="80dp"
         android:background="@drawable/ic_minus"
         android:text="Alight"
@@ -134,10 +134,101 @@
         android:layout_marginBottom="90dp"
         android:background="@drawable/border"
         android:text="#"
-        android:textSize="34sp"
+        android:textSize="24sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btnAlight"
         app:layout_constraintStart_toEndOf="@+id/btnBoard"
         app:layout_constraintTop_toBottomOf="@+id/mapFragFleet" />
+
+    <TextView
+        android:id="@+id/txtSpeed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="60dp"
+        android:fontFamily="@font/gothambook_font"
+        android:text="Speed:"
+        android:textColor="@color/blue"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/txtSpeedNum"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnBoard" />
+
+    <TextView
+        android:id="@+id/txtSpeedNum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="60dp"
+        android:text="0.00"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/txtAvgSpeed"
+        app:layout_constraintStart_toEndOf="@id/txtSpeed"
+        app:layout_constraintTop_toBottomOf="@id/btnBoard" />
+
+    <TextView
+        android:id="@+id/txtAvgSpeed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="60dp"
+        android:fontFamily="@font/gothambook_font"
+        android:text="Ave. Speed:"
+        android:textColor="@color/blue"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/txtAvgSpeedNum"
+        app:layout_constraintStart_toEndOf="@id/txtSpeedNum"
+        app:layout_constraintTop_toBottomOf="@id/btnBoard" />
+
+    <TextView
+        android:id="@+id/txtAvgSpeedNum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="60dp"
+        android:text="0.00"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/txtDist"
+        app:layout_constraintStart_toEndOf="@id/txtAvgSpeed"
+        app:layout_constraintTop_toBottomOf="@id/btnBoard" />
+
+    <TextView
+        android:id="@+id/txtDist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="60dp"
+        android:fontFamily="@font/gothambook_font"
+        android:text="Dist.:"
+        android:textColor="@color/blue"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/txtDistNum"
+        app:layout_constraintStart_toEndOf="@id/txtAvgSpeedNum"
+        app:layout_constraintTop_toBottomOf="@id/btnBoard" />
+
+    <TextView
+        android:id="@+id/txtDistNum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="60dp"
+        android:text="00.0"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/txtDist"
+        app:layout_constraintTop_toBottomOf="@id/btnAlight" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
