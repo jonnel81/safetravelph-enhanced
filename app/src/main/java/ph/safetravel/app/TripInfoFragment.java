@@ -22,7 +22,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-//import android.app.Fragment;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.common.api.Status;
@@ -48,8 +47,6 @@ public class TripInfoFragment extends Fragment {
     public static TextView txtVehDetails;
     public static TextView txtVehId;
     String origin, destination, purpose, mode, vehicleId, vehicleDetails;
-    AlertDialog.Builder builder;
-    AlertDialog alertDialog;
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
@@ -62,7 +59,7 @@ public class TripInfoFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 // Dialog
-                builder = new AlertDialog.Builder(getContext());
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                 builder.setMessage("Clear the Trip Info?");
                 builder.setCancelable(false);
                 builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {

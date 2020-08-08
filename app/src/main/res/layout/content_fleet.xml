@@ -43,22 +43,13 @@
         app:layout_constraintBottom_toTopOf="@id/txtNumPass"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/progressBarFleet" >
-
-        <FrameLayout
-            android:id="@+id/container_frame"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginBottom="60dp"
-            android:background="@color/white"
-            android:visibility="invisible" />
-    </FrameLayout>
+        app:layout_constraintTop_toBottomOf="@id/progressBarFleet" />
 
     <TextView
         android:id="@+id/txtBoard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
+        android:layout_marginStart="48dp"
         android:layout_marginBottom="2dp"
         android:fontFamily="@font/gothambook_font"
         android:text="Boarding"
@@ -87,7 +78,7 @@
         android:id="@+id/txtAlight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="40dp"
+        android:layout_marginEnd="48dp"
         android:layout_marginBottom="2dp"
         android:fontFamily="@font/gothambook_font"
         android:text="Alighting"
@@ -102,7 +93,7 @@
         android:id="@+id/btnBoard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
+        android:layout_marginStart="48dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="80dp"
         android:background="@drawable/ic_plus"
@@ -179,7 +170,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="60dp"
         android:fontFamily="@font/gothambook_font"
-        android:text="Ave. Speed:"
+        android:text="Avg Speed:"
         android:textColor="@color/blue"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -209,7 +200,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="60dp"
         android:fontFamily="@font/gothambook_font"
-        android:text="Dist.:"
+        android:text="Total Dist:"
         android:textColor="@color/blue"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -224,11 +215,23 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="60dp"
-        android:text="00.0"
+        android:text="0.00"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/txtDist"
         app:layout_constraintTop_toBottomOf="@id/btnAlight" />
+
+    <FrameLayout
+        android:id="@+id/container_frame"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="60dp"
+        android:background="@color/white"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/progressBarFleet" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

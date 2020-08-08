@@ -1,28 +1,13 @@
 package ph.safetravel.app;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.databinding.DataBindingUtil;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.FragmentActivity;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
 import android.location.Location;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -33,13 +18,15 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
+import android.view.ViewAnimationUtils;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -56,11 +43,26 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 import com.google.android.material.navigation.NavigationView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
+//import androidx.core.app.ActivityCompat;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.databinding.DataBindingUtil;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+//import androidx.viewpager.widget.ViewPager;
 
 import org.eclipse.paho.android.service.MqttAndroidClient;
 import org.eclipse.paho.client.mqttv3.IMqttActionListener;
@@ -85,7 +87,7 @@ import ph.safetravel.app.databinding.ActivityFleetBinding;
 import ph.safetravel.app.protos.Vehicle;
 
 
-public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
+public class Fleet extends AppCompatActivity implements OnMapReadyCallback, AdapterView.OnItemClickListener  {
     SharedPreferences myPrefs;
     MqttAndroidClient client;
     MqttConnectOptions options;
@@ -99,20 +101,21 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
     private boolean isContinue = false;
     ToggleButton tButton;
     Location mLastLocation;
-    MapFragment mMapFragmentFleet;
+    Marker mCurrLocationMarker;
     GoogleMap mMap;
     DBManager dbManager;
-    private SensorManager sensorManager;
-    Sensor accelerometer;
-    SensorEventListener acListener;
-    Sensor gyroscope;
+    // Sensor
+    //private SensorManager sensorManager;
+    //Sensor accelerometer;
+    //SensorEventListener acListener;
+    //Sensor gyroscope;
     Toolbar toolbar;
     private DrawerLayout dl;
     private ActionBarDrawerToggle t;
     private NavigationView nv;
     ImageButton boardButton, alightButton;
     int numPass;
-    double speed;
+    double speed, avgspeed, distance;
     TextView NumPassengers;
     TextView Speed, Distance;
     ProgressBar pgsBar;
@@ -129,7 +132,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
         final MediaPlayer mp = new MediaPlayer();
 
         // Map Fragment
-        final androidx.fragment.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
         final SupportMapFragment mapFragment = new SupportMapFragment();
         ft.replace(R.id.mapFragFleet, mapFragment);
@@ -145,6 +148,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
         // Get feeds count
         feedsCount=0;
 
+        // Fleet Add Fab
         bi.fabFleetAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -170,19 +174,70 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
             }
         });
 
+        // Fleet Info Fab
         bi.fabFleetInfo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(Fleet.this, "Info", Toast.LENGTH_SHORT).show();
-                //Snackbar.make(view, "Here's a Snackbar", Snackbar.LENGTH_LONG)
-                //        .setAction("Action", null).show();
+                // Hide Fab
+                if(isRotate){
+                    bi.fabFleetAdd.hide();
+                    bi.fabFleetInfo.hide();
+                    bi.fabFleetFeeds.hide();
+                    isRotate=true;
+                } else{
+                    bi.fabFleetAdd.hide();
+                }
+
+                // Show fragment
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+
+                FleetInfoFragment fleetInfoFragment = new FleetInfoFragment();
+
+                FrameLayout layout = (FrameLayout) findViewById(R.id.container_frame);
+                layout.setVisibility(View.VISIBLE);
+
+                if (fleetInfoFragment.isAdded()) {
+                    ft.show(fleetInfoFragment);
+                } else {
+                    ft.add(R.id.container_frame, fleetInfoFragment);
+                    ft.show(fleetInfoFragment);
+                }
+
+                ft.commit();
             }
         });
 
+        // Fleet Feeds Fab
         bi.fabFleetFeeds.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(Fleet.this, "Feeds", Toast.LENGTH_SHORT).show();
+                // Hide Fab
+                if(isRotate){
+                    bi.fabFleetAdd.hide();
+                    bi.fabFleetInfo.hide();
+                    bi.fabFleetFeeds.hide();
+                    isRotate=true;
+                } else{
+                    bi.fabFleetAdd.hide();
+                }
+
+                // Show fragment
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+
+                FleetFeedsFragment fleetFeedsFragment = new FleetFeedsFragment();
+
+                FrameLayout layout = (FrameLayout) findViewById(R.id.container_frame);
+                layout.setVisibility(View.VISIBLE);
+
+                if (fleetFeedsFragment.isAdded()) {
+                    ft.show(fleetFeedsFragment);
+                } else {
+                    ft.add(R.id.container_frame, fleetFeedsFragment);
+                    ft.show(fleetFeedsFragment);
+                }
+                ft.commit();
             }
         });
 
@@ -259,7 +314,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
 
         // Board button
         boardButton = findViewById(R.id.btnBoard);
-        final OnClickListener boardClickListener = new OnClickListener() {
+        final View.OnClickListener boardClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(mp.isPlaying())
@@ -300,7 +355,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
 
         // Alight button
         alightButton = findViewById(R.id.btnAlight);
-        final OnClickListener alightClickListener = new OnClickListener() {
+        final View.OnClickListener alightClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(mp.isPlaying())
@@ -359,8 +414,8 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
         //gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 
         // Open dbase
-        dbManager = new DBManager(this);
-        dbManager.open();
+        //dbManager = new DBManager(this);
+        //dbManager.open();
 
         // Map fragment
         //mMapFragmentFleet = MapFragment.newInstance();
@@ -375,7 +430,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
         // Location request for GPS
         locationRequest= LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(5 * 1000);
+        locationRequest.setInterval(1 * 1000);
         locationRequest.setFastestInterval(1 * 1000);
 
         // Enable GPS
@@ -646,7 +701,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                     // Get loc1 and loc2
                     Location loc1 = mLastLocation;
                     Location loc2 = location;
-                    speed = avgspeed(loc1, loc2);
+                    speed = computeSpeed(loc1, loc2);
                     Log.d("Loc", String.valueOf(loc1.getLatitude()) + String.valueOf(loc2.getLatitude()));
                 }
 
@@ -675,12 +730,23 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                     String vehicleId = "None";
                     // Publish message
                     publishMessage(vehicleMessage(androidId, lat, lng, timeStamp, userId, vehicleId, false, false, numPass));
+
+                    // Place location marker
+                    if (mCurrLocationMarker != null) {
+                        mCurrLocationMarker.remove();
+                    }
+                    LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                    MarkerOptions markerOptions = new MarkerOptions();
+                    markerOptions.position(latLng);
+                    markerOptions.title("Current Position");
+                    mMap.clear();
+                    mCurrLocationMarker = mMap.addMarker(markerOptions);
                 }
             }
         }
     }; // locationCallback
 
-    static double distance (Location loc1, Location loc2) {
+    static double computeDistance (Location loc1, Location loc2) {
         double R = 6371000;
         double la1 = loc1.getLatitude()* Math.PI/180;
         double la2 = loc2.getLatitude()* Math.PI/180;
@@ -693,8 +759,8 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
         return d;
     } // distance
 
-    static double avgspeed (Location loc1, Location loc2) {
-        double s = distance(loc1, loc2) / (loc2.getTime() - loc1.getTime());
+    static double computeSpeed (Location loc1, Location loc2) {
+        double s = computeDistance(loc1, loc2) / (loc2.getTime() - loc1.getTime());
 
         return s;
     } // avgspeed
@@ -879,5 +945,27 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
         }
         this.finish();
     } // closeApp
+
+    public void restoreFleetFab() {
+        // Show Fab
+        if(isRotate){
+            bi.fabFleetAdd.show();
+            bi.fabFleetInfo.show();
+            bi.fabFleetFeeds.show();
+        } else{
+            bi.fabFleetAdd.show();
+        }
+    } // restoreFab
+
+    // Drawerlayout menu item clicked
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        // fetch the user selected value
+        String item = parent.getItemAtPosition(position).toString();
+        // create Toast with user selected value
+        Toast.makeText(Fleet.this, "Selected Item is: \t" + item, Toast.LENGTH_LONG).show();
+        // set user selected value to the TextView
+
+    }
 
 }

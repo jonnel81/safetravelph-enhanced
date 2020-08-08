@@ -21,7 +21,6 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -188,13 +187,13 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
 
                 TripInfoFragment tripInfoFragment = new TripInfoFragment();
 
-                FrameLayout layout = (FrameLayout) findViewById(R.id.container_frame);
+                FrameLayout layout = (FrameLayout) findViewById(R.id.Tripcontainer_frame);
                 layout.setVisibility(View.VISIBLE);
 
                 if (tripInfoFragment.isAdded()) {
                     ft.show(tripInfoFragment);
                 } else {
-                    ft.add(R.id.container_frame, tripInfoFragment);
+                    ft.add(R.id.Tripcontainer_frame, tripInfoFragment);
                     ft.show(tripInfoFragment);
                 }
 
@@ -223,13 +222,13 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
 
                 TripAlertFragment tripAlertFragment = new TripAlertFragment();
 
-                FrameLayout layout = (FrameLayout) findViewById(R.id.container_frame);
+                FrameLayout layout = (FrameLayout) findViewById(R.id.Tripcontainer_frame);
                 layout.setVisibility(View.VISIBLE);
 
                 if (tripAlertFragment.isAdded()) {
                     ft.show(tripAlertFragment);
                 } else {
-                    ft.add(R.id.container_frame, tripAlertFragment);
+                    ft.add(R.id.Tripcontainer_frame, tripAlertFragment);
                     ft.show(tripAlertFragment);
                 }
                 ft.commit();
@@ -257,13 +256,13 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
 
                 TripFeedsFragment tripFeedsFragment = new TripFeedsFragment();
 
-                FrameLayout layout = (FrameLayout) findViewById(R.id.container_frame);
+                FrameLayout layout = (FrameLayout) findViewById(R.id.Tripcontainer_frame);
                 layout.setVisibility(View.VISIBLE);
 
                 if (tripFeedsFragment.isAdded()) {
                     ft.show(tripFeedsFragment);
                 } else {
-                    ft.add(R.id.container_frame, tripFeedsFragment);
+                    ft.add(R.id.Tripcontainer_frame, tripFeedsFragment);
                     ft.show(tripFeedsFragment);
                 }
                 ft.commit();
@@ -877,7 +876,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                     LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
                     MarkerOptions markerOptions = new MarkerOptions();
                     markerOptions.position(latLng);
-                    markerOptions.title("Marker Position");
+                    markerOptions.title("Current Position");
                     mMap.clear();
                     mCurrLocationMarker = mMap.addMarker(markerOptions);
                     //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));

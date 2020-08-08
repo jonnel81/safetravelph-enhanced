@@ -9,6 +9,8 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -29,10 +31,47 @@ public class Data extends AppCompatActivity {
     private ActionBarDrawerToggle t;
     private NavigationView nv;
 
+    public Data() {
+        super();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_data);
+
+        WebView mWebView1, mWebView2, mWebView3, mWebView4, mWebView5, mWebView6;
+        mWebView1 = (WebView) findViewById(R.id.webview1);
+        //mWebView2 = (WebView) findViewById(R.id.webview2);
+        //mWebView3 = (WebView) findViewById(R.id.webview3);
+        //mWebView4 = (WebView) findViewById(R.id.webview4);
+        //mWebView5 = (WebView) findViewById(R.id.webview5);
+        //mWebView6 = (WebView) findViewById(R.id.webview6);
+//
+        //// Enable Javascript
+        WebSettings webSettings1 = mWebView1.getSettings();
+        webSettings1.setJavaScriptEnabled(true);
+//
+        //WebSettings webSettings2 = mWebView2.getSettings();
+        //webSettings2.setJavaScriptEnabled(true);
+//
+        //WebSettings webSettings3 = mWebView3.getSettings();
+        //webSettings3.setJavaScriptEnabled(true);
+//
+        //WebSettings webSettings4 = mWebView4.getSettings();
+        //webSettings4.setJavaScriptEnabled(true);
+//
+        //WebSettings webSettings5 = mWebView5.getSettings();
+        //webSettings5.setJavaScriptEnabled(true);
+//
+        //WebSettings webSettings6 = mWebView6.getSettings();
+        //webSettings6.setJavaScriptEnabled(true);
+//
+        //mWebView1.loadUrl("http://beta.html5test.com/");
+        //mWebView1.loadUrl("https://safetravel.ph/dashboard/piechart.html");
+        //mWebView2.loadUrl("https://safetravel.ph/dashboard/barchart.html");
+        //mWebView3.loadUrl("https://safetravel.ph/dashboard/gaugechart.html");
+        //mWebView1.loadUrl("https://safetravel.ph/");
 
         // Tollbar
         toolbar = findViewById(R.id.toolbar);

@@ -38,8 +38,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
     String password = "";
     String androidId = "";
     View view;
-    AlertDialog.Builder builder;
-    AlertDialog alertDialog;
+    //AlertDialog.Builder builder;
+    //AlertDialog alertDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             Log.d("prefs", androidId);
             editor.apply();
 
-            builder = new AlertDialog.Builder(this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Success! You are logged in.");
             builder.setCancelable(false);
             builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -105,14 +105,14 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
                     startActivity(new Intent(view.getContext(), Navigation.class));
                 }
             });
-            alertDialog = builder.create();
+            AlertDialog alertDialog = builder.create();
             alertDialog.setTitle("Status");
             alertDialog.setCancelable(false);
             alertDialog.setCanceledOnTouchOutside(false);
             alertDialog.setOwnerActivity(this);
             alertDialog.show();
         } else{
-            builder = new AlertDialog.Builder(this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Wrong username/password. Please try again.");
             builder.setCancelable(false);
             builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
                     startActivity(new Intent(view.getContext(), MainActivity.class));
                 }
             });
-            alertDialog = builder.create();
+            AlertDialog alertDialog = builder.create();
             alertDialog.setTitle("Status");
             alertDialog.setCancelable(false);
             alertDialog.setCanceledOnTouchOutside(false);
