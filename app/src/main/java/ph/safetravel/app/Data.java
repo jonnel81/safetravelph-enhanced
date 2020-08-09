@@ -69,7 +69,7 @@ public class Data extends AppCompatActivity {
 //
         //mWebView1.loadUrl("http://beta.html5test.com/");
         //mWebView1.loadUrl("https://safetravel.ph/dashboard/piechart.html");
-        //mWebView2.loadUrl("https://safetravel.ph/dashboard/barchart.html");
+        //mWebView1.loadUrl("https://safetravel.ph/dashboard/barchart.html");
         //mWebView3.loadUrl("https://safetravel.ph/dashboard/gaugechart.html");
         //mWebView1.loadUrl("https://safetravel.ph/");
 

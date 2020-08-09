@@ -115,7 +115,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Adap
     private NavigationView nv;
     ImageButton boardButton, alightButton;
     int numPass;
-    double speed, avgspeed, distance;
+    double speed=0.0, avgspeed=0.0, distance=0.0;
     TextView NumPassengers;
     TextView Speed, Distance;
     ProgressBar pgsBar;
@@ -310,7 +310,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Adap
         NumPassengers = findViewById(R.id.txtNumPass);
         NumPassengers.setText(String.valueOf(numPass));
         Speed = findViewById(R.id.txtSpeedNum);
-        //Speed.setText(String.valueOf(speed));
+        Speed.setText(String.valueOf(speed));
 
         // Board button
         boardButton = findViewById(R.id.btnBoard);
@@ -701,8 +701,10 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Adap
                     // Get loc1 and loc2
                     Location loc1 = mLastLocation;
                     Location loc2 = location;
+                    distance = distance + computeDistance(loc1, loc2);
                     speed = computeSpeed(loc1, loc2);
-                    Log.d("Loc", String.valueOf(loc1.getLatitude()) + String.valueOf(loc2.getLatitude()));
+                    avgspeed = (avgspeed + speed)/2;
+                    Log.d("Loc/Speed", String.valueOf(loc1.getLatitude()) + "," + String.valueOf(loc2.getLatitude()) + "," + String.valueOf(speed));
                 }
 
                 mLastLocation = location;  // update the last location
@@ -763,7 +765,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Adap
         double s = computeDistance(loc1, loc2) / (loc2.getTime() - loc1.getTime());
 
         return s;
-    } // avgspeed
+    } // computeSpeed
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
