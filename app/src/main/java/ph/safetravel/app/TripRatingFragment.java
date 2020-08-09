@@ -8,13 +8,22 @@ import android.widget.Button;
 
 import androidx.fragment.app.Fragment;
 
-public class TripRateFragment extends Fragment {
+import com.hsalf.smilerating.SmileRating;
+import com.hsalf.smileyrating.SmileyRating;
+
+public class TripRatingFragment extends Fragment {
     Button closeButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.fragment_tripfeeds, container, false);
+        final View view = inflater.inflate(R.layout.fragment_triprating, container, false);
+
+        SmileRating smileRating;
+
+        smileRating.setTitle( SmileyRating.Type.GREAT, "Awesome");
+        smileRating.setFaceColor(SmileyRating.Type.GREAT, Color.BLUE);
+        smileRating.setFaceBackgroundColor(SmileyRating.Type.GREAT, Color.RED);
 
         // Close button
         closeButton = (Button) view.findViewById(R.id.btnClose);

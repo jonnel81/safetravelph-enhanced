@@ -133,6 +133,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
         ViewAnimation.init(bi.fabTripInfo);
         ViewAnimation.init(bi.fabTripFeeds);
         ViewAnimation.init(bi.fabTripAlert);
+        ViewAnimation.init(bi.fabTripRating);
         ViewAnimation.init(bi.txtFeedsCount);
 
         // Get feeds count
@@ -147,6 +148,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                     ViewAnimation.showIn(bi.fabTripInfo);
                     ViewAnimation.showIn(bi.fabTripFeeds);
                     ViewAnimation.showIn(bi.fabTripAlert);
+                    ViewAnimation.showIn(bi.fabTripRating);
                     if(feedsCount!=0){
                         ViewAnimation.showIn(bi.txtFeedsCount);
                         if(feedsCount<=99) {
@@ -159,6 +161,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                     ViewAnimation.showOut(bi.fabTripInfo);
                     ViewAnimation.showOut(bi.fabTripFeeds);
                     ViewAnimation.showOut(bi.fabTripAlert);
+                    ViewAnimation.showOut(bi.fabTripRating);
                     if(feedsCount!=0){
                         ViewAnimation.showOut(bi.txtFeedsCount);
                     }
@@ -176,6 +179,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                     bi.fabTripInfo.hide();
                     bi.fabTripFeeds.hide();
                     bi.fabTripAlert.hide();
+                    bi.fabTripRating.hide();
                     isRotate=true;
                 } else{
                     bi.fabTripAdd.hide();
@@ -211,6 +215,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                     bi.fabTripInfo.hide();
                     bi.fabTripFeeds.hide();
                     bi.fabTripAlert.hide();
+                    bi.fabTripRating.hide();
                     isRotate=true;
                 } else{
                     bi.fabTripAdd.hide();
@@ -264,6 +269,41 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                 } else {
                     ft.add(R.id.Tripcontainer_frame, tripFeedsFragment);
                     ft.show(tripFeedsFragment);
+                }
+                ft.commit();
+            }
+        });
+
+        // Trip Rating Fab
+        bi.fabTripRating.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Hide Fab
+                if(isRotate){
+                    bi.fabTripAdd.hide();
+                    bi.fabTripInfo.hide();
+                    bi.fabTripFeeds.hide();
+                    bi.fabTripAlert.hide();
+                    bi.fabTripRating.hide();
+                    isRotate=true;
+                } else{
+                    bi.fabTripAdd.hide();
+                }
+
+                // Show fragment
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+
+                TripRatingFragment tripRatingFragment = new TripRatingFragment();
+
+                FrameLayout layout = (FrameLayout) findViewById(R.id.Tripcontainer_frame);
+                layout.setVisibility(View.VISIBLE);
+
+                if (tripRatingFragment.isAdded()) {
+                    ft.show(tripRatingFragment);
+                } else {
+                    ft.add(R.id.Tripcontainer_frame, tripRatingFragment);
+                    ft.show(tripRatingFragment);
                 }
                 ft.commit();
             }
@@ -656,6 +696,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
             bi.fabTripInfo.show();
             bi.fabTripFeeds.show();
             bi.fabTripAlert.show();
+            bi.fabTripRating.show();
         } else{
             bi.fabTripAdd.show();
         }
