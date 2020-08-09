@@ -41,7 +41,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btnClose" />
 
-    <com.hsalf.smileyrating.SmileyRating
+    <com.hsalf.smilerating.SmileRating
         android:id="@+id/smile_rating"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
