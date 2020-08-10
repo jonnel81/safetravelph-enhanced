@@ -31,7 +31,11 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -47,6 +51,8 @@ public class TripInfoFragment extends Fragment {
     public static TextView txtVehDetails;
     public static TextView txtVehId;
     String origin, destination, purpose, mode, vehicleId, vehicleDetails;
+    String destination_placeId;
+    String originLat, originLng, destinationLat, destinationLng;
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
@@ -119,16 +125,31 @@ public class TripInfoFragment extends Fragment {
                 } else {
                     // Save to shared preferences
                     editor.putString("origin", origin);
+                    editor.putString("originLat", originLat);
+                    editor.putString("originLng", originLng);
                     editor.putString("destination", destination);
+                    editor.putString("destinationLat", destinationLat);
+                    editor.putString("destinationLng", destinationLng);
                     editor.putString("purpose", purpose);
                     editor.putString("mode", mode);
                     editor.putString("vehicleId", vehicleId);
                     editor.putString("vehicleDetails", vehicleDetails);
                     editor.apply();
-                    Toast.makeText(getContext(), "Trip Info set successfully.", Toast.LENGTH_SHORT).show();
+
+                    // Get datetime
+                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+                    sdf.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
+                    String timeStamp = sdf.format(new Date());
 
                     // Save to database
+                    TripHistoryDBHelper db = new TripHistoryDBHelper(getContext());
 
+                    TripRecord tripRecord = new TripRecord(1, origin, originLat, originLng, destination, destinationLat, destinationLng, mode, purpose, vehicleId ,vehicleDetails, timeStamp);
+                    db.addTripRecord(tripRecord);
+
+                    //Toast.makeText(getContext(), "Trip Info set successfully.", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getContext(), "Trip Record saved.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), tripRecord.toString(), Toast.LENGTH_LONG).show();
                 }
             }
         };
@@ -184,12 +205,14 @@ public class TripInfoFragment extends Fragment {
 
         autocompleteFragmentOrig.setHint("Search Origin");
         autocompleteFragmentOrig.setCountry("PH");
-        autocompleteFragmentOrig.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
+        autocompleteFragmentOrig.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
 
         autocompleteFragmentOrig.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
                 txtOrigin.setText(String.format(place.getName()));
+                originLat = String.valueOf(place.getLatLng().latitude);
+                originLng = String.valueOf(place.getLatLng().longitude);
                 autocompleteFragmentOrig.getView().setVisibility(View.GONE);
                 //Log.i("Places", "Place: " + place.getName() + ", " + place.getId());
             }
@@ -208,14 +231,16 @@ public class TripInfoFragment extends Fragment {
 
         autocompleteFragmentDest.setHint("Search Destination");
         autocompleteFragmentDest.setCountry("PH");
-        autocompleteFragmentDest.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
+        autocompleteFragmentDest.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG));
 
         autocompleteFragmentDest.setOnPlaceSelectedListener(new PlaceSelectionListener() {
             @Override
             public void onPlaceSelected(Place place) {
                 txtDestination.setText(String.format(place.getName()));
+                destinationLat = String.valueOf(place.getLatLng().latitude);
+                destinationLng = String.valueOf(place.getLatLng().longitude);
                 autocompleteFragmentDest.getView().setVisibility(View.GONE);
-                Log.i("Places", "Place: " + place.getName() + ", " + place.getId());
+                //Log.i("Places", "Place: " + place.getName() + ", " + place.getId());
             }
 
             @Override
@@ -368,8 +393,18 @@ public class TripInfoFragment extends Fragment {
 
         // Get shared preferences
         myPrefs = getActivity().getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
-        txtOrigin.setText(myPrefs.getString("origin",null));
-        txtDestination.setText(myPrefs.getString("destination",null));
+
+        if(myPrefs.getString("origin",null)!=null) {
+            txtOrigin.setText(myPrefs.getString("origin", null));
+            originLat = myPrefs.getString("originLat", null);
+            originLng = myPrefs.getString("originLng", null);
+        }
+
+        if(myPrefs.getString("destination",null)!=null) {
+            txtDestination.setText(myPrefs.getString("destination",null));
+            destinationLat = myPrefs.getString("destinationLat", null);
+            destinationLng = myPrefs.getString("destinationLng", null);
+        }
 
         if(myPrefs.getString("purpose",null)!=null) {
             int selectionPurpose= purposeAdapter.getPosition(myPrefs.getString("purpose",null));

@@ -137,7 +137,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
         ViewAnimation.init(bi.txtFeedsCount);
 
         // Get feeds count
-        feedsCount=24;
+        feedsCount=0;
 
         // Trip Add Fab
         bi.fabTripAdd.setOnClickListener(new View.OnClickListener() {
@@ -316,6 +316,13 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
+                // Trip history
+                if(item.getItemId()==R.id.triphistory)
+                {
+                    Intent intent = new Intent(Trip.this, TripHistory.class);
+                    startActivity(intent);
+                }
+                // Settings
                 if(item.getItemId()==R.id.settings)
                 {
                     // do something

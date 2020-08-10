@@ -101,10 +101,6 @@
         android:layout_marginEnd="16dp"
         android:background="@drawable/edit_text_border"
         android:fontFamily="@font/gothammedium_font"
-        android:gravity="start|top"
-        android:hint="Trip Destination"
-        android:inputType="textMultiLine"
-        android:lines="2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/cardviewOrig"/>

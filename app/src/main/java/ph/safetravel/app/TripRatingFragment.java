@@ -33,6 +33,7 @@ public class TripRatingFragment extends Fragment {
         final SmileRating smileyRating = view.findViewById(R.id.smile_rating);
 
         smileyRating.setAngryColor(Color.RED);
+        smileyRating.setDrawingColor(Color.WHITE);
 
         smileyRating.setOnSmileySelectionListener(new SmileRating.OnSmileySelectionListener() {
             @Override

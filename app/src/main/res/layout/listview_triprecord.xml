@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:foreground="?attr/selectableItemBackground"
+    android:padding="10dp">
+
+    <TextView
+        android:id="@+id/tv_VehicleId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:text="tv_VehicleId"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/tv_Origin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_VehicleId"
+        android:text="tv_Origin" />
+
+    <TextView
+        android:id="@+id/tv_Destination"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_Origin"
+        android:text="tv_Destination"/>
+
+    <TextView
+        android:id="@+id/tv_Tripdate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_Destination"
+        android:text="tv_Tripdate"/>
+
+</RelativeLayout>
