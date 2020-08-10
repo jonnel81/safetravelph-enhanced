@@ -40,8 +40,8 @@ public class Data extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_data);
 
-        WebView mWebView1, mWebView2, mWebView3, mWebView4, mWebView5, mWebView6;
-        mWebView1 = (WebView) findViewById(R.id.webview1);
+        //WebView mWebView1, mWebView2, mWebView3, mWebView4, mWebView5, mWebView6;
+        //mWebView1 = (WebView) findViewById(R.id.webview1);
         //mWebView2 = (WebView) findViewById(R.id.webview2);
         //mWebView3 = (WebView) findViewById(R.id.webview3);
         //mWebView4 = (WebView) findViewById(R.id.webview4);
@@ -49,8 +49,8 @@ public class Data extends AppCompatActivity {
         //mWebView6 = (WebView) findViewById(R.id.webview6);
 //
         //// Enable Javascript
-        WebSettings webSettings1 = mWebView1.getSettings();
-        webSettings1.setJavaScriptEnabled(true);
+        //WebSettings webSettings1 = mWebView1.getSettings();
+        //webSettings1.setJavaScriptEnabled(true);
 //
         //WebSettings webSettings2 = mWebView2.getSettings();
         //webSettings2.setJavaScriptEnabled(true);
