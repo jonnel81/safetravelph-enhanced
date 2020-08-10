@@ -75,7 +75,11 @@ public class TripInfoFragment extends Fragment {
                         myPrefs = getActivity().getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = myPrefs.edit();
                         editor.remove("origin");
+                        editor.remove("originLat");
+                        editor.remove("originLng");
                         editor.remove("destination");
+                        editor.remove("destinationLat");
+                        editor.remove("destinationLng");
                         editor.remove("purpose");
                         editor.remove("mode");
                         editor.remove("vehicleId");
@@ -149,7 +153,7 @@ public class TripInfoFragment extends Fragment {
 
                     //Toast.makeText(getContext(), "Trip Info set successfully.", Toast.LENGTH_SHORT).show();
                     //Toast.makeText(getContext(), "Trip Record saved.", Toast.LENGTH_SHORT).show();
-                    Toast.makeText(getContext(), tripRecord.toString(), Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), tripRecord.getVehicleId(), Toast.LENGTH_LONG).show();
                 }
             }
         };

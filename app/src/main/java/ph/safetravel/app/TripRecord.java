@@ -121,7 +121,7 @@ public class TripRecord {
     }
 
     public void setVehicleDetails(String vehicleDetails) {
-        this.vehicleId = vehicleDetails;
+        this.vehicleDetails = vehicleDetails;
     }
 
     public String getTripDate() {
