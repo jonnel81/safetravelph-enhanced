@@ -30,20 +30,20 @@ public class TripRatingFragment extends Fragment {
                              Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_triprating, container, false);
 
-        final SmileRating smileyRating = view.findViewById(R.id.smile_rating);
+        final SmileRating smileyRating_vehiclecondtion = view.findViewById(R.id.rating_vehiclecondition);
+        final SmileRating smileyRating_ridecomfort = view.findViewById(R.id.rating_ridecomfort);
+        final SmileRating smileyRating_overall = view.findViewById(R.id.rating_overall);
 
-        smileyRating.setAngryColor(Color.RED);
-        smileyRating.setDrawingColor(Color.WHITE);
+        smileyRating_vehiclecondtion.setAngryColor(Color.RED);
+        smileyRating_vehiclecondtion.setDrawingColor(Color.WHITE);
 
-        smileyRating.setOnSmileySelectionListener(new SmileRating.OnSmileySelectionListener() {
+        smileyRating_vehiclecondtion.setOnSmileySelectionListener(new SmileRating.OnSmileySelectionListener() {
             @Override
             public void onSmileySelected(@BaseRating.Smiley int smiley, boolean reselected) {
-
                 // Retrieve the value of the bar dinamically
                 // level is from 1 to 5
                 // Will return 0 if NONE selected
-                int level = smileyRating.getRating();
-
+                int level = smileyRating_vehiclecondtion.getRating();
                 // reselected is false when user selects different smiley that previously selected one
                 // true when the same smiley is selected.
                 // Except if it first time, then the value will be false.

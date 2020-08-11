@@ -342,7 +342,7 @@ public class TripInfoFragment extends Fragment {
                 "P2P",
                 "Grab",
                 "Ordinary Taxi",
-                "Angkes",
+                "Angkas",
                 "Tricycle",
                 "Walk",
                 "Bike",
