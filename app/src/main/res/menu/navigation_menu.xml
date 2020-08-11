@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+
     <item
         android:id="@+id/profile"
         android:title="Profile"
@@ -15,4 +16,20 @@
         android:title="About"
         android:icon="@drawable/ic_baseline_info_24">
     </item>
+    <item
+        android:id="@+id/feedback"
+        android:title="Feedback"
+        android:icon="@drawable/ic_baseline_feedback_24">
+    </item>
+    <item android:title="Communicate">
+        <menu>
+            <item android:id="@+id/share"
+                android:icon="@drawable/ic_baseline_share_24"
+                android:title="Share" />
+            <item android:id="@+id/rateus"
+                android:icon="@drawable/ic_baseline_rate_review_24"
+                android:title="Rate Us" />
+        </menu>
+    </item>
+
 </menu>

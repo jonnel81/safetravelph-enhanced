@@ -79,9 +79,11 @@ public class Data extends AppCompatActivity {
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
+                // Settings
                 if(item.getItemId()==R.id.settings)
                 {
-                    // do something
+                    Intent intent = new Intent(Data.this, Settings.class);
+                    startActivity(intent);
                 }
                 return false;
             }

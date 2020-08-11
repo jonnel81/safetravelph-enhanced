@@ -683,7 +683,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
 
             // Publish message
             publishAlert(alertMessage(androidId, lat, lng, timeStamp, userId, description));
-            System.out.println(alertMessage(androidId, lat, lng, timeStamp, userId, description));
+            //System.out.println(alertMessage(androidId, lat, lng, timeStamp, userId, description));
         }
         Toast.makeText(getApplicationContext(), "Alert sent.", Toast.LENGTH_SHORT).show();
 

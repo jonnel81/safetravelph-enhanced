@@ -129,4 +129,5 @@ dependencies {
     //implementation group: 'io.mobilitydata.transit', name: 'gtfs-realtime-bindings', version: '0.0.5'
     //kapt "com.android.databinding:compiler:6.1.1"
     implementation 'com.github.sujithkanna:smileyrating:2.0.0'
+    implementation 'androidx.preference:preference:1.1.0-alpha02'
 }
