@@ -35,9 +35,9 @@ public class About extends AppCompatActivity {
 
         // Tollbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+        //setSupportActionBar(toolbar);
+        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setHomeButtonEnabled(true);
 
         // Drawer
         dl = findViewById(R.id.drawer_layout);
@@ -78,8 +78,8 @@ public class About extends AppCompatActivity {
                     }
                     case R.id.about:
                     {
-                        Intent intent1 = new Intent(About.this, About.class);
-                        startActivity(intent1);
+                        //Intent intent1 = new Intent(About.this, About.class);
+                        //startActivity(intent1);
                         //Toast.makeText(MainActivity.this, "Edit Profile", Toast.LENGTH_SHORT).show();
                     }
                 }

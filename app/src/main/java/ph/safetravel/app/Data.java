@@ -121,9 +121,10 @@ public class Data extends AppCompatActivity {
                     }
                     case R.id.about:
                     {
-                        dl.closeDrawer(Gravity.LEFT);
-                        Intent intent = new Intent(Data.this, About.class);
-                        startActivity(intent);
+                        Toast.makeText(Data.this, "About", Toast.LENGTH_SHORT).show();
+                        //dl.closeDrawer(Gravity.LEFT);
+                        //Intent intent = new Intent(Data.this, About.class);
+                        //startActivity(intent);
                     }
                 }
                 return false;

@@ -32,10 +32,15 @@ public class TripRatingFragment extends Fragment {
 
         final SmileRating smileyRating_vehiclecondtion = view.findViewById(R.id.rating_vehiclecondition);
         final SmileRating smileyRating_ridecomfort = view.findViewById(R.id.rating_ridecomfort);
+        final SmileRating smileyRating_serviceadequacy = view.findViewById(R.id.rating_serviceadequacy);
+        final SmileRating smileyRating_stopaccessibility = view.findViewById(R.id.rating_stopaccessibility);
+        final SmileRating smileyRating_infoprovision = view.findViewById(R.id.rating_infoprovision);
+        final SmileRating smileyRating_serviceavailability = view.findViewById(R.id.rating_serviceavailability);
+        final SmileRating smileyRating_routeconnectivity = view.findViewById(R.id.rating_routeconnectivity);
         final SmileRating smileyRating_overall = view.findViewById(R.id.rating_overall);
 
-        smileyRating_vehiclecondtion.setAngryColor(Color.RED);
-        smileyRating_vehiclecondtion.setDrawingColor(Color.WHITE);
+        //smileyRating_vehiclecondtion.setAngryColor(Color.RED);
+        //smileyRating_vehiclecondtion.setDrawingColor(Color.WHITE);
 
         smileyRating_vehiclecondtion.setOnSmileySelectionListener(new SmileRating.OnSmileySelectionListener() {
             @Override
