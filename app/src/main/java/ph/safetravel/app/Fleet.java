@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
+import android.graphics.Color;
 import android.location.Location;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -45,6 +46,8 @@ import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
@@ -87,7 +90,7 @@ import ph.safetravel.app.databinding.ActivityFleetBinding;
 import ph.safetravel.app.protos.Vehicle;
 
 
-public class Fleet extends AppCompatActivity implements OnMapReadyCallback, AdapterView.OnItemClickListener  {
+public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
     SharedPreferences myPrefs;
     MqttAndroidClient client;
     MqttConnectOptions options;
@@ -110,18 +113,20 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Adap
     //SensorEventListener acListener;
     //Sensor gyroscope;
     Toolbar toolbar;
-    private DrawerLayout dl;
-    private ActionBarDrawerToggle t;
-    private NavigationView nv;
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle actionBarDrawerToggle;
+    private NavigationView navigationView;
     ImageButton boardButton, alightButton;
     int numPass;
     double speed=0.0, avgspeed=0.0, distance=0.0;
     TextView NumPassengers;
-    TextView Speed, Distance;
+    TextView Speed, Distance, AverageSpeed;
     ProgressBar pgsBar;
     ActivityFleetBinding bi;
     boolean isRotate = false;
     int feedsCount;
+    Polyline route;
+    List<LatLng> routePoints = new ArrayList<LatLng>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -261,8 +266,8 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Adap
         pgsBar.setScaleY(3f);
 
         // Drawer
-        dl = findViewById(R.id.drawer_layout);
-        t = new ActionBarDrawerToggle(this, dl, toolbar, R.string.Open, R.string.Close) {
+        drawerLayout = findViewById(R.id.drawer_layout);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.Open, R.string.Close) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
@@ -277,13 +282,13 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Adap
                 //presently nothing
             }
         };
-        t.setDrawerIndicatorEnabled(true);
-        dl.addDrawerListener(t);
-        t.syncState();
+        actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
 
         // Navigation
-        nv = (NavigationView)findViewById(R.id.nav_view);
-        nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+        navigationView = (NavigationView)findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 int id = menuItem.getItemId();
@@ -296,21 +301,27 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Adap
                     {
                         Toast.makeText(Fleet.this, "Settings", Toast.LENGTH_SHORT).show();
                     }
+                    case R.id.help:
+                    {
+                        Toast.makeText(Fleet.this, "Help", Toast.LENGTH_SHORT).show();
+                    }
                     case R.id.about:
                     {
-                        dl.closeDrawer(Gravity.LEFT);
-                        Intent intent = new Intent(Fleet.this, About.class);
-                        startActivity(intent);
+                        //drawerLayout.closeDrawer(Gravity.LEFT);
+                        //Intent intent = new Intent(Fleet.this, About.class);
+                        //startActivity(intent);
                     }
                 }
                 return false;
             }
         });
 
+        // Displays
         NumPassengers = findViewById(R.id.txtNumPass);
         NumPassengers.setText(String.valueOf(numPass));
         Speed = findViewById(R.id.txtSpeedNum);
-        Speed.setText(String.valueOf(speed));
+        AverageSpeed = findViewById(R.id.txtAvgSpeedNum);
+        Distance =  findViewById(R.id.txtDistNum);
 
         // Board button
         boardButton = findViewById(R.id.btnBoard);
@@ -393,6 +404,14 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Adap
             }
         };
         alightButton.setOnClickListener(null);
+
+        // Get shared preferences
+        myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
+        String username = myPrefs.getString("username", null);
+
+        View headerView = navigationView.getHeaderView(0);
+        TextView navUsername =  headerView.findViewById(R.id.nav_header_textView);
+        navUsername.setText(username);
 
         //  Sensors
         //sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -688,14 +707,29 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Adap
         }
     } // onRequestPermissionsResult
 
+
+
     LocationCallback locationCallback = new LocationCallback() {
-        @SuppressLint("DefaultLocale")
         @Override
         public void onLocationResult(LocationResult locationResult) {
             List<Location> locationList = locationResult.getLocations();
+            //List<LatLng> routePoints;
+            //route = mMap.addPolyline(new PolylineOptions()
+            //        .width(10)
+            //        .color(Color.BLUE)
+            //        .geodesic(true)
+            //        //.add(mmla)
+            //        .zIndex(100));
+            //route.setPoints(routePoints);
+
             if (locationList.size() > 0) {
                 //The last location in the list is the newest
                 Location location = locationList.get(locationList.size() - 1);
+
+                LatLng mCurrentPoint= new LatLng(location.getLatitude(),location.getLongitude());
+                //Log.d("Route", mCurrentPoint.toString());
+                routePoints.add(mCurrentPoint);
+                Log.d("Route", routePoints.toString());
 
                 if(mLastLocation != null) {
                     // Get loc1 and loc2
@@ -704,12 +738,25 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Adap
                     distance = distance + computeDistance(loc1, loc2);
                     speed = computeSpeed(loc1, loc2);
                     avgspeed = (avgspeed + speed)/2;
-                    Log.d("Loc/Speed", String.valueOf(loc1.getLatitude()) + "," + String.valueOf(loc2.getLatitude()) + "," + String.valueOf(speed));
+                    Log.d("Loc/Speed/Dist", String.valueOf(loc1.getLatitude()) + ","
+                            + String.valueOf(loc2.getLatitude()) + "," + String.valueOf(speed)+ ","
+                            + String.valueOf(distance));
                 }
 
                 mLastLocation = location;  // update the last location
 
                 if (mLastLocation != null) {
+
+                    //mCurrentPoint= new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude());
+                    //routePoints.add(mCurrentPoint);
+
+                    //Polyline route = mMap.addPolyline(new PolylineOptions()
+                    //        .width(10)
+                    //        .color(Color.BLUE)
+                    //        .geodesic(true)
+                    //        .zIndex(100));
+                    //route.setPoints(routePoints);
+
                     String lat = String.valueOf(location.getLatitude());
                     String lng = String.valueOf(location.getLongitude());
 
@@ -718,7 +765,10 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Adap
                     //speed = avgspeed(loc1, loc2);
                     //speed = location.getSpeed()*3.6f;
                     //Speed.setText(String.valueOf(speed));
+
                     Speed.setText(String.format("%.2f", speed));
+                    AverageSpeed.setText(String.format("%.2f", avgspeed));
+                    Distance.setText(String.format("%.2f", distance));
 
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
                     sdf.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
@@ -743,6 +793,14 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Adap
                     markerOptions.title("Current Position");
                     mMap.clear();
                     mCurrLocationMarker = mMap.addMarker(markerOptions);
+
+                    // Draw route
+                    route = mMap.addPolyline(new PolylineOptions()
+                            .width(10)
+                            .color(Color.BLUE)
+                            .geodesic(true)
+                            .zIndex(100));
+                    route.setPoints(routePoints);
                 }
             }
         }
@@ -932,11 +990,21 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Adap
             mMap.setTrafficEnabled(true);
         }
 
-        // Initialize marker array
-        //mMarkerArrayList = new ArrayList<>();
+        //LatLng mmla = new LatLng(14.6091, 121.0223);
+
+        // Initialize
+        //List<LatLng> routePoints = new ArrayList<LatLng>();
+        //routePoints.add(mmla);
+        //route = mMap.addPolyline(new PolylineOptions()
+        //        .width(10)
+        //        .color(Color.BLUE)
+        //        .geodesic(true)
+        //        //.add(mmla)
+        //        .zIndex(100));
+        //route.setPoints(routePoints);
 
         LatLng mmla = new LatLng(14.6091, 121.0223);
-        //mMap.addMarker(new MarkerOptions().position(mmla).title("Marker Position"));
+        mMap.addMarker(new MarkerOptions().position(mmla).title("Current Position"));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mmla, 10));
     } // onMapReady
 
@@ -960,14 +1028,14 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Adap
     } // restoreFab
 
     // Drawerlayout menu item clicked
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        // fetch the user selected value
-        String item = parent.getItemAtPosition(position).toString();
-        // create Toast with user selected value
-        Toast.makeText(Fleet.this, "Selected Item is: \t" + item, Toast.LENGTH_LONG).show();
-        // set user selected value to the TextView
-
-    }
+    //@Override
+    //public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    //    // fetch the user selected value
+    //    String item = parent.getItemAtPosition(position).toString();
+    //    // create Toast with user selected value
+    //    Toast.makeText(Fleet.this, "Selected Item is: \t" + item, Toast.LENGTH_LONG).show();
+    //    // set user selected value to the TextView
+//
+    //}
 
 }
