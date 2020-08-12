@@ -353,11 +353,15 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
                     sdf.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
                     String timeStamp = sdf.format(new Date());
+
+                    // Get shared preferences
                     myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
                     String userId = myPrefs.getString("username","");
                     String deviceId = myPrefs.getString("androidId","");
                     String vehicleId = myPrefs.getString("vehicleId","");
-                    String vehicleDetails = myPrefs.getString("vehicleDetails",null);
+                    String vehicleDetails = myPrefs.getString("vehicleDetails","");
+
+                    // Publish message
                     numPass=numPass+1;
                     NumPassengers.setText(String.valueOf(numPass));
                     publishMessage(vehicleMessage(deviceId, lat, lng, timeStamp, userId, vehicleId, vehicleDetails, true, false, numPass));
@@ -394,17 +398,15 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
                     sdf.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
                     String timeStamp = sdf.format(new Date());
+
+                    // Get shared preferences
                     myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
-                    String userId = myPrefs.getString("username",null);
-                    String deviceId = myPrefs.getString("androidId",null);
-                    String vehicleId = myPrefs.getString("vehicleId",null);
-                    if(vehicleId.equals(null)){
-                        vehicleId = "None";
-                    }
-                    String vehicleDetails = myPrefs.getString("vehicleDetails",null);
-                    if(vehicleDetails.equals(null)){
-                        vehicleDetails = "None";
-                    }
+                    String userId = myPrefs.getString("username","");
+                    String deviceId = myPrefs.getString("androidId","");
+                    String vehicleId = myPrefs.getString("vehicleId","");
+                    String vehicleDetails = myPrefs.getString("vehicleDetails","");
+
+                    // Publish message
                     if (numPass != 0) numPass=numPass-1;
                     NumPassengers.setText(String.valueOf(numPass));
                     publishMessage(vehicleMessage(deviceId, lat, lng, timeStamp, userId, vehicleId, vehicleDetails, false, true, numPass));
@@ -443,13 +445,6 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
         // Open dbase
         //dbManager = new DBManager(this);
         //dbManager.open();
-
-        // Map fragment
-        //mMapFragmentFleet = MapFragment.newInstance();
-        //FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
-        //fragmentTransaction.add(R.id.mapFragFleet, mMapFragmentFleet);
-        //fragmentTransaction.commit();
-        //mMapFragmentFleet.getMapAsync(this);
 
         // FuseLocationProviderClient
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -741,12 +736,11 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                     // Get loc1 and loc2
                     Location loc1 = mLastLocation;
                     Location loc2 = location;
-                    distance = distance + computeDistance(loc1, loc2);
+                    distance = distance + computeDistance(loc1, loc2)/1000;
                     speed = computeSpeed(loc1, loc2);
                     avgspeed = (avgspeed + speed)/2;
-                    Log.d("Loc/Speed/Dist", String.valueOf(loc1.getLatitude()) + ","
-                            + String.valueOf(loc2.getLatitude()) + "," + String.valueOf(speed)+ ","
-                            + String.valueOf(distance));
+                    //Log.d("Loc/Speed/Dist", String.valueOf(loc1.getLatitude()) + "," + String.valueOf(loc2.getLatitude()) + "," + String.valueOf(speed)+ ","
+                    //        + String.valueOf(distance));
                 }
 
                 mLastLocation = location;  // update the last location
@@ -792,7 +786,8 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                         LatLng originPoint = new LatLng(Double.parseDouble(originLat), Double.parseDouble(originLng));
                         BitmapDescriptor iconOrigin = BitmapDescriptorFactory.fromResource(R.drawable.ic_flagorigin);
                         MarkerOptions markerOptions = new MarkerOptions().position(originPoint)
-                                .icon(iconOrigin)
+                                .icon(BitmapDescriptorFactory
+                                        .defaultMarker(BitmapDescriptorFactory.HUE_RED))
                                 .title("Origin");
                         mMap.addMarker(markerOptions);
                     }
@@ -805,15 +800,17 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                         LatLng destinationPoint = new LatLng(Double.parseDouble(destinationLat), Double.parseDouble(destinationLng));
                         BitmapDescriptor iconDestination = BitmapDescriptorFactory.fromResource(R.drawable.ic_flagorigin);
                         MarkerOptions markerOptions = new MarkerOptions().position(destinationPoint)
-                                .icon(iconDestination)
+                                .icon(BitmapDescriptorFactory
+                                        .defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
                                 .title("Destination");
                         mMap.addMarker(markerOptions);
                     }
 
                     // Current location marker
-                    MarkerOptions markerOptions = new MarkerOptions();
-                    markerOptions.position(latLng);
-                    markerOptions.title("Current Position");
+                    MarkerOptions markerOptions = new MarkerOptions().position(latLng)
+                            .icon(BitmapDescriptorFactory
+                                    .defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                            .title("Current Position");
                     mCurrLocationMarker = mMap.addMarker(markerOptions);
 
                     // Draw route
@@ -1030,6 +1027,8 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
         //BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_triplocation);
         //mMap.addMarker(new MarkerOptions().position(mmla).title("Current Position"));
         MarkerOptions markerOptions = new MarkerOptions().position(mmla)
+                .icon(BitmapDescriptorFactory
+                        .defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
                 .title("Current Position");
         mMap.addMarker(markerOptions);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mmla, 10));
