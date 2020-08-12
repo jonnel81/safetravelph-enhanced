@@ -43,6 +43,8 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -316,7 +318,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
             }
         });
 
-        // Displays
+        // Display text values
         NumPassengers = findViewById(R.id.txtNumPass);
         NumPassengers.setText(String.valueOf(numPass));
         Speed = findViewById(R.id.txtSpeedNum);
@@ -352,13 +354,13 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                     sdf.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
                     String timeStamp = sdf.format(new Date());
                     myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
-                    String username = myPrefs.getString("username",null);
-                    String androidId = myPrefs.getString("androidId",null);
-                    String paxCode = username;
-                    String vehCode = "None";
+                    String userId = myPrefs.getString("username","");
+                    String deviceId = myPrefs.getString("androidId","");
+                    String vehicleId = myPrefs.getString("vehicleId","");
+                    String vehicleDetails = myPrefs.getString("vehicleDetails",null);
                     numPass=numPass+1;
                     NumPassengers.setText(String.valueOf(numPass));
-                    publishMessage(vehicleMessage(androidId, lat, lng, timeStamp, paxCode, vehCode, true, false, numPass));
+                    publishMessage(vehicleMessage(deviceId, lat, lng, timeStamp, userId, vehicleId, vehicleDetails, true, false, numPass));
                 }
             }
         };
@@ -393,13 +395,19 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                     sdf.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
                     String timeStamp = sdf.format(new Date());
                     myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
-                    String username = myPrefs.getString("username",null);
-                    String androidId = myPrefs.getString("androidId",null);
-                    String paxCode = username;
-                    String vehCode = "None";
+                    String userId = myPrefs.getString("username",null);
+                    String deviceId = myPrefs.getString("androidId",null);
+                    String vehicleId = myPrefs.getString("vehicleId",null);
+                    if(vehicleId.equals(null)){
+                        vehicleId = "None";
+                    }
+                    String vehicleDetails = myPrefs.getString("vehicleDetails",null);
+                    if(vehicleDetails.equals(null)){
+                        vehicleDetails = "None";
+                    }
                     if (numPass != 0) numPass=numPass-1;
                     NumPassengers.setText(String.valueOf(numPass));
-                    publishMessage(vehicleMessage(androidId, lat, lng, timeStamp, paxCode, vehCode, false, true, numPass));
+                    publishMessage(vehicleMessage(deviceId, lat, lng, timeStamp, userId, vehicleId, vehicleDetails, false, true, numPass));
                 }
             }
         };
@@ -525,7 +533,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
 
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
-                //Log.i(TAG, "topic: " + topic + ", msg: " + new String(message.getPayload()));
+                Log.i("MQTT", "topic: " + topic + ", msg: " + new String(message.getPayload()));
             }
 
             @Override
@@ -707,8 +715,6 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
         }
     } // onRequestPermissionsResult
 
-
-
     LocationCallback locationCallback = new LocationCallback() {
         @Override
         public void onLocationResult(LocationResult locationResult) {
@@ -746,25 +752,11 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                 mLastLocation = location;  // update the last location
 
                 if (mLastLocation != null) {
-
-                    //mCurrentPoint= new LatLng(mLastLocation.getLatitude(),mLastLocation.getLongitude());
-                    //routePoints.add(mCurrentPoint);
-
-                    //Polyline route = mMap.addPolyline(new PolylineOptions()
-                    //        .width(10)
-                    //        .color(Color.BLUE)
-                    //        .geodesic(true)
-                    //        .zIndex(100));
-                    //route.setPoints(routePoints);
+                    // Clear the map
+                    mMap.clear();
 
                     String lat = String.valueOf(location.getLatitude());
                     String lng = String.valueOf(location.getLongitude());
-
-                    //Location loc1 = mLastLocation;
-                    //Location loc2 = location;
-                    //speed = avgspeed(loc1, loc2);
-                    //speed = location.getSpeed()*3.6f;
-                    //Speed.setText(String.valueOf(speed));
 
                     Speed.setText(String.format("%.2f", speed));
                     AverageSpeed.setText(String.format("%.2f", avgspeed));
@@ -773,25 +765,55 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
                     sdf.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
                     String timeStamp = sdf.format(new Date());
+
                     myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
-                    String username = myPrefs.getString("username",null);
-                    String androidId = myPrefs.getString("androidId",null);
-                    String userId = username;
-                    //String vehicleId = myPrefs.getString("vehicleId",null);
-                    //String vehCode = vehicleId;
-                    String vehicleId = "None";
+                    String userId = myPrefs.getString("username","");
+                    String deviceId = myPrefs.getString("androidId","");
+                    String vehicleId = myPrefs.getString("vehicleId","");
+                    String vehicleDetails = myPrefs.getString("vehicleDetails","");
+
                     // Publish message
-                    publishMessage(vehicleMessage(androidId, lat, lng, timeStamp, userId, vehicleId, false, false, numPass));
+                    publishMessage(vehicleMessage(deviceId, lat, lng, timeStamp, userId, vehicleId, vehicleDetails, false, false, numPass));
 
                     // Place location marker
                     if (mCurrLocationMarker != null) {
                         mCurrLocationMarker.remove();
                     }
                     LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+
+                    // Get shared preferences
+                    myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
+
+                    // Origin marker
+                    String originLat = myPrefs.getString("originLat","");
+                    String originLng = myPrefs.getString("originLng","");
+
+                    if (!originLat.equals("") && !originLat.equals("")) {
+                        LatLng originPoint = new LatLng(Double.parseDouble(originLat), Double.parseDouble(originLng));
+                        BitmapDescriptor iconOrigin = BitmapDescriptorFactory.fromResource(R.drawable.ic_flagorigin);
+                        MarkerOptions markerOptions = new MarkerOptions().position(originPoint)
+                                .icon(iconOrigin)
+                                .title("Origin");
+                        mMap.addMarker(markerOptions);
+                    }
+
+                    // Destination marker
+                    String destinationLat = myPrefs.getString("destinationLat","");
+                    String destinationLng = myPrefs.getString("destinationLng","");
+
+                    if (!destinationLat.equals("") && !destinationLng.equals("")) {
+                        LatLng destinationPoint = new LatLng(Double.parseDouble(destinationLat), Double.parseDouble(destinationLng));
+                        BitmapDescriptor iconDestination = BitmapDescriptorFactory.fromResource(R.drawable.ic_flagorigin);
+                        MarkerOptions markerOptions = new MarkerOptions().position(destinationPoint)
+                                .icon(iconDestination)
+                                .title("Destination");
+                        mMap.addMarker(markerOptions);
+                    }
+
+                    // Current location marker
                     MarkerOptions markerOptions = new MarkerOptions();
                     markerOptions.position(latLng);
                     markerOptions.title("Current Position");
-                    mMap.clear();
                     mCurrLocationMarker = mMap.addMarker(markerOptions);
 
                     // Draw route
@@ -854,7 +876,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
         }
     }
 
-    public byte[] vehicleMessage(String deviceId, String lat, String lng, String timestamp, String userId, String vehicleId, boolean board, boolean alight, int numPass) {
+    public byte[] vehicleMessage(String deviceId, String lat, String lng, String timestamp, String userId, String vehicleId, String vehicleDetails, boolean board, boolean alight, int numPass) {
         Vehicle vehicle = Vehicle.newBuilder()
                 .setDeviceId(deviceId)
                 .setLat(lat)
@@ -862,6 +884,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                 .setTimestamp(timestamp)
                 .setUserId(userId)
                 .setVehicleId(vehicleId)
+                .setVehicleDetails(vehicleDetails)
                 .setBoard(board)
                 .setAlight(alight)
                 .setNumPass(numPass)
@@ -1004,7 +1027,11 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
         //route.setPoints(routePoints);
 
         LatLng mmla = new LatLng(14.6091, 121.0223);
-        mMap.addMarker(new MarkerOptions().position(mmla).title("Current Position"));
+        //BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_triplocation);
+        //mMap.addMarker(new MarkerOptions().position(mmla).title("Current Position"));
+        MarkerOptions markerOptions = new MarkerOptions().position(mmla)
+                .title("Current Position");
+        mMap.addMarker(markerOptions);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mmla, 10));
     } // onMapReady
 
