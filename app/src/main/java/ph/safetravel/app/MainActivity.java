@@ -13,6 +13,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -76,7 +78,11 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         password = PasswordEt.getText().toString();
         String type = "login";
 
-        backgroundWorker.execute(type,username, password);
+        if (isConnected()) {
+            backgroundWorker.execute(type, username, password);
+        }else {
+            Toast.makeText(getApplicationContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
+        }
     } // OnLogin
 
     @Override
@@ -139,5 +145,19 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
     @Override
     public void onBackPressed() {
         // Do nothing
+    }
+
+    // Check if there's internet
+    public boolean isConnected() {
+        boolean connected = false;
+        try {
+            ConnectivityManager cm = (ConnectivityManager)getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo nInfo = cm.getActiveNetworkInfo();
+            connected = nInfo != null && nInfo.isAvailable() && nInfo.isConnected();
+            return connected;
+        } catch (Exception e) {
+            Log.e("Connectivity Exception", e.getMessage());
+        }
+        return connected;
     }
 }

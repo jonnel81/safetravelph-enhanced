@@ -8,9 +8,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -391,7 +394,12 @@ public class Register extends AppCompatActivity implements AsyncResponse {
             alertDialog.setCanceledOnTouchOutside(false);
             alertDialog.show();
         } else {
-            backgroundWorker.execute(type, str_firstname, str_lastname, str_age, str_username, str_password, str_role, str_question1, str_answer1, str_question2, str_answer2, str_question3, str_answer3);
+            if (isConnected()) {
+                backgroundWorker.execute(type, str_firstname, str_lastname, str_age, str_username, str_password, str_role, str_question1, str_answer1, str_question2, str_answer2, str_question3, str_answer3);
+
+            }else {
+                Toast.makeText(getApplicationContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
+            }
         }
 
     } // OnReg
@@ -438,5 +446,18 @@ public class Register extends AppCompatActivity implements AsyncResponse {
         }
     } // processFinish
 
+    // Check if there's internet
+    public boolean isConnected() {
+        boolean connected = false;
+        try {
+            ConnectivityManager cm = (ConnectivityManager)getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo nInfo = cm.getActiveNetworkInfo();
+            connected = nInfo != null && nInfo.isAvailable() && nInfo.isConnected();
+            return connected;
+        } catch (Exception e) {
+            Log.e("Connectivity Exception", e.getMessage());
+        }
+        return connected;
+    }
 }
 
