@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -27,9 +28,10 @@ import com.google.android.material.navigation.NavigationView;
 public class Data extends AppCompatActivity {
     SharedPreferences myPrefs;
     private Toolbar toolbar;
-    private DrawerLayout dl;
-    private ActionBarDrawerToggle t;
-    private NavigationView nv;
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle actionBarDrawerToggle;
+    private NavigationView navigationView;
+    TextView navUsername;
 
     public Data() {
         super();
@@ -39,39 +41,6 @@ public class Data extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_data);
-
-        //WebView mWebView1, mWebView2, mWebView3, mWebView4, mWebView5, mWebView6;
-        //mWebView1 = (WebView) findViewById(R.id.webview1);
-        //mWebView2 = (WebView) findViewById(R.id.webview2);
-        //mWebView3 = (WebView) findViewById(R.id.webview3);
-        //mWebView4 = (WebView) findViewById(R.id.webview4);
-        //mWebView5 = (WebView) findViewById(R.id.webview5);
-        //mWebView6 = (WebView) findViewById(R.id.webview6);
-//
-        //// Enable Javascript
-        //WebSettings webSettings1 = mWebView1.getSettings();
-        //webSettings1.setJavaScriptEnabled(true);
-//
-        //WebSettings webSettings2 = mWebView2.getSettings();
-        //webSettings2.setJavaScriptEnabled(true);
-//
-        //WebSettings webSettings3 = mWebView3.getSettings();
-        //webSettings3.setJavaScriptEnabled(true);
-//
-        //WebSettings webSettings4 = mWebView4.getSettings();
-        //webSettings4.setJavaScriptEnabled(true);
-//
-        //WebSettings webSettings5 = mWebView5.getSettings();
-        //webSettings5.setJavaScriptEnabled(true);
-//
-        //WebSettings webSettings6 = mWebView6.getSettings();
-        //webSettings6.setJavaScriptEnabled(true);
-//
-        //mWebView1.loadUrl("http://beta.html5test.com/");
-        //mWebView1.loadUrl("https://safetravel.ph/dashboard/piechart.html");
-        //mWebView1.loadUrl("https://safetravel.ph/dashboard/barchart.html");
-        //mWebView3.loadUrl("https://safetravel.ph/dashboard/gaugechart.html");
-        //mWebView1.loadUrl("https://safetravel.ph/");
 
         // Tollbar
         toolbar = findViewById(R.id.toolbar);
@@ -89,9 +58,9 @@ public class Data extends AppCompatActivity {
             }
         });
 
-        // Drawer
-        dl = findViewById(R.id.drawer_layout);
-        t = new ActionBarDrawerToggle(this, dl, toolbar, R.string.Open, R.string.Close) {
+        // Navigation Drawer
+        drawerLayout = findViewById(R.id.drawer_layout);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.Open, R.string.Close) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
@@ -102,13 +71,13 @@ public class Data extends AppCompatActivity {
                 super.onDrawerClosed(drawerView);
             }
         };
-        t.setDrawerIndicatorEnabled(true);
-        dl.addDrawerListener(t);
-        t.syncState();
+        actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
 
-        // Navigation
-        nv = findViewById(R.id.nav_view);
-        nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+        // Bottom Navigation
+        navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 int id = menuItem.getItemId();
@@ -199,11 +168,53 @@ public class Data extends AppCompatActivity {
             }
         });
 
+        // Get shared preferences
+        myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
+        String username = myPrefs.getString("username", null);
+
+        View headerView = navigationView.getHeaderView(0);
+        TextView navUsername =  headerView.findViewById(R.id.nav_header_textView);
+        navUsername.setText(username);
+
+        //WebView mWebView1, mWebView2, mWebView3, mWebView4, mWebView5, mWebView6;
+        //mWebView1 = (WebView) findViewById(R.id.webview1);
+        //mWebView2 = (WebView) findViewById(R.id.webview2);
+        //mWebView3 = (WebView) findViewById(R.id.webview3);
+        //mWebView4 = (WebView) findViewById(R.id.webview4);
+        //mWebView5 = (WebView) findViewById(R.id.webview5);
+        //mWebView6 = (WebView) findViewById(R.id.webview6);
+//
+        //// Enable Javascript
+        //WebSettings webSettings1 = mWebView1.getSettings();
+        //webSettings1.setJavaScriptEnabled(true);
+//
+        //WebSettings webSettings2 = mWebView2.getSettings();
+        //webSettings2.setJavaScriptEnabled(true);
+//
+        //WebSettings webSettings3 = mWebView3.getSettings();
+        //webSettings3.setJavaScriptEnabled(true);
+//
+        //WebSettings webSettings4 = mWebView4.getSettings();
+        //webSettings4.setJavaScriptEnabled(true);
+//
+        //WebSettings webSettings5 = mWebView5.getSettings();
+        //webSettings5.setJavaScriptEnabled(true);
+//
+        //WebSettings webSettings6 = mWebView6.getSettings();
+        //webSettings6.setJavaScriptEnabled(true);
+//
+        //mWebView1.loadUrl("http://beta.html5test.com/");
+        //mWebView1.loadUrl("https://safetravel.ph/dashboard/piechart.html");
+        //mWebView1.loadUrl("https://safetravel.ph/dashboard/barchart.html");
+        //mWebView3.loadUrl("https://safetravel.ph/dashboard/gaugechart.html");
+        //mWebView1.loadUrl("https://safetravel.ph/");
+
+
     } // onCreate
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(t.onOptionsItemSelected(item))
+        if(actionBarDrawerToggle.onOptionsItemSelected(item))
             return true;
 
         return super.onOptionsItemSelected(item);
