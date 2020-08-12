@@ -12,14 +12,19 @@
         android:icon="@drawable/ic_baseline_settings_24">
     </item>
     <item
-        android:id="@+id/about"
-        android:title="About"
-        android:icon="@drawable/ic_baseline_info_24">
+        android:id="@+id/help"
+        android:title="Help"
+        android:icon="@drawable/ic_baseline_help_24">
     </item>
     <item
         android:id="@+id/feedback"
         android:title="Feedback"
         android:icon="@drawable/ic_baseline_feedback_24">
+    </item>
+    <item
+        android:id="@+id/about"
+        android:title="About"
+        android:icon="@drawable/ic_baseline_info_24">
     </item>
     <item android:title="Communicate">
         <menu>

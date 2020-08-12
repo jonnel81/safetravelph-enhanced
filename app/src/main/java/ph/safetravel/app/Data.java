@@ -31,7 +31,6 @@ public class Data extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private NavigationView navigationView;
-    TextView navUsername;
 
     public Data() {
         super();

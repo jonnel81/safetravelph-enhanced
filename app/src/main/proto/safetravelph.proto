@@ -50,6 +50,7 @@ message Alert {
     string timestamp = 4;
     string userId = 5;
     string description = 6;
+    string vehicleId = 7;
 }
 
 message Feed {
