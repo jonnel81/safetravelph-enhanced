@@ -10,6 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -24,9 +25,9 @@ import com.google.android.material.navigation.NavigationView;
 
 public class About extends AppCompatActivity {
     private Toolbar toolbar;
-    private DrawerLayout dl;
-    private ActionBarDrawerToggle t;
-    private NavigationView nv;
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle actionBarDrawerToggle;
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,13 +36,13 @@ public class About extends AppCompatActivity {
 
         // Tollbar
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //setSupportActionBar(toolbar);
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //getSupportActionBar().setHomeButtonEnabled(true);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         // Drawer
-        dl = findViewById(R.id.drawer_layout);
-        t = new ActionBarDrawerToggle(this, dl, toolbar, R.string.Open, R.string.Close) {
+        drawerLayout = findViewById(R.id.drawer_layout);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.Open, R.string.Close) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
@@ -57,24 +58,24 @@ public class About extends AppCompatActivity {
             }
         };
 
-        t.setDrawerIndicatorEnabled(true);
-        dl.addDrawerListener(t);
-        t.syncState();
+        actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
 
         // Navigation
-        nv = (NavigationView)findViewById(R.id.nav_view);
-        nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+        navigationView = (NavigationView)findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 int id = menuItem.getItemId();
                 switch(id) {
                     case R.id.profile:
                     {
-                        //Toast.makeText(MainActivity.this, "My Profile", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(About.this, "My Profile", Toast.LENGTH_SHORT).show();
                     }
                     case R.id.settings:
                     {
-                        //Toast.makeText(MainActivity.this, "Settings", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(About.this, "Settings", Toast.LENGTH_SHORT).show();
                     }
                     case R.id.about:
                     {
@@ -91,7 +92,7 @@ public class About extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(t.onOptionsItemSelected(item))
+        if(actionBarDrawerToggle.onOptionsItemSelected(item))
             return true;
 
         return super.onOptionsItemSelected(item);

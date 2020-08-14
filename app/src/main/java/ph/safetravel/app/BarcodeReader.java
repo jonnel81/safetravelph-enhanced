@@ -21,7 +21,7 @@ public class BarcodeReader extends AppCompatActivity  {
         btn.setOnClickListener(new View.OnClickListener() {
         @Override
             public void onClick(View v) {
-                Intent intent = new Intent(BarcodeReader.this, Scan.class);
+                Intent intent = new Intent(BarcodeReader.this, ScanTrip.class);
                 startActivity(intent);
             }
         });

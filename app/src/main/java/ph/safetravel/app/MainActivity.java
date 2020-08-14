@@ -56,8 +56,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         myPrefs=getSharedPreferences("MYPREFS",Context.MODE_PRIVATE);
         String username = myPrefs.getString("username",null);
         String password = myPrefs.getString("password",null);
-        String androidId = myPrefs.getString("androidId",null);
-        String vehicleId = myPrefs.getString("vehicleId",null);
 
         // Check if shared preferences contains username and password then redirect to dashboard activity
         if(username != null && password != null ){
@@ -88,17 +86,40 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
     @Override
     public void processFinish(String result) {
         // Login success
-        if (result.equals("Login success")) {
+        //if (result.equals("Login success")) {
+        if (!result.equals("Login failed")) {
+            // Get user details
+
+
             // Update shared preferences
             SharedPreferences.Editor editor = myPrefs.edit();
-            editor.putString("username", username);
-            editor.putString("password", password);
+
+            // Encrypt username and password before storing in shared preferences
+            try {
+                String encrypted_username = AESUtils.encrypt(username);
+                editor.putString("username", encrypted_username);
+                String encrypted_password = AESUtils.encrypt(password);
+                editor.putString("password", encrypted_password);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            //editor.putString("username", username);
+            //editor.putString("password", password);
+
             // AndroidID
             androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-            // UUID
+            // Alternative is UUID
             //androidId = UUID.randomUUID().toString();
-            editor.putString("androidId", androidId);
-            Log.d("prefs", androidId);
+            // Encrypt androidId
+            try {
+                String encrypted_androidId = AESUtils.encrypt(androidId);
+                editor.putString("androidId", encrypted_androidId);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            //editor.putString("androidId", androidId);
+            //Log.d("prefs", androidId);
             editor.apply();
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.preference.PreferenceCategory
+        android:title="GPS Tracks">
+
+        <androidx.preference.SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="save_tracks_key"
+            android:title="Save GPS tracks"
+            android:summary="Save tracks locally in GPX format"/>
+
+        <androidx.preference.SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="clean_tracks_key"
+            android:title="Clean GPS tracks"
+            android:summary="Automatically delete tracks older than 30 days"/>
+
+    </androidx.preference.PreferenceCategory>
+
+    <androidx.preference.PreferenceCategory
+        android:title="Real-Time Feeds">
+
+        <androidx.preference.SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="receive_feeds_key"
+            android:title="Receive real-time feeds"
+            android:summary="Receive real-time feeds"/>
+
+        <androidx.preference.SwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="save_tracks_key"
+            android:title="Clean real-time feeds"
+            android:summary="Automatically delete feeds older than 30 days"/>
+
+    </androidx.preference.PreferenceCategory>
+
+    <androidx.preference.PreferenceCategory
+        android:title="Image Processing">
+
+        <androidx.preference.SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="capture_dashboard_key"
+            android:title="Vehicle operations"
+            android:summary="Extract speed, RPM and fuel level from dashboard"/>
+
+        <androidx.preference.SwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="capture_passenger_key"
+            android:title="Passenger condition"
+            android:summary="Extract passenger occupancy and seating configuration"/>
+
+    </androidx.preference.PreferenceCategory>
+
+</androidx.preference.PreferenceScreen>

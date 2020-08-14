@@ -34,15 +34,13 @@ import java.util.Arrays;
 
 public class FleetInfoFragment extends Fragment {
     SharedPreferences myPrefs;
-    //TextView txtOrigin, txtDestination;
-    //Spinner spinnerPurpose, spinnerMode;
-    //PlacesClient placesClient;
     Button closeButton;
     Button setFleetInfoButton, clearFleetInfoButton;
-    //ImageButton scanButton;
-    //public static TextView txtVehDetails;
-    //public static TextView txtVehId;
+    ImageButton scanButton;
     //String origin, destination, purpose, mode, vehicleId, vehicleDetails;
+    String vehicleId, vehicleDetails;
+    public static TextView txtVehDetails;
+    public static TextView txtVehId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
@@ -62,21 +60,21 @@ public class FleetInfoFragment extends Fragment {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // Clear shared preferences
-                        //myPrefs = getActivity().getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
-                        //SharedPreferences.Editor editor = myPrefs.edit();
+                        myPrefs = getActivity().getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
+                        SharedPreferences.Editor editor = myPrefs.edit();
                         //editor.remove("origin");
                         //editor.remove("destination");
                         //editor.remove("purpose");
                         //editor.remove("mode");
-                        //editor.remove("vehicleId");
-                        //editor.remove("vehicleDetails");
-                        //editor.apply();
+                        editor.remove("vehicleId");
+                        editor.remove("vehicleDetails");
+                        editor.apply();
                         //txtOrigin.setText("");
                         //txtDestination.setText("");
                         //spinnerPurpose.setSelection(0);
                         //spinnerMode.setSelection(0);
-                        //txtVehId.setText("");
-                        //txtVehDetails.setText("");
+                        txtVehId.setText("");
+                        txtVehDetails.setText("");
                     }
                 });
                 builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -99,35 +97,47 @@ public class FleetInfoFragment extends Fragment {
         View.OnClickListener fleetinfoClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //myPrefs = getActivity().getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
-                //SharedPreferences.Editor editor = myPrefs.edit();
+                myPrefs = getActivity().getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = myPrefs.edit();
 
                 // Get info
                 //origin = txtOrigin.getText().toString();
                 //destination = txtDestination.getText().toString();
                 //purpose = spinnerPurpose.getSelectedItem().toString();
                 //mode = spinnerMode.getSelectedItem().toString();
-                //vehicleId = txtVehId.getText().toString();
-                //vehicleDetails = txtVehDetails.getText().toString();
-//
+                vehicleId = txtVehId.getText().toString();
+                vehicleDetails = txtVehDetails.getText().toString();
+
                 //if(origin.equals("") || destination.equals("") || purpose.equals("") || mode.equals("")) {
                 //    Toast.makeText(getContext(), "Please complete required fields.", Toast.LENGTH_SHORT).show();
                 //} else {
-                //    // Save to shared preferences
+                // Save to shared preferences
                 //    editor.putString("origin", origin);
                 //    editor.putString("destination", destination);
                 //    editor.putString("purpose", purpose);
                 //    editor.putString("mode", mode);
-                //    editor.putString("vehicleId", vehicleId);
-                //    editor.putString("vehicleDetails", vehicleDetails);
-                //    editor.apply();
-                Toast.makeText(getContext(), "Fleet Info set successfully.", Toast.LENGTH_SHORT).show();
+                    editor.putString("vehicleId", vehicleId);
+                    editor.putString("vehicleDetails", vehicleDetails);
+                    editor.apply();
+                Toast.makeText(getContext(), "Fleet Info set.", Toast.LENGTH_SHORT).show();
 
                     // Save to database
 //                }
             }
         };
         setFleetInfoButton.setOnClickListener(fleetinfoClickListener);
+
+        // Scan results
+        txtVehDetails = (TextView) view.findViewById(R.id.txtVehicleDetails);
+        txtVehId = (TextView) view.findViewById(R.id.txtVehicleId);
+        scanButton = (ImageButton) view.findViewById(R.id.btnScan);
+        View.OnClickListener scanClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getContext(), ScanFleet.class));
+            }
+        };
+        scanButton.setOnClickListener(scanClickListener);
 
         // Close button
         closeButton = (Button) view.findViewById(R.id.btnClose);
@@ -144,7 +154,10 @@ public class FleetInfoFragment extends Fragment {
         });
 
         // Get shared preferences
-        //myPrefs = getActivity().getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
+        myPrefs = getActivity().getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
+
+        txtVehId.setText(myPrefs.getString("vehicleId",null));
+        txtVehDetails.setText(myPrefs.getString("vehicleDetails",null));
 
         return view;
 

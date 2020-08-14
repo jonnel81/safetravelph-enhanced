@@ -63,6 +63,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
+import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentManager;
@@ -92,7 +93,7 @@ import ph.safetravel.app.databinding.ActivityFleetBinding;
 import ph.safetravel.app.protos.Vehicle;
 
 
-public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
+public class Fleet extends AppCompatActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener   {
     SharedPreferences myPrefs;
     MqttAndroidClient client;
     MqttConnectOptions options;
@@ -250,13 +251,18 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
 
         // Toolbar
         toolbar = findViewById(R.id.toolbar);
-        toolbar.inflateMenu(R.menu.main_menu);
+        toolbar.inflateMenu(R.menu.fleet_menu);
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
-            @Override
             public boolean onMenuItemClick(MenuItem item) {
+                // Fleet history
+                if(item.getItemId()==R.id.triphistory)
+                {
+                    startActivity(new Intent(Fleet.this, FleetHistory.class));
+                }
+                // Settings
                 if(item.getItemId()==R.id.settings)
                 {
-                    // do something
+                    startActivity(new Intent(Fleet.this, FleetSettings.class));
                 }
                 return false;
             }
@@ -269,54 +275,57 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
 
         // Drawer
         drawerLayout = findViewById(R.id.drawer_layout);
-        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.Open, R.string.Close) {
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                //actions upon opening slider
-                //presently nothing
-            }
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.Open, R.string.Close);
 
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-                //actions upon closing slider
-                //presently nothing
-            }
-        };
         actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
-
-        // Navigation
-        navigationView = (NavigationView)findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+        actionBarDrawerToggle.setToolbarNavigationClickListener(new View.OnClickListener() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                int id = menuItem.getItemId();
-                switch(id) {
-                    case R.id.profile:
-                    {
-                        Toast.makeText(Fleet.this, "My Profile", Toast.LENGTH_SHORT).show();
-                    }
-                    case R.id.settings:
-                    {
-                        Toast.makeText(Fleet.this, "Settings", Toast.LENGTH_SHORT).show();
-                    }
-                    case R.id.help:
-                    {
-                        Toast.makeText(Fleet.this, "Help", Toast.LENGTH_SHORT).show();
-                    }
-                    case R.id.about:
-                    {
-                        //drawerLayout.closeDrawer(Gravity.LEFT);
-                        //Intent intent = new Intent(Fleet.this, About.class);
-                        //startActivity(intent);
-                    }
+            public void onClick(View v) {
+                if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
+                    drawerLayout.closeDrawer(GravityCompat.START);
+                } else {
+                    drawerLayout.openDrawer(GravityCompat.START);
                 }
-                return false;
             }
         });
+        // Navigation
+        //navigationView = (NavigationView)findViewById(R.id.nav_view);
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        //navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+        //    @Override
+        //    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        //        menuItem.setChecked(true);
+        //        drawerLayout.closeDrawers();
+        //        int id = menuItem.getItemId();
+        //        switch(id) {
+        //            case R.id.profile:
+        //            {
+        //                Toast.makeText(Fleet.this, "My Profile", Toast.LENGTH_SHORT).show();
+        //            }
+        //            case R.id.settings:
+        //            {
+        //                Toast.makeText(Fleet.this, "Settings", Toast.LENGTH_SHORT).show();
+        //            }
+        //            case R.id.help:
+        //            {
+        //                Toast.makeText(Fleet.this, "Help", Toast.LENGTH_SHORT).show();
+        //            }
+        //            case R.id.about:
+        //            {
+        //                //drawerLayout.closeDrawer(Gravity.LEFT);
+        //                //Intent intent = new Intent(Fleet.this, About.class);
+        //                //startActivity(intent);
+        //            }
+        //        }
+        //        return true;
+        //    }
+        //});
+
 
         // Display text values
         NumPassengers = findViewById(R.id.txtNumPass);
@@ -356,8 +365,23 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
 
                     // Get shared preferences
                     myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
-                    String userId = myPrefs.getString("username","");
-                    String deviceId = myPrefs.getString("androidId","");
+                    String username = myPrefs.getString("username","");
+                    String userId = "";
+                    try {
+                        String decrypted_username = AESUtils.decrypt(username);
+                        userId = decrypted_username;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    String androidId = myPrefs.getString("androidId","");
+                    String deviceId = "";
+                    try {
+                        String decrypted_androidId = AESUtils.decrypt(androidId);
+                        deviceId = decrypted_androidId;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    //String deviceId = myPrefs.getString("androidId","");
                     String vehicleId = myPrefs.getString("vehicleId","");
                     String vehicleDetails = myPrefs.getString("vehicleDetails","");
 
@@ -401,8 +425,25 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
 
                     // Get shared preferences
                     myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
-                    String userId = myPrefs.getString("username","");
-                    String deviceId = myPrefs.getString("androidId","");
+                    // userId
+                    String username = myPrefs.getString("username","");
+                    String userId = "";
+                    try {
+                        String decrypted_username = AESUtils.decrypt(username);
+                        userId = decrypted_username;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    // deviceId
+                    String androidId = myPrefs.getString("androidId","");
+                    String deviceId = "";
+                    try {
+                        String decrypted_androidId = AESUtils.decrypt(androidId);
+                        deviceId = decrypted_androidId;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    //String deviceId = myPrefs.getString("androidId","");
                     String vehicleId = myPrefs.getString("vehicleId","");
                     String vehicleDetails = myPrefs.getString("vehicleDetails","");
 
@@ -419,9 +460,16 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
         myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
         String username = myPrefs.getString("username", null);
 
+         // Display header values
         View headerView = navigationView.getHeaderView(0);
         TextView navUsername =  headerView.findViewById(R.id.nav_header_textView);
-        navUsername.setText(username);
+        // Decrypt username
+        try {
+            String decrypted_username = AESUtils.decrypt(username);
+            navUsername.setText(decrypted_username);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         //  Sensors
         //sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -556,15 +604,10 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                         builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                // Clear shared preferences
-                                myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
-                                SharedPreferences.Editor editor = myPrefs.edit();
-                                editor.clear();
-                                editor.apply();
+                                clearSharedPreferences();
                                 closeApp();
                                 // Go to main activity
-                                Intent intent0 = new Intent(Fleet.this, MainActivity.class);
-                                startActivity(intent0);
+                                startActivity(new Intent(Fleet.this, MainActivity.class));
                             }
                         });
                         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -669,6 +712,53 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
 
     } // onCreate
 
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            //super.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        switch(id) {
+            case R.id.profile:
+            {
+                Toast.makeText(Fleet.this, "My Profile", Toast.LENGTH_SHORT).show();
+            }
+            case R.id.settings:
+            {
+                Toast.makeText(Fleet.this, "Settings", Toast.LENGTH_SHORT).show();
+            }
+            case R.id.help:
+            {
+                //Toast.makeText(Fleet.this, "Help", Toast.LENGTH_SHORT).show();
+            }
+            case R.id.about:
+            {
+                //drawerLayout.closeDrawer(Gravity.LEFT);
+                //Intent intent = new Intent(Fleet.this, About.class);
+                //startActivity(intent);
+            }
+        }
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        //return true;
+        //this.drawerLayout.closeDrawer(GravityCompat.START);
+        return true;
+    }
+
     //@Override
     //public void onSensorChanged(SensorEvent sensorEvent){
     //    Log.d("Accelerometer","X: " + sensorEvent.values[0] + " Y: " + sensorEvent.values[1] + " Z: " + sensorEvent.values[2]);
@@ -714,23 +804,14 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
         @Override
         public void onLocationResult(LocationResult locationResult) {
             List<Location> locationList = locationResult.getLocations();
-            //List<LatLng> routePoints;
-            //route = mMap.addPolyline(new PolylineOptions()
-            //        .width(10)
-            //        .color(Color.BLUE)
-            //        .geodesic(true)
-            //        //.add(mmla)
-            //        .zIndex(100));
-            //route.setPoints(routePoints);
 
             if (locationList.size() > 0) {
                 //The last location in the list is the newest
                 Location location = locationList.get(locationList.size() - 1);
 
                 LatLng mCurrentPoint= new LatLng(location.getLatitude(),location.getLongitude());
-                //Log.d("Route", mCurrentPoint.toString());
                 routePoints.add(mCurrentPoint);
-                Log.d("Route", routePoints.toString());
+                //Log.d("Route", routePoints.toString());
 
                 if(mLastLocation != null) {
                     // Get loc1 and loc2
@@ -760,9 +841,25 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                     sdf.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
                     String timeStamp = sdf.format(new Date());
 
+                    // Get shared preferences
                     myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
-                    String userId = myPrefs.getString("username","");
-                    String deviceId = myPrefs.getString("androidId","");
+                    String username = myPrefs.getString("username","");
+                    String userId = "";
+                    try {
+                        String decrypted_username = AESUtils.decrypt(username);
+                        userId = decrypted_username;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    String androidId = myPrefs.getString("androidId","");
+                    String deviceId = "";
+                    try {
+                        String decrypted_androidId = AESUtils.decrypt(androidId);
+                        deviceId = decrypted_androidId;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    //String deviceId = myPrefs.getString("androidId","");
                     String vehicleId = myPrefs.getString("vehicleId","");
                     String vehicleDetails = myPrefs.getString("vehicleDetails","");
 
@@ -956,10 +1053,10 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
         }
     } // disconnectBroker
 
-    @Override
-    public void onBackPressed() {
-;
-    } // onBackPressed
+    //@Override
+    //public void onBackPressed() {
+
+    //} // onBackPressed
 
     @Override
     protected void onResume() {
@@ -1053,15 +1150,11 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
         }
     } // restoreFab
 
-    // Drawerlayout menu item clicked
-    //@Override
-    //public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-    //    // fetch the user selected value
-    //    String item = parent.getItemAtPosition(position).toString();
-    //    // create Toast with user selected value
-    //    Toast.makeText(Fleet.this, "Selected Item is: \t" + item, Toast.LENGTH_LONG).show();
-    //    // set user selected value to the TextView
-//
-    //}
+    public void clearSharedPreferences(){
+        myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = myPrefs.edit();
+        editor.clear();
+        editor.apply();
+    } //
 
 }

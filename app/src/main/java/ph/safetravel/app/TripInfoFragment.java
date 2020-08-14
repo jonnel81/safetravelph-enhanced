@@ -7,16 +7,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -36,8 +33,6 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 public class TripInfoFragment extends Fragment {
@@ -51,7 +46,6 @@ public class TripInfoFragment extends Fragment {
     public static TextView txtVehDetails;
     public static TextView txtVehId;
     String origin, destination, purpose, mode, vehicleId, vehicleDetails;
-    String destination_placeId;
     String originLat, originLng, destinationLat, destinationLng;
 
     @Override
@@ -151,9 +145,9 @@ public class TripInfoFragment extends Fragment {
                     TripRecord tripRecord = new TripRecord(1, origin, originLat, originLng, destination, destinationLat, destinationLng, mode, purpose, vehicleId ,vehicleDetails, timeStamp);
                     db.addTripRecord(tripRecord);
 
-                    //Toast.makeText(getContext(), "Trip Info set successfully.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Trip Info set.", Toast.LENGTH_SHORT).show();
                     //Toast.makeText(getContext(), "Trip Record saved.", Toast.LENGTH_SHORT).show();
-                    Toast.makeText(getContext(), tripRecord.getVehicleId(), Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getContext(), tripRecord.getVehicleId(), Toast.LENGTH_LONG).show();
                 }
             }
         };
@@ -167,7 +161,7 @@ public class TripInfoFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 // Scan QR code
-                Intent intent = new Intent(getContext(), Scan.class);
+                Intent intent = new Intent(getContext(), ScanTrip.class);
                 startActivity(intent);
             }
         };

@@ -1,15 +1,17 @@
 package ph.safetravel.app;
 
-import androidx.appcompat.app.AppCompatActivity;
-import com.google.zxing.Result;
-import me.dm7.barcodescanner.zxing.ZXingScannerView;
 import android.os.Bundle;
-import android.util.Log;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.zxing.Result;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Scan extends AppCompatActivity implements ZXingScannerView.ResultHandler {
+import me.dm7.barcodescanner.zxing.ZXingScannerView;
+
+public class ScanFleet extends AppCompatActivity implements ZXingScannerView.ResultHandler {
     private ZXingScannerView mScannerView;
 
     @Override
@@ -34,15 +36,15 @@ public class Scan extends AppCompatActivity implements ZXingScannerView.ResultHa
     @Override
     public void handleResult(Result rawResult) {
         // Do something with the result here
-        TripInfoFragment.txtVehDetails.setText(rawResult.getText());
+        FleetInfoFragment.txtVehDetails.setText(rawResult.getText());
 
         // Extract Vehicle Id
         String str = rawResult.getText();
         Pattern pattern = Pattern.compile("Plate:(.*?)\\*\\*\\*");
         Matcher matcher = pattern.matcher(str);
         while (matcher.find()) {
-            TripInfoFragment.txtVehId.setText(matcher.group(1));
-            Log.d("Veh Id", matcher.group(1));
+            FleetInfoFragment.txtVehId.setText(matcher.group(1));
+            //Log.d("Veh Id", matcher.group(1));
         }
 
         //Log.v("tag", rawResult.getText()); // Prints scan results
