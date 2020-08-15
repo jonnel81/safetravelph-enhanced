@@ -63,6 +63,8 @@
         <item name="android:backgroundTint">@color/colorPrimary</item>
         <item name="android:popupBackground">@color/white</item>
         <item name="android:itemBackground">@color/blue</item>
+        <item name="actionMenuTextColor">@color/white</item>
+        <item name="android:actionMenuTextColor">@color/white</item>
         <item name="android:textSize">14sp</item>
     </style>
 

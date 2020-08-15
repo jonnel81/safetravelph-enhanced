@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -36,15 +37,14 @@ public class FleetHistory extends AppCompatActivity {
         setContentView(R.layout.activity_fleethistory);
 
         db = new FleetHistoryDBHelper(this);
-        recyclerView = (RecyclerView) findViewById(R.id.rv_tripHistory);
+        recyclerView = (RecyclerView) findViewById(R.id.rv_fleetHistory);
         listFleetRecords.addAll(db.allFleetRecords());
 
         adapter = new FleetRecordAdapter(this, listFleetRecords);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        //DividerItemDecoration decoration = new DividerItemDecoration(getApplicationContext(), VERTICAL);
-        //recyclerView.addItemDecoration(decoration);
+        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
         recyclerView.setAdapter(adapter);
 
         // Tollbar

@@ -29,7 +29,11 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 
 public class FleetInfoFragment extends Fragment {
@@ -119,9 +123,19 @@ public class FleetInfoFragment extends Fragment {
                     editor.putString("vehicleId", vehicleId);
                     editor.putString("vehicleDetails", vehicleDetails);
                     editor.apply();
-                Toast.makeText(getContext(), "Fleet Info set.", Toast.LENGTH_SHORT).show();
 
-                    // Save to database
+                // Get datetime
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+                sdf.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
+                String timeStamp = sdf.format(new Date());
+
+                // Save to database
+                FleetHistoryDBHelper db = new FleetHistoryDBHelper(getContext());
+
+                FleetRecord fleetRecord = new FleetRecord(1, "", "", "", vehicleId ,vehicleDetails, timeStamp);
+                db.addTripRecord(fleetRecord);
+
+                Toast.makeText(getContext(), "Fleet Info set.", Toast.LENGTH_SHORT).show();
 //                }
             }
         };

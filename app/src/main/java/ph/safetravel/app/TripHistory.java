@@ -58,8 +58,7 @@ public class TripHistory extends AppCompatActivity {
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        //DividerItemDecoration decoration = new DividerItemDecoration(getApplicationContext(), VERTICAL);
-        //recyclerView.addItemDecoration(decoration);
+        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
         recyclerView.setAdapter(adapter);
 
         // list all trip records

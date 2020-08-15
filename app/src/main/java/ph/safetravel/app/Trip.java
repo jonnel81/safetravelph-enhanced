@@ -325,7 +325,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                 // Settings
                 if(item.getItemId()==R.id.settings)
                 {
-                    // do something
+                    startActivity(new Intent(Trip.this, Settings.class));
                 }
                 return false;
             }
