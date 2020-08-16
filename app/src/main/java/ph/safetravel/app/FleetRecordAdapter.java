@@ -27,7 +27,7 @@ public class FleetRecordAdapter extends RecyclerView.Adapter<FleetRecordAdapter.
         public MyViewHolder(View view) {
             super(view);
             vehicleId = view.findViewById(R.id.tv_VehicleId);
-            type = view.findViewById(R.id.tv_Type);
+            //type = view.findViewById(R.id.tv_Type);
             route = view.findViewById(R.id.tv_Route);
             tripDate = view.findViewById(R.id.tv_Tripdate);
         }
@@ -51,7 +51,7 @@ public class FleetRecordAdapter extends RecyclerView.Adapter<FleetRecordAdapter.
         final FleetRecord fleetRecord = fleetRecordsList.get(position);
 
         holder.vehicleId.setText(fleetRecord.getVehicleId());
-        holder.type.setText(fleetRecord.getType());
+        //holder.type.setText(fleetRecord.getType());
         holder.route.setText(fleetRecord.getRoute());
         holder.tripDate.setText(fleetRecord.getTripDate());
         holder.itemView.setOnClickListener(new View.OnClickListener() {

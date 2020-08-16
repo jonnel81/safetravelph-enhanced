@@ -39,6 +39,21 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <Spinner
+        android:id="@+id/spinnerRoute"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/edit_text_border"
+        android:fontFamily="@font/gothammedium_font"
+        android:textSize="14sp"
+        android:theme="@style/SpinnerTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnClose" />
+
     <TextView
         android:id="@+id/txtVehicleId"
         android:layout_width="0dp"
@@ -51,7 +66,7 @@
         android:hint="Vehicle Id"
         app:layout_constraintEnd_toStartOf="@id/btnScan"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnClose"/>
+        app:layout_constraintTop_toBottomOf="@id/spinnerRoute"/>
 
     <ImageButton
         android:id="@+id/btnScan"
@@ -64,7 +79,7 @@
         android:text="Scan"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/txtVehicleId"
-        app:layout_constraintTop_toBottomOf="@id/btnClose" />
+        app:layout_constraintTop_toBottomOf="@id/spinnerRoute" />
 
     <TextView
         android:id="@+id/txtVehicleDetails"

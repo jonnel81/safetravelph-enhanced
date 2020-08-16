@@ -3,6 +3,7 @@ package ph.safetravel.app;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,7 +12,9 @@ import android.content.res.AssetFileDescriptor;
 import android.graphics.Color;
 import android.location.Location;
 import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Looper;
 import android.os.Vibrator;
 import android.util.Log;
@@ -81,7 +84,13 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -98,38 +107,40 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
     MqttAndroidClient client;
     MqttConnectOptions options;
     String MqttHost = "tcp://mqtt.safetravel.ph:8883";
-    final String Username = "mqtt";
-    final String Password = "mqtt";
+    final String MqttUsername = "mqtt";
+    final String MqttPassword = "mqtt";
     String clientId;
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationRequest locationRequest;
     private boolean isGPS = false;
     private boolean isContinue = false;
-    ToggleButton tButton;
+    ToggleButton startButton;
     Location mLastLocation;
     Marker mCurrLocationMarker;
     GoogleMap mMap;
     DBManager dbManager;
-    // Sensor
+    Context context;
+    //---Sensors
     //private SensorManager sensorManager;
     //Sensor accelerometer;
-    //SensorEventListener acListener;
     //Sensor gyroscope;
+    //SensorEventListener acListener;
     Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private NavigationView navigationView;
     ImageButton boardButton, alightButton;
     int numPass;
-    double speed=0.0, avgspeed=0.0, distance=0.0;
+    double speed=0.0, distance=0.0;
     TextView NumPassengers;
-    TextView Speed, Distance, AverageSpeed;
+    TextView Speed, Distance;
     ProgressBar pgsBar;
     ActivityFleetBinding bi;
     boolean isRotate = false;
     int feedsCount;
     Polyline route;
     List<LatLng> routePoints = new ArrayList<LatLng>();
+    List<Location> routeTracks = new ArrayList<Location>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -290,10 +301,10 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
                 }
             }
         });
+
         // Navigation
         //navigationView = (NavigationView)findViewById(R.id.nav_view);
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         //navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -326,12 +337,10 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
         //    }
         //});
 
-
         // Display text values
         NumPassengers = findViewById(R.id.txtNumPass);
         NumPassengers.setText(String.valueOf(numPass));
         Speed = findViewById(R.id.txtSpeedNum);
-        AverageSpeed = findViewById(R.id.txtAvgSpeedNum);
         Distance =  findViewById(R.id.txtDistNum);
 
         // Board button
@@ -381,7 +390,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    //String deviceId = myPrefs.getString("androidId","");
+                    // vehicleId and vehicleDetails
                     String vehicleId = myPrefs.getString("vehicleId","");
                     String vehicleDetails = myPrefs.getString("vehicleDetails","");
 
@@ -443,7 +452,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    //String deviceId = myPrefs.getString("androidId","");
+                    // vehicleId and vehicleDetails
                     String vehicleId = myPrefs.getString("vehicleId","");
                     String vehicleDetails = myPrefs.getString("vehicleDetails","");
 
@@ -520,23 +529,54 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
         }
 
         // Toogle button
-        tButton = findViewById(R.id.toggleFleet);
-        tButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        startButton = findViewById(R.id.toggleFleet);
+        startButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            public void onCheckedChanged(CompoundButton compoundButton, final boolean isChecked) {
                 if(isChecked && isGPS) {
+                    // Start tracking
                     connectBroker();
                     startLocationUpdates();
                     boardButton.setOnClickListener(boardClickListener);
                     alightButton.setOnClickListener(alightClickListener);
                     pgsBar.setVisibility(View.VISIBLE);
                 } else {
-                    stopLocationUpdates();
-                    disconnectBroker();
-                    boardButton.setOnClickListener(null);
-                    alightButton.setOnClickListener(null);
-                    pgsBar.setVisibility(View.INVISIBLE);
-                    speed=0.0f;
+                    // Dialog
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Fleet.this);
+                    builder.setMessage("Are you sure you want to stop Tracking?");
+                    builder.setCancelable(true);
+                    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            // Indicate 'Start Tracking'
+                            startButton.setChecked(false);
+                            // Stop tracking
+                            stopLocationUpdates();
+                            disconnectBroker();
+                            boardButton.setOnClickListener(null);
+                            alightButton.setOnClickListener(null);
+                            pgsBar.setVisibility(View.INVISIBLE);
+                            // Reset speed
+                            Speed.setText("0.00");
+                            // Save GPS tracks
+                            SaveTracks saveTracks  = new SaveTracks();
+                            saveTracks.execute();
+                        }
+                    });
+                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Indicate 'Stop Tracking'
+                            startButton.setChecked(true);
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.setTitle("Confirm");
+                    alertDialog.setCancelable(false);
+                    alertDialog.setCanceledOnTouchOutside(false);
+                    alertDialog.show();
                 }
             }
         });
@@ -545,8 +585,8 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
         clientId = MqttClient.generateClientId();
         client = new MqttAndroidClient(this.getApplicationContext(), MqttHost, clientId);
         options = new MqttConnectOptions();
-        options.setUserName(Username);
-        options.setPassword(Password.toCharArray());
+        options.setUserName(MqttUsername);
+        options.setPassword(MqttPassword.toCharArray());
 
         try {
             IMqttToken token = client.connect(options);
@@ -576,7 +616,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
 
             @Override
             public void messageArrived(String topic, MqttMessage message) throws Exception {
-                Log.i("MQTT", "topic: " + topic + ", msg: " + new String(message.getPayload()));
+                //Log.i("MQTT", "topic: " + topic + ", msg: " + new String(message.getPayload()));
             }
 
             @Override
@@ -809,17 +849,19 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
                 //The last location in the list is the newest
                 Location location = locationList.get(locationList.size() - 1);
 
+                routeTracks.add(location);
                 LatLng mCurrentPoint= new LatLng(location.getLatitude(),location.getLongitude());
                 routePoints.add(mCurrentPoint);
                 //Log.d("Route", routePoints.toString());
 
+                //Speed.setText("0.00");
                 if(mLastLocation != null) {
                     // Get loc1 and loc2
-                    Location loc1 = mLastLocation;
-                    Location loc2 = location;
-                    distance = distance + computeDistance(loc1, loc2)/1000;
-                    speed = computeSpeed(loc1, loc2);
-                    avgspeed = (avgspeed + speed)/2;
+                    Location prevLocation = mLastLocation;
+                    Location currLocation = location;
+                    distance = distance + computeDistance(prevLocation, currLocation)/1000;
+                    //speed = computeSpeed(loc1, loc2);
+                    speed=location.getSpeed()*3600/1000;
                     //Log.d("Loc/Speed/Dist", String.valueOf(loc1.getLatitude()) + "," + String.valueOf(loc2.getLatitude()) + "," + String.valueOf(speed)+ ","
                     //        + String.valueOf(distance));
                 }
@@ -834,7 +876,6 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
                     String lng = String.valueOf(location.getLongitude());
 
                     Speed.setText(String.format("%.2f", speed));
-                    AverageSpeed.setText(String.format("%.2f", avgspeed));
                     Distance.setText(String.format("%.2f", distance));
 
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
@@ -851,6 +892,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+
                     String androidId = myPrefs.getString("androidId","");
                     String deviceId = "";
                     try {
@@ -860,6 +902,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
                         e.printStackTrace();
                     }
                     //String deviceId = myPrefs.getString("androidId","");
+
                     String vehicleId = myPrefs.getString("vehicleId","");
                     String vehicleDetails = myPrefs.getString("vehicleDetails","");
 
@@ -922,7 +965,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
         }
     }; // locationCallback
 
-    static double computeDistance (Location loc1, Location loc2) {
+    static double computeDistance(Location loc1, Location loc2) {
         double R = 6371000;
         double la1 = loc1.getLatitude()* Math.PI/180;
         double la2 = loc2.getLatitude()* Math.PI/180;
@@ -933,9 +976,9 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
         double d = Math.abs(2 * R * Math.asin(tmp2) * 100000) / 100000;
 
         return d;
-    } // distance
+    } // computeDistance
 
-    static double computeSpeed (Location loc1, Location loc2) {
+    static double computeSpeed(Location loc1, Location loc2) {
         double s = computeDistance(loc1, loc2) / (loc2.getTime() - loc1.getTime());
 
         return s;
@@ -1083,9 +1126,6 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        //mMap = googleMap;
-        //LatLng mmla = new LatLng(14.6091, 121.0223);
-        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mmla, 10));
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         //mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
@@ -1107,22 +1147,8 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
             mMap.setTrafficEnabled(true);
         }
 
-        //LatLng mmla = new LatLng(14.6091, 121.0223);
-
         // Initialize
-        //List<LatLng> routePoints = new ArrayList<LatLng>();
-        //routePoints.add(mmla);
-        //route = mMap.addPolyline(new PolylineOptions()
-        //        .width(10)
-        //        .color(Color.BLUE)
-        //        .geodesic(true)
-        //        //.add(mmla)
-        //        .zIndex(100));
-        //route.setPoints(routePoints);
-
         LatLng mmla = new LatLng(14.6091, 121.0223);
-        //BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.ic_triplocation);
-        //mMap.addMarker(new MarkerOptions().position(mmla).title("Current Position"));
         MarkerOptions markerOptions = new MarkerOptions().position(mmla)
                 .icon(BitmapDescriptorFactory
                         .defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
@@ -1155,6 +1181,103 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
         SharedPreferences.Editor editor = myPrefs.edit();
         editor.clear();
         editor.apply();
-    } //
+    } // clearSharedPreferences
 
+    public static boolean generateGpx(File file, String name, List<Location> points) {
+        String header = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?><gpx xmlns=\"http://www.topografix.com/GPX/1/1\" creator=\"MapSource 6.15.5\" version=\"1.1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"  xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd\"><trk>\n";
+        name = "<name>" + name + "</name><trkseg>\n";
+        String segments = "";
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+
+        for (Location location : points) {
+            segments += "<trkpt lat=\"" + location.getLatitude() + "\" lon=\"" + location.getLongitude() + "\"><time>" + df.format(new Date(location.getTime())) + "</time></trkpt>\n";
+        }
+        String footer = "</trkseg></trk></gpx>";
+
+        try {
+            FileWriter writer = new FileWriter(file, false);
+            writer.append(header);
+            writer.append(name);
+            writer.append(segments);
+            writer.append(footer);
+            writer.flush();
+            writer.close();
+            Log.e("generateGpx", "Gpx file saved");
+            return true;
+        } catch (IOException e) {
+            Log.e("generateGpx", "Error Writing Path",e);
+            return false;
+        }
+    } // generateGpx
+
+    private class SaveTracks extends AsyncTask<String, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(String... params) {
+            // your background code here. Don't touch any UI components
+            ContextWrapper cw = new ContextWrapper(getBaseContext());
+            File mypath = cw.getDir("tracks", Context.MODE_PRIVATE);
+            try {
+                if (!mypath.exists()) {
+                    mypath.createNewFile();
+                    mypath.mkdir();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            // Get shared preferences
+            myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
+            String username = myPrefs.getString("username","");
+            String userId = "";
+            try {
+                String decrypted_username = AESUtils.decrypt(username);
+                userId = decrypted_username;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            // Datetime stamp
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HHmmss", Locale.US);
+            sdf.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
+            String timeStamp = sdf.format(new Date());
+
+            // Gpx filename, e.g. [userId]-tracks-2020-08-16 14_09_33.gpx
+            File gpxfile = new File(mypath, userId + "-tracks-" + timeStamp +".gpx");
+
+            if(generateGpx(gpxfile, "tracks-" + timeStamp, routeTracks))
+                return true;
+            else
+                return false;
+        }
+
+        protected void onPostExecute(Boolean result) {
+            //This is run on the UI thread so you can do as you wish here
+            if(result) {
+                Toast.makeText(getApplicationContext(), "Tracks saved.", Toast.LENGTH_SHORT).show();
+                routePoints.clear();
+                routeTracks.clear();
+            } else
+                Toast.makeText(getApplicationContext(), "Error saving tracks.", Toast.LENGTH_SHORT).show();
+        }
+    } // SaveTracks
+
+    public void showFleetInfoFragment() {
+        // Show fragment
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+
+        FleetInfoFragment fleetInfoFragment = new FleetInfoFragment();
+
+        FrameLayout layout = (FrameLayout) findViewById(R.id.container_frame);
+        layout.setVisibility(View.VISIBLE);
+
+        if (fleetInfoFragment.isAdded()) {
+            ft.show(fleetInfoFragment);
+        } else {
+            ft.add(R.id.container_frame, fleetInfoFragment);
+            ft.show(fleetInfoFragment);
+        }
+
+        ft.commit();
+    }
 }

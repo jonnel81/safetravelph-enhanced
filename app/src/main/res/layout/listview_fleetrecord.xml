@@ -23,18 +23,11 @@
         android:textStyle="bold"/>
 
     <TextView
-        android:id="@+id/tv_Type"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/tv_VehicleId"
-        android:text="tv_Origin" />
-
-    <TextView
         android:id="@+id/tv_Route"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_Type"
-        android:text="tv_Destination"/>
+        android:layout_below="@id/tv_VehicleId"
+        android:text="tv_Route"/>
 
     <TextView
         android:id="@+id/tv_Tripdate"

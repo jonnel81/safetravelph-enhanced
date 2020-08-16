@@ -408,10 +408,12 @@ public class TripInfoFragment extends Fragment {
             int selectionPurpose= purposeAdapter.getPosition(myPrefs.getString("purpose",null));
             spinnerPurpose.setSelection(selectionPurpose);
         }
+
         if(myPrefs.getString("mode",null)!=null) {
             int selectionMode = modeAdapter.getPosition(myPrefs.getString("mode", null));
             spinnerMode.setSelection(selectionMode);
         }
+
         txtVehId.setText(myPrefs.getString("vehicleId",null));
         txtVehDetails.setText(myPrefs.getString("vehicleDetails",null));
 

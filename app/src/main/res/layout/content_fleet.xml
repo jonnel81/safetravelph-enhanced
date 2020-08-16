@@ -125,6 +125,7 @@
         android:background="@drawable/border"
         android:text="#"
         android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btnAlight"
         app:layout_constraintStart_toEndOf="@+id/btnBoard"
@@ -138,8 +139,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="60dp"
-
-        android:text="Speed:"
+        android:text="Speed(km/h):"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/txtSpeedNum"
@@ -152,41 +152,12 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="60dp"
-        android:text="00.00"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/txtAvgSpeed"
-        app:layout_constraintStart_toEndOf="@id/txtSpeed"
-        app:layout_constraintTop_toBottomOf="@id/btnBoard" />
-
-    <TextView
-        android:id="@+id/txtAvgSpeed"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="60dp"
-        android:text="Avg Speed:"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/txtAvgSpeedNum"
-        app:layout_constraintStart_toEndOf="@id/txtSpeedNum"
-        app:layout_constraintTop_toBottomOf="@id/btnBoard" />
-
-    <TextView
-        android:id="@+id/txtAvgSpeedNum"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="60dp"
-        android:text="00.00"
-        android:textSize="12sp"
+        android:text="0.00"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/txtDist"
-        app:layout_constraintStart_toEndOf="@id/txtAvgSpeed"
+        app:layout_constraintStart_toEndOf="@id/txtSpeed"
         app:layout_constraintTop_toBottomOf="@id/btnBoard" />
 
     <TextView
@@ -197,12 +168,11 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="60dp"
-
-        android:text="Total Dist:"
+        android:text="Total Dist(km):"
         android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/txtDistNum"
-        app:layout_constraintStart_toEndOf="@id/txtAvgSpeedNum"
+        app:layout_constraintStart_toEndOf="@id/txtSpeedNum"
         app:layout_constraintTop_toBottomOf="@id/btnBoard" />
 
     <TextView
@@ -212,8 +182,8 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="32dp"
         android:layout_marginBottom="60dp"
-        android:text="00.00"
-        android:textSize="12sp"
+        android:text="0.00"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
