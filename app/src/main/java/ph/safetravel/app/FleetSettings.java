@@ -20,7 +20,7 @@ public class FleetSettings extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_preferences);
+        setContentView(R.layout.activity_fleetpreferences);
 
         // Toolbar
         toolbar = findViewById(R.id.toolbar);

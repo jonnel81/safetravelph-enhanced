@@ -9,13 +9,13 @@
 
         <androidx.preference.SwitchPreferenceCompat
             android:defaultValue="false"
-            android:key="save_tracks_key"
+            android:key="trip_save_tracks_key"
             android:title="Save GPS tracks"
             android:summary="Save tracks locally in GPX format"/>
 
         <androidx.preference.SwitchPreferenceCompat
             android:defaultValue="true"
-            android:key="clean_tracks_key"
+            android:key="trip_clean_tracks_key"
             android:title="Clean GPS tracks"
             android:summary="Automatically delete tracks older than 30 days"/>
 
@@ -26,13 +26,13 @@
 
         <androidx.preference.SwitchPreferenceCompat
             android:defaultValue="true"
-            android:key="receive_feeds_key"
+            android:key="trip_receive_feeds_key"
             android:title="Receive real-time feeds"
             android:summary="Receive real-time feeds"/>
 
         <androidx.preference.SwitchPreferenceCompat
             android:defaultValue="true"
-            android:key="save_tracks_key"
+            android:key="trip_save_tracks_key"
             android:title="Clean real-time feeds"
             android:summary="Automatically delete feeds older than 30 days"/>
 

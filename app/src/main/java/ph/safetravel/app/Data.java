@@ -5,12 +5,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.webkit.WebSettings;
-import android.webkit.WebView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,7 +47,7 @@ public class Data extends AppCompatActivity {
                 // Settings
                 if(item.getItemId()==R.id.settings)
                 {
-                    Intent intent = new Intent(Data.this, Settings.class);
+                    Intent intent = new Intent(Data.this, TripSettings.class);
                     startActivity(intent);
                 }
                 return false;

@@ -1,6 +1,7 @@
 package ph.safetravel.app;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -35,9 +36,6 @@ import java.util.List;
 
 public class TripHistory extends AppCompatActivity {
     private Toolbar toolbar;
-    private DrawerLayout drawerLayout;
-    private ActionBarDrawerToggle actionBarDrawerToggle;
-    private NavigationView navigationView;
     private TripHistoryDBHelper db;
     private List<TripRecord> listTripRecords = new ArrayList<TripRecord>();
     private RecyclerView recyclerView;
@@ -49,9 +47,7 @@ public class TripHistory extends AppCompatActivity {
         setContentView(R.layout.activity_triphistory);
 
         db = new TripHistoryDBHelper(this);
-
         recyclerView = (RecyclerView) findViewById(R.id.rv_tripHistory);
-
         listTripRecords.addAll(db.allTripRecords());
 
         adapter = new TripRecordAdapter(this, listTripRecords);
@@ -77,68 +73,34 @@ public class TripHistory extends AppCompatActivity {
         //}
 
         // Tollbar
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-
-        // Drawer
-        drawerLayout = findViewById(R.id.drawer_layout);
-        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.Open, R.string.Close) {
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                //actions upon opening slider
-                //presently nothing
+        try {
+            ActionBar actionBar = getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setDisplayShowTitleEnabled(true);
+                actionBar.setDisplayHomeAsUpEnabled(true);
+                actionBar.setDisplayShowHomeEnabled(true);
             }
-
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                super.onDrawerClosed(drawerView);
-                //actions upon closing slider
-                //presently nothing
-            }
-        };
-
-        actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
-        drawerLayout.addDrawerListener(actionBarDrawerToggle);
-        actionBarDrawerToggle.syncState();
-
-        // Navigation
-        navigationView = (NavigationView)findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                int id = menuItem.getItemId();
-                switch(id) {
-                    case R.id.profile:
-                    {
-                        Toast.makeText(TripHistory.this, "Profile", Toast.LENGTH_SHORT).show();
-                    }
-                    case R.id.settings:
-                    {
-                        Toast.makeText(TripHistory.this, "Settings", Toast.LENGTH_SHORT).show();
-                    }
-                    case R.id.about:
-                    {
-                        //Intent intent1 = new Intent(TripHistory.this, About.class);
-                        //startActivity(intent1);
-                        Toast.makeText(TripHistory.this, "About", Toast.LENGTH_SHORT).show();
-                    }
-                }
-                return false;
-            }
-        });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     } // OnCreate
 
     @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(actionBarDrawerToggle.onOptionsItemSelected(item))
-            return true;
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // handle arrow click here
+        if (item.getItemId() == android.R.id.home) {
+            finish(); // close this activity and return to preview activity (if there is any)
+        }
 
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed() {
+
+    } // onBackPressed
 
 }

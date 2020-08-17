@@ -43,7 +43,7 @@
         <activity android:name=".Data" />
         <activity android:name=".TripHistory" />
         <activity android:name=".FleetHistory" />
-        <activity android:name=".Settings"/>
+        <activity android:name=".TripSettings"/>
         <activity android:name=".FleetSettings"/>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.

@@ -1,30 +1,19 @@
 package ph.safetravel.app;
 
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 import com.google.android.material.navigation.NavigationView;
 
-public class Settings extends AppCompatActivity {
+public class TripSettings extends AppCompatActivity {
     SharedPreferences myPrefs;
     private Toolbar toolbar;
     private DrawerLayout dl;
@@ -34,7 +23,7 @@ public class Settings extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_preferences);
+        setContentView(R.layout.activity_trippreferences);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -48,7 +37,7 @@ public class Settings extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        getSupportFragmentManager().beginTransaction().replace(R.id.container, new SettingsFragment()).commit();
+        getSupportFragmentManager().beginTransaction().replace(R.id.container, new SettingsTripFragment()).commit();
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

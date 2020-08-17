@@ -9,10 +9,10 @@ import android.widget.Button;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceFragmentCompat;
 
-public class SettingsFragment extends PreferenceFragmentCompat {
+public class SettingsTripFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String s) {
-        addPreferencesFromResource(R.xml.preferences);
+        addPreferencesFromResource(R.xml.trip_preferences);
         // implement your settings here
     }
 }
