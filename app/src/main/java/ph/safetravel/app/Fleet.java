@@ -102,7 +102,7 @@ import ph.safetravel.app.databinding.ActivityFleetBinding;
 import ph.safetravel.app.protos.Vehicle;
 
 
-public class Fleet extends AppCompatActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener   {
+public class Fleet extends AppCompatActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener  {
     SharedPreferences myPrefs;
     MqttAndroidClient client;
     MqttConnectOptions options;
@@ -147,7 +147,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fleet);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        //getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         final MediaPlayer mp = new MediaPlayer();
 
@@ -329,7 +329,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
                 switch(id) {
                     case R.id.profile:
                     {
-                        Toast.makeText(Fleet.this, "My Profile", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Fleet.this, "Profile", Toast.LENGTH_SHORT).show();
                     }
                     case R.id.settings:
                     {
@@ -498,7 +498,6 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
 
         //  Sensors
         //sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-
         // Accelerometer
         //accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         //acListener = new SensorEventListener() {
@@ -512,12 +511,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
         //    }
         //};
         //sensorManager.registerListener(acListener, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-
         //gyroscope = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-
-        // Open dbase
-        //dbManager = new DBManager(this);
-        //dbManager.open();
 
         // FuseLocationProviderClient
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -565,18 +559,22 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
+
                             // Indicate 'Start Tracking'
                             startButton.setChecked(false);
+
                             // Stop tracking
                             stopLocationUpdates();
                             disconnectBroker();
                             boardButton.setOnClickListener(null);
                             alightButton.setOnClickListener(null);
                             pgsBar.setVisibility(View.INVISIBLE);
+
                             // Reset speed
                             Speed.setText("0.00");
+
                             // Save GPS tracks
-                            SaveTracks saveTracks  = new SaveTracks();
+                            SaveTracks saveTracks = new SaveTracks();
                             saveTracks.execute();
                         }
                     });
@@ -870,7 +868,6 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
                 routePoints.add(mCurrentPoint);
                 //Log.d("Route", routePoints.toString());
 
-                //Speed.setText("0.00");
                 if(mLastLocation != null) {
                     // Get loc1 and loc2
                     Location prevLocation = mLastLocation;
@@ -917,7 +914,6 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    //String deviceId = myPrefs.getString("androidId","");
 
                     String vehicleId = myPrefs.getString("vehicleId","");
                     String vehicleDetails = myPrefs.getString("vehicleDetails","");
@@ -930,37 +926,6 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
                         mCurrLocationMarker.remove();
                     }
                     LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-
-                    // Get shared preferences
-                    myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
-
-                    // Origin marker
-                    String originLat = myPrefs.getString("originLat","");
-                    String originLng = myPrefs.getString("originLng","");
-
-                    if (!originLat.equals("") && !originLat.equals("")) {
-                        LatLng originPoint = new LatLng(Double.parseDouble(originLat), Double.parseDouble(originLng));
-                        BitmapDescriptor iconOrigin = BitmapDescriptorFactory.fromResource(R.drawable.ic_flagorigin);
-                        MarkerOptions markerOptions = new MarkerOptions().position(originPoint)
-                                .icon(BitmapDescriptorFactory
-                                        .defaultMarker(BitmapDescriptorFactory.HUE_RED))
-                                .title("Origin");
-                        mMap.addMarker(markerOptions);
-                    }
-
-                    // Destination marker
-                    String destinationLat = myPrefs.getString("destinationLat","");
-                    String destinationLng = myPrefs.getString("destinationLng","");
-
-                    if (!destinationLat.equals("") && !destinationLng.equals("")) {
-                        LatLng destinationPoint = new LatLng(Double.parseDouble(destinationLat), Double.parseDouble(destinationLng));
-                        BitmapDescriptor iconDestination = BitmapDescriptorFactory.fromResource(R.drawable.ic_flagorigin);
-                        MarkerOptions markerOptions = new MarkerOptions().position(destinationPoint)
-                                .icon(BitmapDescriptorFactory
-                                        .defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                                .title("Destination");
-                        mMap.addMarker(markerOptions);
-                    }
 
                     // Current location marker
                     MarkerOptions markerOptions = new MarkerOptions().position(latLng)
@@ -1277,23 +1242,4 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
         }
     } // SaveTracks
 
-    public void showFleetInfoFragment() {
-        // Show fragment
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
-
-        FleetInfoFragment fleetInfoFragment = new FleetInfoFragment();
-
-        FrameLayout layout = (FrameLayout) findViewById(R.id.container_frame);
-        layout.setVisibility(View.VISIBLE);
-
-        if (fleetInfoFragment.isAdded()) {
-            ft.show(fleetInfoFragment);
-        } else {
-            ft.add(R.id.container_frame, fleetInfoFragment);
-            ft.show(fleetInfoFragment);
-        }
-
-        ft.commit();
-    }
 }

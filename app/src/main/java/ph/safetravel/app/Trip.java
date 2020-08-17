@@ -3,11 +3,15 @@ package ph.safetravel.app;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
@@ -35,9 +39,13 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
@@ -50,6 +58,7 @@ import androidx.appcompat.widget.Toolbar;
 //import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentTransaction;
@@ -65,6 +74,10 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -76,43 +89,45 @@ import ph.safetravel.app.databinding.ActivityTripBinding;
 import ph.safetravel.app.protos.Passenger;
 import ph.safetravel.app.protos.Alert;
 
-public class Trip extends AppCompatActivity implements OnMapReadyCallback, AdapterView.OnItemClickListener {
+public class Trip extends AppCompatActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
     SharedPreferences myPrefs;
     MqttAndroidClient client;
     MqttConnectOptions options;
     //Vibrator vibrator;
     String TAG="Mqtt";
     String MqttHost = "tcp://mqtt.safetravel.ph:8883";
-    final String Username = "mqtt";
-    final String Password = "mqtt";
+    final String MqttUsername = "mqtt";
+    final String MqttPassword = "mqtt";
     String clientId;
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationRequest locationRequest;
     private boolean isGPS = false;
     private boolean isContinue = false;
+    ToggleButton startButton;
     ToggleButton tButton;
     Location mLastLocation;
     Marker mCurrLocationMarker;
     GoogleMap mMap;
-    //LatLng origLatLng, destLatLng;
-    //MarkerOptions markerOptions;
     private Toolbar toolbar;
-    private DrawerLayout dl;
-    private ActionBarDrawerToggle t;
-    private NavigationView nv;
-    //private Marker mCurrentMarker;
-    private ArrayList<Marker> mMarkerArrayList;
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle actionBarDrawerToggle;
+    private NavigationView navigationView;
     Boolean brokerIsConnected = false;
     ProgressBar pgsBar;
     ActivityTripBinding bi;
     boolean isRotate = false;
     int feedsCount;
+    double speed=0.0, distance=0.0;
+    Polyline route;
+    List<LatLng> routePoints = new ArrayList<LatLng>();
+    List<Location> routeTracks = new ArrayList<Location>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        //getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         // Map Fragment
         final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -313,10 +328,9 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                 // Trip history
                 if(item.getItemId()==R.id.triphistory)
                 {
-                    Intent intent = new Intent(Trip.this, TripHistory.class);
-                    startActivity(intent);
+                    startActivity( new Intent(Trip.this, TripHistory.class));
                 }
-                // Settings
+                // Trip settings
                 if(item.getItemId()==R.id.settings)
                 {
                     startActivity(new Intent(Trip.this, TripSettings.class));
@@ -331,8 +345,11 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
         pgsBar.setScaleY(3f);
 
         // Drawer
-        dl = findViewById(R.id.drawer_layout);
-        t = new ActionBarDrawerToggle(this, dl, toolbar, R.string.Open, R.string.Close) {
+        drawerLayout = findViewById(R.id.drawer_layout);
+        // for no shadow
+        //drawerLayout.setScrimColor(Color.TRANSPARENT);
+        //drawerLayout.setDrawerElevation(0);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.Open, R.string.Close) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
@@ -361,30 +378,39 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                 }
             }
         };
-        t.setDrawerIndicatorEnabled(true);
-        dl.addDrawerListener(t);
-        t.syncState();
+        actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
 
         // Navigation
-        nv = findViewById(R.id.nav_view);
-        nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                int id = menuItem.getItemId();
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                drawerLayout.closeDrawers();
+                int id = item.getItemId();
                 switch(id) {
                     case R.id.profile:
                     {
-                        Toast.makeText(Trip.this, "My Profile", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(Trip.this, "Profile", Toast.LENGTH_SHORT).show();
                     }
                     case R.id.settings:
                     {
                         Toast.makeText(Trip.this, "Settings", Toast.LENGTH_SHORT).show();
                     }
+                    case R.id.help:
+                    {
+                        Toast.makeText(Trip.this, "Help", Toast.LENGTH_SHORT).show();
+                    }
+                    case R.id.feedback:
+                    {
+                        Toast.makeText(Trip.this, "Feedback", Toast.LENGTH_SHORT).show();
+                    }
                     case R.id.about:
                     {
-                        dl.closeDrawer(Gravity.LEFT);
-                        Intent intent = new Intent(Trip.this, About.class);
-                        startActivity(intent);
+                        drawerLayout.closeDrawer(Gravity.LEFT);
+                        startActivity(new Intent(Trip.this, About.class));
                     }
                 }
                 return false;
@@ -418,20 +444,50 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
 
         //vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 
-        // Toogle Button
-        tButton = findViewById(R.id.toggleTrip);
-        final Button sendAlertButton = (Button) findViewById(R.id.btnSendAlert);
-        tButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        // Toogle button
+        startButton = findViewById(R.id.toggleTrip);
+        //final Button sendAlertButton = (Button) findViewById(R.id.btnSendAlert);
+        startButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
                 if(isChecked && isGPS) {
+                    // Start tracking
                     connectBroker();
                     startLocationUpdates();
                     pgsBar.setVisibility(View.VISIBLE);
                 } else {
-                    stopLocationUpdates();
-                    disconnectBroker();
-                    pgsBar.setVisibility(View.INVISIBLE);
+                    // Dialog
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Trip.this);
+                    builder.setMessage("Are you sure you want to stop Tracking?");
+                    builder.setCancelable(true);
+                    builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            // Indicate 'Start Tracking'
+                            startButton.setChecked(false);
+                            // Stop tracking
+                            stopLocationUpdates();
+                            disconnectBroker();
+                            pgsBar.setVisibility(View.INVISIBLE);
+                            // Save GPS tracks
+                            //Fleet.SaveTracks saveTracks  = new Fleet.SaveTracks();
+                            //saveTracks.execute();
+                        }
+                    });
+                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Indicate 'Stop Tracking'
+                            startButton.setChecked(true);
+                            dialog.dismiss();
+                        }
+                    });
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.setTitle("Confirm");
+                    alertDialog.setCancelable(false);
+                    alertDialog.setCanceledOnTouchOutside(false);
+                    alertDialog.show();
                 }
             }
         });
@@ -440,8 +496,8 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
         clientId = MqttClient.generateClientId();
         client = new MqttAndroidClient(this.getApplicationContext(), MqttHost, clientId);
         options = new MqttConnectOptions();
-        options.setUserName(Username);
-        options.setPassword(Password.toCharArray());
+        options.setUserName(MqttUsername);
+        options.setPassword(MqttPassword.toCharArray());
 
         try {
             IMqttToken token = client.connect(options);
@@ -504,7 +560,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
                             public void onClick(DialogInterface dialog, int which) {
                                 // Clear shared preferences
                                 myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
-                                SharedPreferences.Editor editor = myPrefs  .edit();
+                                SharedPreferences.Editor editor = myPrefs.edit();
                                 editor.clear();
                                 editor.apply();
                                 closeApp();
@@ -670,13 +726,28 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
 
             // Get shared preferences
             myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
-            String username = myPrefs.getString("username", null);
-            String androidId = myPrefs.getString("androidId", null);
-            String userId = username;
+            String username = myPrefs.getString("username","");
+            String userId = "";
+            try {
+                String decrypted_username = AESUtils.decrypt(username);
+                userId = decrypted_username;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            String androidId = myPrefs.getString("androidId","");
+            String deviceId = "";
+            try {
+                String decrypted_androidId = AESUtils.decrypt(androidId);
+                deviceId = decrypted_androidId;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
             String description = alertString.toString();
 
             // Publish message
-            publishAlert(alertMessage(androidId, lat, lng, timeStamp, userId, description));
+            publishAlert(alertMessage(deviceId, lat, lng, timeStamp, userId, description));
             //System.out.println(alertMessage(androidId, lat, lng, timeStamp, userId, description));
         }
         Toast.makeText(getApplicationContext(), "Alert sent.", Toast.LENGTH_SHORT).show();
@@ -706,129 +777,15 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
 
 
     // Drawerlayout menu item clicked
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        // fetch the user selected value
-        String item = parent.getItemAtPosition(position).toString();
-        // create Toast with user selected value
-        Toast.makeText(Trip.this, "Selected Item is: \t" + item, Toast.LENGTH_LONG).show();
-        // set user selected value to the TextView
-
-    }
-
-    /*
-    // An AsyncTask class for accessing the GeoCoding Web Service for origin
-    private class origGeocoderTask extends AsyncTask<String, Void, List<Address>> {
-        @Override
-        protected List<Address> doInBackground(String... locationName) {
-            // Creating an instance of Geocoder class
-            Geocoder geocoder = new Geocoder(getBaseContext());
-            List<Address> addresses = null;
-            try {
-                // Getting a maximum of 3 Address that matches the input text
-                addresses = geocoder.getFromLocationName(locationName[0], 3);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return addresses;
-        }
-
-        @Override
-        protected void onPostExecute(List<Address> addresses) {
-            if(addresses==null || addresses.size()==0){
-                Toast.makeText(getBaseContext(), "No Location found", Toast.LENGTH_SHORT).show();
-            }
-            // Remove first marker, if existing
-            if (mMarkerArrayList.size() > 0) {
-                for (int i = 0; i < mMarkerArrayList.size(); i++) {
-                    Marker m = mMarkerArrayList.get(i);
-                    if (m.getTitle().equals("orig")) {
-                        Marker markerToRemove = mMarkerArrayList.get(i);
-                        // remove the maker from list
-                        mMarkerArrayList.remove(markerToRemove);
-                        // remove the marker from the map
-                        markerToRemove.remove();
-                        break;
-                    }
-                }
-            }
-            // Add new marker on Google Map for matching address
-            for(int i = 0; i < addresses.size(); i++){
-                Address address = addresses.get(i);
-                // Create an instance of GeoPoint, to display in Google Map
-                origLatLng = new LatLng(address.getLatitude(), address.getLongitude());
-                String addressText = String.format("%s, %s, %s", address.getThoroughfare(), address.getSubLocality(), address.getLocality());
-                // Add marker
-                markerOptions = new MarkerOptions();
-                markerOptions.position(origLatLng);
-                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.green_marker_big));
-                markerOptions.title("orig");
-                mCurrentMarker = mMap.addMarker(markerOptions);
-                mMarkerArrayList.add(mCurrentMarker);
-                origin.setText(origin.getText() + ", " + addressText);
-                // Locate the origin
-                if(i==0)
-                    mMap.animateCamera(CameraUpdateFactory.newLatLng(origLatLng));
-            }
-        }
-    }
-
-    // An AsyncTask class for accessing the GeoCoding Web Service for destination
-    private class destGeocoderTask extends AsyncTask<String, Void, List<Address>> {
-        @Override
-        protected List<Address> doInBackground(String... locationName) {
-            // Creating an instance of Geocoder class
-            Geocoder geocoder = new Geocoder(getBaseContext());
-            List<Address> addresses = null;
-            try {
-                // Getting a maximum of 3 Address that matches the input text
-                addresses = geocoder.getFromLocationName(locationName[0], 3);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return addresses;
-        }
-
-        @Override
-        protected void onPostExecute(List<Address> addresses) {
-            if(addresses==null || addresses.size()==0){
-                Toast.makeText(getBaseContext(), "No Location found", Toast.LENGTH_SHORT).show();
-            }
-            // Remove second marker, if existing
-            if (mMarkerArrayList.size() > 0) {
-                for (int i = 0; i < mMarkerArrayList.size(); i++) {
-                    Marker m = mMarkerArrayList.get(i);
-                    if (m.getTitle().equals("dest")) {
-                        Marker markerToRemove = mMarkerArrayList.get(i);
-                        // remove the maker from list
-                        mMarkerArrayList.remove(markerToRemove);
-                        // remove the marker from the map
-                        markerToRemove.remove();
-                        break;
-                    }
-                }
-            }
-            // Add new marker on Google Map for matching address
-            for(int i = 0; i < addresses.size(); i++){
-                Address address = addresses.get(i);
-                // Creating an instance of GeoPoint, to display in Google Map
-                destLatLng = new LatLng(address.getLatitude(), address.getLongitude());
-                String addressText = String.format("%s, %s, %s", address.getThoroughfare(), address.getSubLocality(), address.getLocality());
-                // Add marker
-                markerOptions = new MarkerOptions();
-                markerOptions.position(destLatLng);
-                markerOptions.icon(BitmapDescriptorFactory.fromResource(R.drawable.red_marker_big));
-                markerOptions.title("dest");
-                mCurrentMarker = mMap.addMarker(markerOptions);
-                mMarkerArrayList.add(mCurrentMarker);
-                destination.setText(destination.getText() + ", " + addressText);
-                // Locate the destination
-                if(i==0)
-                    mMap.animateCamera(CameraUpdateFactory.newLatLng(destLatLng));
-            }
-        }
-    }
-    */
+    //@Override
+    //public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    //    // fetch the user selected value
+    //    String item = parent.getItemAtPosition(position).toString();
+    //    // create Toast with user selected value
+    //    Toast.makeText(Trip.this, "Selected Item is: \t" + item, Toast.LENGTH_LONG).show();
+    //    // set user selected value to the TextView
+//
+    //}
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -869,77 +826,144 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
             if (locationList.size() > 0) {
                 //The last location in the list is the newest
                 Location location = locationList.get(locationList.size() - 1);
-                //Log.i("MapsActivity", "Location: " + location.getLatitude() + " " + location.getLongitude());
 
-                mLastLocation = location;
+                routeTracks.add(location);
+                LatLng mCurrentPoint= new LatLng(location.getLatitude(),location.getLongitude());
+                routePoints.add(mCurrentPoint);
+                //Log.d("Route", routePoints.toString());
+
+                if(mLastLocation != null) {
+                    Location prevLocation = mLastLocation;
+                    Location currLocation = location;
+                    distance = distance + computeDistance(prevLocation, currLocation)/1000;
+                    speed=location.getSpeed()*3600/1000;
+                    //Log.d("Loc/Speed/Dist", String.valueOf(loc1.getLatitude()) + "," + String.valueOf(loc2.getLatitude()) + "," + String.valueOf(speed)+ ","
+                    //        + String.valueOf(distance));
+                }
+
+                mLastLocation = location;  // update the last location
+
                 if (mLastLocation != null) {
+                    // Clear the map
+                    mMap.clear();
+
                     String lat = String.valueOf(location.getLatitude());
                     String lng = String.valueOf(location.getLongitude());
+
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
                     sdf.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
                     String timeStamp = sdf.format(new Date());
 
+                    //String lat = String.valueOf(location.getLatitude());
+                    //String lng = String.valueOf(location.getLongitude());
+                    //SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+                    //sdf.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
+                    //String timeStamp = sdf.format(new Date());
+
                     // Get shared preferences
                     myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
-                    String username = myPrefs.getString("username",null);
-                    String androidId = myPrefs.getString("androidId",null);
-                    String userId = username;
+                    String username = myPrefs.getString("username","");
+                    String userId = "";
+                    try {
+                        String decrypted_username = AESUtils.decrypt(username);
+                        userId = decrypted_username;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
 
-                    String origin = myPrefs.getString("origin",null);
-                    if (origin==null) {
-                        origin = "None";
+                    String androidId = myPrefs.getString("androidId","");
+                    String deviceId = "";
+                    try {
+                        String decrypted_androidId = AESUtils.decrypt(androidId);
+                        deviceId = decrypted_androidId;
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                    String destination = myPrefs.getString("origin",null);
-                    if (destination==null) {
-                        destination = "None";
-                    }
-                    String purpose = myPrefs.getString("purpose",null);
-                    if (purpose==null) {
-                        purpose = "None";
-                    }
-                    String mode = myPrefs.getString("mode",null);
-                    if (mode==null) {
-                        mode = "None";
-                    }
-                    String vehicleId = myPrefs.getString("vehicleId",null);
-                    if (vehicleId==null) {
-                        vehicleId = "None";
-                    }
-                    String vehicleDetails = myPrefs.getString("vehicleDetails",null);
-                    if (vehicleDetails==null) {
-                        vehicleDetails = "None";
-                    }
+
+                    String origin = myPrefs.getString("origin","");
+                    String destination = myPrefs.getString("origin","");
+                    String purpose = myPrefs.getString("purpose","");
+                    String mode = myPrefs.getString("mode","");
+                    String vehicleId = myPrefs.getString("vehicleId","");
+                    String vehicleDetails = myPrefs.getString("vehicleDetails","");
+
                     // Publish message
-                    publishMessage(passengerMessage(androidId, lat, lng, timeStamp, userId, origin, destination, purpose, mode, vehicleId, vehicleDetails));
+                    publishMessage(passengerMessage(deviceId, lat, lng, timeStamp, userId, origin, destination, purpose, mode, vehicleId, vehicleDetails));
 
                     // Place location marker
                     if (mCurrLocationMarker != null) {
                         mCurrLocationMarker.remove();
                     }
                     LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                    MarkerOptions markerOptions = new MarkerOptions();
-                    markerOptions.position(latLng);
-                    markerOptions.title("Current Position");
-                    mMap.clear();
+
+                    // Get shared preferences
+                    myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
+
+                    // Origin marker
+                    String originLat = myPrefs.getString("originLat","");
+                    String originLng = myPrefs.getString("originLng","");
+
+                    if (!originLat.equals("") && !originLat.equals("")) {
+                        LatLng originPoint = new LatLng(Double.parseDouble(originLat), Double.parseDouble(originLng));
+                        BitmapDescriptor iconOrigin = BitmapDescriptorFactory.fromResource(R.drawable.ic_flagorigin);
+                        MarkerOptions markerOptions = new MarkerOptions().position(originPoint)
+                                .icon(BitmapDescriptorFactory
+                                        .defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                                .title("Origin");
+                        mMap.addMarker(markerOptions);
+                    }
+
+                    // Destination marker
+                    String destinationLat = myPrefs.getString("destinationLat","");
+                    String destinationLng = myPrefs.getString("destinationLng","");
+
+                    if (!destinationLat.equals("") && !destinationLng.equals("")) {
+                        LatLng destinationPoint = new LatLng(Double.parseDouble(destinationLat), Double.parseDouble(destinationLng));
+                        BitmapDescriptor iconDestination = BitmapDescriptorFactory.fromResource(R.drawable.ic_flagorigin);
+                        MarkerOptions markerOptions = new MarkerOptions().position(destinationPoint)
+                                .icon(BitmapDescriptorFactory
+                                        .defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                                .title("Destination");
+                        mMap.addMarker(markerOptions);
+                    }
+
+                    // Current location marker
+                    MarkerOptions markerOptions = new MarkerOptions().position(latLng)
+                            .icon(BitmapDescriptorFactory
+                                    .defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                            .title("Current Position");
                     mCurrLocationMarker = mMap.addMarker(markerOptions);
-                    //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12));
 
-                    //publishMessage(clientId.toString()+","+lat+"_"+lng+"_"+timeStamp);
-                    //JSONObject personTrack = new JSONObject();
-                    //try {
-                    //    personTrack.put("clientID", clientId);
-                    //    personTrack.put("lat", lat);
-                    //    personTrack.put("lng", lng);
-                    //    personTrack.put("timeStamp", timeStamp);
-                    //    publishMessage(personTrack.toString());
-
-                    //} catch (JSONException e) {
-                    //    e.printStackTrace();
-                    //}
+                    // Draw route
+                    route = mMap.addPolyline(new PolylineOptions()
+                            .width(10)
+                            .color(Color.BLUE)
+                            .geodesic(true)
+                            .zIndex(100));
+                    route.setPoints(routePoints);
                 }
             }
         }
     }; // locationCallback
+
+    static double computeDistance(Location loc1, Location loc2) {
+        double R = 6371000;
+        double la1 = loc1.getLatitude()* Math.PI/180;
+        double la2 = loc2.getLatitude()* Math.PI/180;
+        double lo1 = loc1.getLongitude()* Math.PI/180;
+        double lo2 = loc2.getLongitude()* Math.PI/180;
+        double tmp1 = Math.sin((la1-la2)/2)*Math.sin((la1-la2)/2) + Math.cos(la1)*Math.cos(la2) * Math.sin((lo1-lo2)/2) * Math.sin((lo1-lo2)/2);
+        double tmp2 = Math.sqrt(tmp1);
+        double d = Math.abs(2 * R * Math.asin(tmp2) * 100000) / 100000;
+
+        return d;
+    } // computeDistance
+
+    static double computeSpeed(Location loc1, Location loc2) {
+        double s = computeDistance(loc1, loc2) / (loc2.getTime() - loc1.getTime());
+
+        return s;
+    } // computeSpeed
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -1154,7 +1178,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
         }
 
         // Initialize marker array
-        mMarkerArrayList = new ArrayList<>();
+        //mMarkerArrayList = new ArrayList<>();
 
         LatLng mmla = new LatLng(14.6091, 121.0223);
         //mMap.addMarker(new MarkerOptions().position(mmla).title("Marker Position"));
@@ -1168,5 +1192,95 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Adapt
         }
         this.finish();
     } // closeApp
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        return false;
+    }
+
+    public void clearSharedPreferences(){
+        myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = myPrefs.edit();
+        editor.clear();
+        editor.apply();
+    } // clearSharedPreferences
+
+    public static boolean generateGpx(File file, String name, List<Location> points) {
+        String header = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?><gpx xmlns=\"http://www.topografix.com/GPX/1/1\" creator=\"MapSource 6.15.5\" version=\"1.1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"  xsi:schemaLocation=\"http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd\"><trk>\n";
+        name = "<name>" + name + "</name><trkseg>\n";
+        String segments = "";
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+
+        for (Location location : points) {
+            segments += "<trkpt lat=\"" + location.getLatitude() + "\" lon=\"" + location.getLongitude() + "\"><time>" + df.format(new Date(location.getTime())) + "</time></trkpt>\n";
+        }
+        String footer = "</trkseg></trk></gpx>";
+
+        try {
+            FileWriter writer = new FileWriter(file, false);
+            writer.append(header);
+            writer.append(name);
+            writer.append(segments);
+            writer.append(footer);
+            writer.flush();
+            writer.close();
+            Log.e("generateGpx", "Gpx file saved");
+            return true;
+        } catch (IOException e) {
+            Log.e("generateGpx", "Error Writing Path",e);
+            return false;
+        }
+    } // generateGpx
+
+    private class SaveTracks extends AsyncTask<String, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(String... params) {
+            // your background code here. Don't touch any UI components
+            ContextWrapper cw = new ContextWrapper(getBaseContext());
+            File mypath = cw.getDir("tracks", Context.MODE_PRIVATE);
+            try {
+                if (!mypath.exists()) {
+                    mypath.createNewFile();
+                    mypath.mkdir();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            // Get shared preferences
+            myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
+            String username = myPrefs.getString("username","");
+            String userId = "";
+            try {
+                String decrypted_username = AESUtils.decrypt(username);
+                userId = decrypted_username;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            // Datetime stamp
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd_HHmmss", Locale.US);
+            sdf.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
+            String timeStamp = sdf.format(new Date());
+
+            // Gpx filename, e.g. [userId]-tracks-2020-08-16 14_09_33.gpx
+            File gpxfile = new File(mypath, userId + "-tracks-" + timeStamp +".gpx");
+
+            if(generateGpx(gpxfile, "tracks-" + timeStamp, routeTracks))
+                return true;
+            else
+                return false;
+        }
+
+        protected void onPostExecute(Boolean result) {
+            //This is run on the UI thread so you can do as you wish here
+            if(result) {
+                Toast.makeText(getApplicationContext(), "Tracks saved.", Toast.LENGTH_SHORT).show();
+                routePoints.clear();
+                routeTracks.clear();
+            } else
+                Toast.makeText(getApplicationContext(), "Error saving tracks.", Toast.LENGTH_SHORT).show();
+        }
+    } // SaveTracks
 
 }
