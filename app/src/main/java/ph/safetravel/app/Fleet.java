@@ -267,7 +267,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             public boolean onMenuItemClick(MenuItem item) {
                 // Fleet history
-                if(item.getItemId()==R.id.triphistory)
+                if(item.getItemId()==R.id.fleethistory)
                 {
                     startActivity(new Intent(Fleet.this, FleetHistory.class));
                 }
@@ -791,11 +791,11 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
         switch(id) {
             case R.id.profile:
             {
-                Toast.makeText(Fleet.this, "My Profile", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(Fleet.this, "My Profile", Toast.LENGTH_SHORT).show();
             }
             case R.id.settings:
             {
-                Toast.makeText(Fleet.this, "Settings", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(Fleet.this, "Settings", Toast.LENGTH_SHORT).show();
             }
             case R.id.help:
             {
