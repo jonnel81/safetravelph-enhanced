@@ -81,15 +81,16 @@ public class BackgroundWorker extends AsyncTask<String,String,String> {
                 String firstname = params[1];
                 String lastname = params[2];
                 String age = params[3];
-                String username = params[4];
-                String password = params[5];
-                String role = params[6];
-                String question1 = params[7];
-                String answer1 = params[8];
-                String question2 = params[9];
-                String answer2 = params[10];
-                String question3 = params[11];
-                String answer3 = params[12];
+                String contactnumber = params[4];
+                String username = params[5];
+                String password = params[6];
+                String role = params[7];
+                String question1 = params[8];
+                String answer1 = params[9];
+                String question2 = params[10];
+                String answer2 = params[11];
+                String question3 = params[12];
+                String answer3 = params[13];
                 URL url = new URL(register_url);
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
                 httpURLConnection.setRequestMethod("POST");
@@ -100,6 +101,7 @@ public class BackgroundWorker extends AsyncTask<String,String,String> {
                 String post_data = URLEncoder.encode("firstname","UTF-8")+"="+URLEncoder.encode(firstname,"UTF-8")+"&"
                         +URLEncoder.encode("lastname","UTF-8")+"="+URLEncoder.encode(lastname,"UTF-8")+"&"
                         +URLEncoder.encode("age","UTF-8")+"="+URLEncoder.encode(age,"UTF-8")+"&"
+                        +URLEncoder.encode("contactnumber","UTF-8")+"="+URLEncoder.encode(contactnumber,"UTF-8")+"&"
                         +URLEncoder.encode("username","UTF-8")+"="+URLEncoder.encode(username,"UTF-8")+"&"
                         +URLEncoder.encode("password","UTF-8")+"="+URLEncoder.encode(password,"UTF-8")+"&"
                         +URLEncoder.encode("role","UTF-8")+"="+URLEncoder.encode(role,"UTF-8")+"&"

@@ -35,9 +35,9 @@ import java.util.List;
 
 public class TripHistory extends AppCompatActivity {
     private Toolbar toolbar;
-    private DrawerLayout dl;
-    private ActionBarDrawerToggle t;
-    private NavigationView nv;
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle actionBarDrawerToggle;
+    private NavigationView navigationView;
     private TripHistoryDBHelper db;
     private List<TripRecord> listTripRecords = new ArrayList<TripRecord>();
     private RecyclerView recyclerView;
@@ -83,8 +83,8 @@ public class TripHistory extends AppCompatActivity {
         getSupportActionBar().setHomeButtonEnabled(true);
 
         // Drawer
-        dl = findViewById(R.id.drawer_layout);
-        t = new ActionBarDrawerToggle(this, dl, toolbar, R.string.Open, R.string.Close) {
+        drawerLayout = findViewById(R.id.drawer_layout);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.Open, R.string.Close) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
@@ -100,13 +100,13 @@ public class TripHistory extends AppCompatActivity {
             }
         };
 
-        t.setDrawerIndicatorEnabled(true);
-        dl.addDrawerListener(t);
-        t.syncState();
+        actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
 
         // Navigation
-        nv = (NavigationView)findViewById(R.id.nav_view);
-        nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+        navigationView = (NavigationView)findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 int id = menuItem.getItemId();
@@ -134,7 +134,7 @@ public class TripHistory extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(t.onOptionsItemSelected(item))
+        if(actionBarDrawerToggle.onOptionsItemSelected(item))
             return true;
 
         return super.onOptionsItemSelected(item);

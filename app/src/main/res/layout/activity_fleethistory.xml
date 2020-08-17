@@ -42,7 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:titleTextColor="@color/blue"
-            app:title="@string/app_name"
+            app:title="Fleet History"
             app:titleTextAppearance="@style/ActionBarTextAppearance"
             app:theme="@style/ToolBarStyle"
             android:background="?attr/colorPrimary">

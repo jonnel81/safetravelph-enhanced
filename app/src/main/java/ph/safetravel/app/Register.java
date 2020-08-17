@@ -31,7 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Register extends AppCompatActivity implements AsyncResponse {
-    EditText firstname, lastname, age, username, password, retypepassword;
+    EditText firstname, lastname, age, contactnumber, username, password, retypepassword;
     View view;
     AsyncResponse aR = Register.this;
     BackgroundWorker backgroundWorker = new BackgroundWorker(Register.this, aR);
@@ -50,10 +50,10 @@ public class Register extends AppCompatActivity implements AsyncResponse {
         firstname = findViewById(R.id.etFirstName);
         lastname = findViewById(R.id.etLastName);
         age = findViewById(R.id.etAge);
+        contactnumber = findViewById(R.id.etContactNumber);
         username = findViewById(R.id.etUserName);
         password = findViewById(R.id.etPassword);
         retypepassword = findViewById(R.id.etRetypePassword);
-        //view = findViewById(android.R.id.content);
         answer1 = findViewById(R.id.etAnswer1);
         answer2 = findViewById(R.id.etAnswer2);
         answer3 = findViewById(R.id.etAnswer3);
@@ -350,6 +350,7 @@ public class Register extends AppCompatActivity implements AsyncResponse {
         String str_firstname = firstname.getText().toString();
         String str_lastname = lastname.getText().toString();
         String str_age = age.getText().toString();
+        String str_contactnumber = contactnumber.getText().toString();
         String str_username = username.getText().toString();
         String str_password = password.getText().toString();
         String str_retypepassword = retypepassword.getText().toString();
@@ -395,7 +396,7 @@ public class Register extends AppCompatActivity implements AsyncResponse {
             alertDialog.show();
         } else {
             if (isConnected()) {
-                backgroundWorker.execute(type, str_firstname, str_lastname, str_age, str_username, str_password, str_role, str_question1, str_answer1, str_question2, str_answer2, str_question3, str_answer3);
+                backgroundWorker.execute(type, str_firstname, str_lastname, str_age, str_contactnumber, str_username, str_password, str_role, str_question1, str_answer1, str_question2, str_answer2, str_question3, str_answer3);
 
             }else {
                 Toast.makeText(getApplicationContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();

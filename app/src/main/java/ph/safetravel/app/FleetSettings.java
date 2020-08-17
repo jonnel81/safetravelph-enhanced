@@ -16,16 +16,14 @@ import com.google.android.material.navigation.NavigationView;
 public class FleetSettings extends AppCompatActivity {
     SharedPreferences myPrefs;
     private Toolbar toolbar;
-    private DrawerLayout dl;
-    private ActionBarDrawerToggle t;
-    private NavigationView nv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preferences);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        // Toolbar
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         try {
             ActionBar actionBar = getSupportActionBar();
@@ -37,6 +35,7 @@ public class FleetSettings extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         getSupportFragmentManager().beginTransaction().replace(R.id.container, new SettingsFleetFragment()).commit();
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -47,35 +46,7 @@ public class FleetSettings extends AppCompatActivity {
             }
         });
 
-        // Drawer
-        //dl = findViewById(R.id.drawer_layout);
-        //t = new ActionBarDrawerToggle(this, dl, toolbar, R.string.Open, R.string.Close) {
-        //    @Override
-        //    public void onDrawerOpened(View drawerView) {
-        //        super.onDrawerOpened(drawerView);
-        //    }
-//
-        //    @Override
-        //    public void onDrawerClosed(View drawerView) {
-        //        super.onDrawerClosed(drawerView);
-        //    }
-        //};
-        //t.setDrawerIndicatorEnabled(true);
-        //dl.addDrawerListener(t);
-        //t.syncState();
-
     } // OnCreate
-
-    //@Override
-    //public boolean onOptionsItemSelected(MenuItem item) {
-    //    switch (item.getItemId()) {
-    //        case android.R.id.home:
-    //            return true;
-    //        default:
-    //            finish();
-    //            return super.onOptionsItemSelected(item);
-    //    }
-    //}
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

@@ -20,7 +20,6 @@
             app:theme="@style/ToolBarStyle">
 
         </androidx.appcompat.widget.Toolbar>
-
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout

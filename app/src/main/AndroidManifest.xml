@@ -74,6 +74,22 @@
         </activity>
 
         <service android:name="org.eclipse.paho.android.service.MqttService" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.your.package.fileProvider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <provider android:authorities="com.facebook.app.FacebookContentProvider1234"
+            android:name="com.facebook.FacebookContentProvider"
+            android:exported="true">
+        </provider>
+
     </application>
 
 </manifest>

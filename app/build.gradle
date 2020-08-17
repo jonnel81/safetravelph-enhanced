@@ -130,4 +130,5 @@ dependencies {
     //kapt "com.android.databinding:compiler:6.1.1"
     implementation 'com.github.sujithkanna:smileyrating:2.0.0'
     implementation 'androidx.preference:preference:1.1.0-alpha02'
+    implementation 'com.facebook.android:facebook-android-sdk:4.1.0'
 }

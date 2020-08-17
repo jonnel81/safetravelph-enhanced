@@ -13,8 +13,7 @@
             xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fitsSystemWindows="true"
-            android:layout_marginTop="?attr/actionBarSize"
+            android:fitsSystemWindows="false"
             android:id="@+id/drawer_layout">
 
             <include
@@ -30,30 +29,10 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="start"
                 app:itemTextColor="@color/blue"
-                android:fitsSystemWindows="true"
+                android:fitsSystemWindows="false"
                 app:menu="@menu/navigation_menu"
                 app:headerLayout="@layout/navigation_header" />
         </androidx.drawerlayout.widget.DrawerLayout>
-
-        <com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fitsSystemWindows="false"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" >
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:titleTextColor="@color/blue"
-                app:title="@string/app_name"
-                app:titleTextAppearance="@style/ActionBarTextAppearance"
-                app:theme="@style/ToolBarStyle"
-                android:background="?attr/colorPrimary">
-            </androidx.appcompat.widget.Toolbar>
-        </com.google.android.material.appbar.AppBarLayout>
 
         <LinearLayout
             android:gravity="center_horizontal"
@@ -121,24 +100,6 @@
                 android:tint="@color/white"
                 app:rippleColor="@color/white" />
         </LinearLayout>
-
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bottom_nav_view"
-            app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toStartOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_gravity="bottom"
-            app:itemTextAppearanceActive="@style/BottomNavigation.ActiveItemTextAppearance"
-            app:itemTextAppearanceInactive="@style/BottomNavigation.InactiveItemTextAppearance"
-            android:background="?android:attr/windowBackground"
-            app:labelVisibilityMode="labeled"
-            app:itemBackground="@color/colorPrimary"
-            app:itemIconTint="@color/blue"
-            app:itemTextColor="@color/blue"
-            app:menu="@menu/bottom_nav_menu"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout >
 </layout>

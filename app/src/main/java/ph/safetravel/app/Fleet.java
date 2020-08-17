@@ -147,6 +147,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fleet);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         final MediaPlayer mp = new MediaPlayer();
 
@@ -270,7 +271,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
                 {
                     startActivity(new Intent(Fleet.this, FleetHistory.class));
                 }
-                // Settings
+                // Fleet settings
                 if(item.getItemId()==R.id.settings)
                 {
                     startActivity(new Intent(Fleet.this, FleetSettings.class));
@@ -286,56 +287,71 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
 
         // Drawer
         drawerLayout = findViewById(R.id.drawer_layout);
-        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.Open, R.string.Close);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.Open, R.string.Close) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                // Hide Fab
+                if(isRotate){
+                    bi.fabFleetAdd.hide();
+                    bi.fabFleetInfo.hide();
+                    bi.fabFleetFeeds.hide();
+                } else{
+                    bi.fabFleetAdd.hide();
+                }
+            }
 
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                super.onDrawerClosed(drawerView);
+                // Show Fab
+                if(isRotate){
+                    bi.fabFleetAdd.show();
+                    bi.fabFleetInfo.show();
+                    bi.fabFleetFeeds.show();
+                } else{
+                    bi.fabFleetAdd.show();
+                }
+            }
+        };
         actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
-        actionBarDrawerToggle.setToolbarNavigationClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (drawerLayout.isDrawerVisible(GravityCompat.START)) {
-                    drawerLayout.closeDrawer(GravityCompat.START);
-                } else {
-                    drawerLayout.openDrawer(GravityCompat.START);
-                }
-            }
-        });
 
         // Navigation
-        //navigationView = (NavigationView)findViewById(R.id.nav_view);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        //navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-        //    @Override
-        //    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        //        menuItem.setChecked(true);
-        //        drawerLayout.closeDrawers();
-        //        int id = menuItem.getItemId();
-        //        switch(id) {
-        //            case R.id.profile:
-        //            {
-        //                Toast.makeText(Fleet.this, "My Profile", Toast.LENGTH_SHORT).show();
-        //            }
-        //            case R.id.settings:
-        //            {
-        //                Toast.makeText(Fleet.this, "Settings", Toast.LENGTH_SHORT).show();
-        //            }
-        //            case R.id.help:
-        //            {
-        //                Toast.makeText(Fleet.this, "Help", Toast.LENGTH_SHORT).show();
-        //            }
-        //            case R.id.about:
-        //            {
-        //                //drawerLayout.closeDrawer(Gravity.LEFT);
-        //                //Intent intent = new Intent(Fleet.this, About.class);
-        //                //startActivity(intent);
-        //            }
-        //        }
-        //        return true;
-        //    }
-        //});
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                drawerLayout.closeDrawers();
+                int id = item.getItemId();
+                switch(id) {
+                    case R.id.profile:
+                    {
+                        Toast.makeText(Fleet.this, "My Profile", Toast.LENGTH_SHORT).show();
+                    }
+                    case R.id.settings:
+                    {
+                        Toast.makeText(Fleet.this, "Settings", Toast.LENGTH_SHORT).show();
+                    }
+                    case R.id.help:
+                    {
+                        Toast.makeText(Fleet.this, "Help", Toast.LENGTH_SHORT).show();
+                    }
+                    case R.id.feedback:
+                    {
+                        Toast.makeText(Fleet.this, "Feedback", Toast.LENGTH_SHORT).show();
+                    }
+                    case R.id.about:
+                    {
+                        drawerLayout.closeDrawer(Gravity.LEFT);
+                        startActivity(new Intent(Fleet.this, About.class));
+                    }
+                }
+                return false;
+            }
+        });
 
         // Display text values
         NumPassengers = findViewById(R.id.txtNumPass);

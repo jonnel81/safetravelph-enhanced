@@ -5,17 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.google.android.material.appbar.AppBarLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <com.google.android.material.appbar.AppBarLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/appbar"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="false"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" >
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
@@ -28,6 +24,73 @@
             android:background="?attr/colorPrimary">
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:gravity="center_horizontal"
+        android:layout_gravity="center_vertical|end|end"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabFleetInfo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:src="@drawable/ic_baseline_directions_24"
+            android:tint="@color/blue"
+            app:backgroundTint="@color/white"
+            app:fabSize="normal"
+            app:rippleColor="@color/white" />
+
+        <LinearLayout
+            android:gravity="center_horizontal"
+            android:layout_gravity="center_vertical|end|end"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabFleetFeeds"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="24dp"
+                android:src="@drawable/ic_baseline_message_24"
+                android:tint="@color/blue"
+                app:backgroundTint="@color/white"
+                app:fabSize="normal"
+                app:rippleColor="@color/white" />
+
+            <TextView
+                android:id="@+id/txtFeedsCount"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="-84dp"
+                android:layout_toEndOf="@id/fabTripFeeds"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/floating_action_button_label"
+                android:gravity="center"
+                android:elevation="7dp"
+                android:text="99+"
+                android:textSize="12dp"
+                android:textColor="@color/white"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabFleetAdd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="18dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="18dp"
+            android:layout_marginBottom="18dp"
+            android:src="@drawable/ic_baseline_add_24"
+            app:fabSize="normal"
+            android:tint="@color/white"
+            app:rippleColor="@color/white" />
+    </LinearLayout>
 
     <ToggleButton
         android:id="@+id/toggleFleet"
@@ -42,7 +105,7 @@
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/appbar" />
+        app:layout_constraintTop_toBottomOf="@id/toolbar" />
 
     <ProgressBar
         android:id="@+id/progressBarFleet"
@@ -225,24 +288,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/progressBarFleet" />
-
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_nav_view"
-        app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toStartOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_gravity="bottom"
-        app:itemTextAppearanceActive="@style/BottomNavigation.ActiveItemTextAppearance"
-        app:itemTextAppearanceInactive="@style/BottomNavigation.InactiveItemTextAppearance"
-        android:background="?android:attr/windowBackground"
-        app:labelVisibilityMode="labeled"
-        app:itemBackground="@color/colorPrimary"
-        app:itemIconTint="@color/blue"
-        app:itemTextColor="@color/blue"
-        app:menu="@menu/bottom_nav_menu"/>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

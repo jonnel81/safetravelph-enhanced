@@ -95,6 +95,40 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/etLastName" />
 
+        <TextView
+            android:id="@+id/txtLTFRBMemo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginBottom="8dp"
+            android:fontFamily="@font/gothambook_font"
+            android:lineSpacingExtra="3sp"
+            android:text="@string/notice_ltfrbmemo"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toTopOf="@id/etContactNumber"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/etAge" />
+
+        <EditText
+            android:id="@+id/etContactNumber"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/edit_text_border"
+            android:fontFamily="@font/gothammedium_font"
+            android:hint="Contact Number"
+            android:inputType="textPersonName"
+            android:textSize="14sp"
+            app:layout_constraintBottom_toTopOf="@+id/spinnerRole"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtLTFRBMemo" />
+
         <Spinner
             android:id="@+id/spinnerRole"
             android:layout_width="170dp"
@@ -108,7 +142,7 @@
             android:theme="@style/SpinnerTheme"
             app:layout_constraintBottom_toTopOf="@+id/etUserName"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/etAge" />
+            app:layout_constraintTop_toBottomOf="@+id/etContactNumber" />
 
         <Button
             android:id="@+id/btnReg"
