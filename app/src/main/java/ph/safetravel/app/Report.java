@@ -40,6 +40,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -91,9 +92,9 @@ public class Report extends AppCompatActivity implements OnMapReadyCallback, Goo
     private boolean isContinue = false;
     private boolean isGPS = false;
     private Toolbar toolbar;
-    private DrawerLayout dl;
-    private ActionBarDrawerToggle t;
-    private NavigationView nv;
+    private DrawerLayout drawerLayout;
+    private ActionBarDrawerToggle actionBarDrawerToggle;
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,8 +114,8 @@ public class Report extends AppCompatActivity implements OnMapReadyCallback, Goo
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         // Drawer
-        dl = findViewById(R.id.drawer_layout);
-        t = new ActionBarDrawerToggle(this, dl, toolbar, R.string.Open, R.string.Close) {
+        drawerLayout = findViewById(R.id.drawer_layout);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.Open, R.string.Close) {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
@@ -130,13 +131,13 @@ public class Report extends AppCompatActivity implements OnMapReadyCallback, Goo
             }
         };
 
-        t.setDrawerIndicatorEnabled(true);
-        dl.addDrawerListener(t);
-        t.syncState();
+        actionBarDrawerToggle.setDrawerIndicatorEnabled(true);
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
 
         // Navigation
-        nv = (NavigationView)findViewById(R.id.nav_view);
-        nv.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+        navigationView = (NavigationView)findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 int id = menuItem.getItemId();
@@ -151,14 +152,28 @@ public class Report extends AppCompatActivity implements OnMapReadyCallback, Goo
                     }
                     case R.id.about:
                     {
-                        dl.closeDrawer(Gravity.LEFT);
-                        Intent intent = new Intent(Report.this, About.class);
-                        startActivity(intent);
+                        drawerLayout.closeDrawer(Gravity.LEFT);
+                        startActivity( new Intent(Report.this, About.class));
                     }
                 }
                 return false;
             }
         });
+
+        // Get shared preferences
+        myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
+        String username = myPrefs.getString("username", null);
+
+        // Display header values
+        View headerView = navigationView.getHeaderView(0);
+        TextView navUsername =  headerView.findViewById(R.id.nav_header_textView);
+        // Decrypt username
+        try {
+            String decrypted_username = AESUtils.decrypt(username);
+            navUsername.setText(decrypted_username);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         // Avoid Uri issues
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
@@ -523,7 +538,13 @@ public class Report extends AppCompatActivity implements OnMapReadyCallback, Goo
     public void OnReport(View view) {
         // Get user id from shared preferences
         myPrefs=getSharedPreferences("MYPREFS",Context.MODE_PRIVATE);
-        String username = myPrefs.getString("username",null);
+        String encrypted_username = myPrefs.getString("username",null);
+        String username = "";
+        try {
+            username = AESUtils.decrypt(encrypted_username);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         String str_street = street.getText().toString();
         String str_landmarks = landmarks.getText().toString();

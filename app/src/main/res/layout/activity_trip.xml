@@ -63,6 +63,17 @@
                 app:fabSize="normal"
                 app:rippleColor="@color/white" />
 
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabTripRating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="12dp"
+                android:src="@drawable/ic_baseline_tag_faces_24"
+                android:tint="@color/blue"
+                app:backgroundTint="@color/white"
+                app:fabSize="normal"
+                app:rippleColor="@color/white" />
+
         <LinearLayout
             android:gravity="center_horizontal"
             android:layout_gravity="center_vertical|end|end"
@@ -74,7 +85,7 @@
                 android:id="@+id/fabTripFeeds"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="24dp"
+                android:layout_margin="12dp"
                 android:src="@drawable/ic_baseline_message_24"
                 android:tint="@color/blue"
                 app:backgroundTint="@color/white"
@@ -86,7 +97,7 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginStart="20dp"
-                android:layout_marginTop="-84dp"
+                android:layout_marginTop="-75dp"
                 android:layout_toEndOf="@id/fabTripFeeds"
                 android:layout_alignParentTop="true"
                 android:background="@drawable/floating_action_button_label"
@@ -97,17 +108,6 @@
                 android:textColor="@color/white"
                 android:textStyle="bold" />
         </LinearLayout>
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fabTripRating"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="12dp"
-                android:src="@drawable/ic_baseline_tag_faces_24"
-                android:tint="@color/blue"
-                app:backgroundTint="@color/white"
-                app:fabSize="normal"
-                app:rippleColor="@color/white" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fabTripAdd"

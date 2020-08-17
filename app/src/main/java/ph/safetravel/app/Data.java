@@ -40,15 +40,15 @@ public class Data extends AppCompatActivity {
 
         // Tollbar
         toolbar = findViewById(R.id.toolbar);
-        toolbar.inflateMenu(R.menu.main_menu);
+        toolbar.inflateMenu(R.menu.data_menu);
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 // Settings
                 if(item.getItemId()==R.id.settings)
                 {
-                    Intent intent = new Intent(Data.this, TripSettings.class);
-                    startActivity(intent);
+                    //Intent intent = new Intent(Data.this, TripSettings.class);
+                    //startActivity(intent);
                 }
                 return false;
             }
@@ -97,6 +97,21 @@ public class Data extends AppCompatActivity {
                 return false;
             }
         });
+
+        // Get shared preferences
+        myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
+        String username = myPrefs.getString("username", null);
+
+        // Display header values
+        View headerView = navigationView.getHeaderView(0);
+        TextView navUsername =  headerView.findViewById(R.id.nav_header_textView);
+        // Decrypt username
+        try {
+            String decrypted_username = AESUtils.decrypt(username);
+            navUsername.setText(decrypted_username);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         // Bottom navigation
         final BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav_view);
@@ -166,11 +181,11 @@ public class Data extends AppCompatActivity {
 
         // Get shared preferences
         myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
-        String username = myPrefs.getString("username", null);
+        username = myPrefs.getString("username", null);
 
-        View headerView = navigationView.getHeaderView(0);
-        TextView navUsername =  headerView.findViewById(R.id.nav_header_textView);
-        navUsername.setText(username);
+        //View headerView = navigationView.getHeaderView(0);
+        //TextView navUsername =  headerView.findViewById(R.id.nav_header_textView);
+        //navUsername.setText(username);
 
         //WebView mWebView1, mWebView2, mWebView3, mWebView4, mWebView5, mWebView6;
         //mWebView1 = (WebView) findViewById(R.id.webview1);
