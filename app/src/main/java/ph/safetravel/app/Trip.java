@@ -446,7 +446,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Navig
 
         // Toogle button
         startButton = findViewById(R.id.toggleTrip);
-        //final Button sendAlertButton = (Button) findViewById(R.id.btnSendAlert);
+        final Button sendAlertButton = (Button) findViewById(R.id.btnSendAlert);
         startButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {

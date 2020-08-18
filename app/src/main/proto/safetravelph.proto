@@ -30,17 +30,14 @@ message Vehicle {
     int32 numPass = 10;
 }
 
-message Report {
+message Rating {
     string deviceId = 1;
     string lat = 2;
     string lng = 3;
     string timestamp = 4;
     string userId = 5;
-    string street = 6;
-    string landmark = 7;
-    string barangay = 8;
-    string citymun = 9;
-    string description = 10;
+    string description = 6;
+    string vehicleId = 7;
 }
 
 message Alert {
@@ -51,6 +48,26 @@ message Alert {
     string userId = 5;
     string description = 6;
     string vehicleId = 7;
+}
+
+message Contact {
+    string deviceId = 1;
+    string lat = 2;
+    string lng = 3;
+    string timestamp = 4;
+    string userId = 5;
+    string vehicleId = 6;
+    string vehicleDetails = 7;
+    string contactId = 8;
+    string contactDetails = 9;
+}
+
+message SelfReport {
+    string deviceId = 1;
+    string lat = 2;
+    string lng = 3;
+    string timestamp = 4;
+    string userId = 5;
 }
 
 message Feed {

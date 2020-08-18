@@ -1,10 +1,12 @@
 package ph.safetravel.app;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -19,6 +21,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.common.api.Status;
@@ -160,9 +163,13 @@ public class TripInfoFragment extends Fragment {
         View.OnClickListener scanClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Scan QR code
-                Intent intent = new Intent(getContext(), ScanTrip.class);
-                startActivity(intent);
+                // Get permission for camera
+                if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(getActivity(), new String[]{android.Manifest.permission.CAMERA},
+                            AppConstants.LOCATION_REQUEST);
+                } else {
+                    // Scan QR code
+                    startActivity(new Intent(getContext(), ScanTrip.class));                }
             }
         };
         scanButton.setOnClickListener(scanClickListener);
