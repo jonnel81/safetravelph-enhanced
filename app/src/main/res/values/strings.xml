@@ -12,7 +12,7 @@
     <string name="notice_ltfrbmemo">Per LTFRB Memorandum Circular 2020-019 and compliance with IATF and DOTr Guidelines</string>
     <string name="title_activity_maps">Map</string>
     <string name="hint_landmarks">Nearest landmark</string>
-    <string name="hint_description">Detailed description and recommedations</string>
+    <string name="hint_description">Please provide a detailed description and include recommendations for the concerned national/local government agency.</string>
     <string name="hint_street">Street/Village</string>
     <string name="hint_barangay">Barangay</string>
     <string name="hint_city">City/Municipality</string>

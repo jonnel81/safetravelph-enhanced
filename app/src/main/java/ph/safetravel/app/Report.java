@@ -52,6 +52,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -213,8 +214,8 @@ public class Report extends AppCompatActivity implements OnMapReadyCallback, Goo
         locationRequest= LocationRequest.create();
         //locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         locationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-        locationRequest.setInterval(120 * 1000); // 2 minutes
-        locationRequest.setFastestInterval(60 * 1000); // 1 minute
+        locationRequest.setInterval(5 * 1000); // 5 seconds
+        locationRequest.setFastestInterval(1 * 1000); // 1 second
 
         // Map fragment
         mMapFragment = MapFragment.newInstance();
@@ -618,8 +619,8 @@ public class Report extends AppCompatActivity implements OnMapReadyCallback, Goo
     @SuppressLint("DefaultLocale")
     @Override
     public void onMapClick(LatLng point) {
-        //lat.setText(String.format ("%.9f", point.latitude));
-        //lng.setText(String.format ("%.9f", point.longitude));
+        lat.setText(String.format ("%.9f", point.latitude));
+        lng.setText(String.format ("%.9f", point.longitude));
         mMap.clear();
         mMap.addMarker(new MarkerOptions()
                 .position(point)
@@ -630,8 +631,8 @@ public class Report extends AppCompatActivity implements OnMapReadyCallback, Goo
     @SuppressLint("DefaultLocale")
     @Override
     public void onMapLongClick(LatLng point) {
-        //lat.setText(String.format ("%.9f", point.latitude));
-        //lng.setText(String.format ("%.9f", point.longitude));
+        lat.setText(String.format ("%.9f", point.latitude));
+        lng.setText(String.format ("%.9f", point.longitude));
         mMap.clear();
         mMap.addMarker(new MarkerOptions()
                 .position(point)
@@ -643,16 +644,16 @@ public class Report extends AppCompatActivity implements OnMapReadyCallback, Goo
     @Override
     public void onMarkerDragStart(Marker marker) {
         LatLng position=marker.getPosition();
-        //lat.setText(String.format ("%.9f", position.latitude));
-        //lng.setText(String.format ("%.9f", position.longitude));
+        lat.setText(String.format ("%.9f", position.latitude));
+        lng.setText(String.format ("%.9f", position.longitude));
     } // onMarkerDragStart
 
     @SuppressLint("DefaultLocale")
     @Override
     public void onMarkerDrag(Marker marker) {
         LatLng position=marker.getPosition();
-        //lat.setText(String.format ("%.9f", position.latitude));
-        //lng.setText(String.format ("%.9f", position.longitude));
+        lat.setText(String.format ("%.9f", position.latitude));
+        lng.setText(String.format ("%.9f", position.longitude));
     } //onMarkerDrag
 
     @SuppressLint("DefaultLocale")
@@ -698,6 +699,13 @@ public class Report extends AppCompatActivity implements OnMapReadyCallback, Goo
         mMap.setOnMarkerDragListener(this);
         mMap.setOnMapLongClickListener(this);
 
+        UiSettings mapUiSettings = mMap.getUiSettings();
+        mapUiSettings.setZoomControlsEnabled(true);
+        mapUiSettings.setMapToolbarEnabled(true);
+        mapUiSettings.setCompassEnabled(true);
+        mapUiSettings.setIndoorLevelPickerEnabled(true);
+        mapUiSettings.setMyLocationButtonEnabled(true);
+
         // Get permission for location
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -729,6 +737,8 @@ public class Report extends AppCompatActivity implements OnMapReadyCallback, Goo
                         Geocoder geocoder = new Geocoder(Report.this, Locale.getDefault());
                         List<Address> addresses = null;
                         try {
+                            lat.setText(String.format ("%.9f", location.getLatitude()));
+                            lng.setText(String.format ("%.9f", location.getLongitude()));
                             addresses = geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
                             String streetString = addresses.get(0).getThoroughfare();
                             String brgyString = addresses.get(0).getSubLocality();
@@ -754,8 +764,8 @@ public class Report extends AppCompatActivity implements OnMapReadyCallback, Goo
             LatLng mmla = new LatLng(14.6091, 121.0223);
             mMap.addMarker(new MarkerOptions().position(mmla).title("Marker Position"));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mmla, 10));
-            //lat.setText(String.format ("%.9f", mmla.latitude));
-            //lng.setText(String.format ("%.9f", mmla.longitude));
+            lat.setText(String.format ("%.9f", mmla.latitude));
+            lng.setText(String.format ("%.9f", mmla.longitude));
         }
     } // onMapReady
 
