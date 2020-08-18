@@ -20,6 +20,7 @@
     <string name="api_key">AIzaSyBxbNXjmdo5qt2cME549ozeVdtAFO9hD34</string>
     <string name="title_logout">Logout</string>
     <string name="title_data">Data</string>
+    <string name="title_board">Board</string>
     <string name="title_report">Report</string>
     <string name="title_trip">Trip</string>
     <string name="title_fleet">Fleet</string>

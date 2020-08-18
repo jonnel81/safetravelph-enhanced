@@ -76,6 +76,7 @@ public class Data extends AppCompatActivity {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                drawerLayout.closeDrawers();
                 int id = menuItem.getItemId();
                 switch(id) {
                     case R.id.profile:
