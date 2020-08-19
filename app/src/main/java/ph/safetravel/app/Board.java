@@ -9,7 +9,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -22,33 +21,27 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 import com.google.android.material.navigation.NavigationView;
 
-public class Data extends AppCompatActivity {
+public class Board extends AppCompatActivity {
     SharedPreferences myPrefs;
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private NavigationView navigationView;
 
-    public Data() {
-        super();
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_data);
+        setContentView(R.layout.activity_board);
 
         // Tollbar
         toolbar = findViewById(R.id.toolbar);
-        toolbar.inflateMenu(R.menu.data_menu);
+        toolbar.inflateMenu(R.menu.board_menu);
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                // Settings
                 if(item.getItemId()==R.id.settings)
                 {
-                    //Intent intent = new Intent(Data.this, TripSettings.class);
-                    //startActivity(intent);
+                    //Do something
                 }
                 return false;
             }
@@ -71,31 +64,76 @@ public class Data extends AppCompatActivity {
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
 
-        // Bottom Navigation
+        // Navigation view
         navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 drawerLayout.closeDrawers();
-                int id = menuItem.getItemId();
+                int id = item.getItemId();
                 switch(id) {
                     case R.id.profile:
                     {
-                        Toast.makeText(Data.this, "Profile", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(Data.this, "Profile", Toast.LENGTH_SHORT).show();
+                        break;
                     }
                     case R.id.settings:
                     {
-                        Toast.makeText(Data.this, "Settings", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(Data.this, "Settings", Toast.LENGTH_SHORT).show();
+                        break;
+                    }
+                    case R.id.help:
+                    {
+                        //Toast.makeText(Data.this, "Settings", Toast.LENGTH_SHORT).show();
+                        break;
+                    }
+                    case R.id.feedback:
+                    {
+                        //Toast.makeText(Data.this, "Settings", Toast.LENGTH_SHORT).show();
+                        break;
                     }
                     case R.id.about:
                     {
-                        Toast.makeText(Data.this, "About", Toast.LENGTH_SHORT).show();
-                        //dl.closeDrawer(Gravity.LEFT);
-                        //Intent intent = new Intent(Data.this, About.class);
-                        //startActivity(intent);
+                        startActivity(new Intent(Board.this, About.class));
+                    }
+                    case R.id.share:
+                    {
+                        //Toast.makeText(Data.this, "Settings", Toast.LENGTH_SHORT).show();
+                        break;
+                    }
+                    case R.id.logout:
+                    {
+                        // Dialog
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Board.this);
+                        builder.setMessage("Are you sure you want to logout?");
+                        builder.setCancelable(false);
+                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Clear shared preferences
+                                myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = myPrefs  .edit();
+                                editor.clear();
+                                editor.apply();
+                                closeApp();
+                                startActivity(new Intent(Board.this, MainActivity.class));
+                            }
+                        });
+                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                        AlertDialog alertDialog = builder.create();
+                        alertDialog.setTitle("Logout");
+                        alertDialog.setCancelable(false);
+                        alertDialog.setCanceledOnTouchOutside(false);
+                        alertDialog.show();
+                        break;
                     }
                 }
-                return false;
+                return true;
             }
         });
 
@@ -118,61 +156,29 @@ public class Data extends AppCompatActivity {
         final BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav_view);
         bottomNavigationView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
         Menu menu = bottomNavigationView.getMenu();
-        MenuItem menuItem = menu.getItem(1);
+        MenuItem menuItem = menu.getItem(0);
         menuItem.setChecked(true);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
-                    case R.id.navigation_logout: {
-                        // Dialog
-                        AlertDialog.Builder builder = new AlertDialog.Builder(Data.this);
-                        builder.setMessage("Are you sure you want to logout?");
-                        builder.setCancelable(false);
-                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // Clear shared preferences
-                                myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
-                                SharedPreferences.Editor editor = myPrefs  .edit();
-                                editor.clear();
-                                editor.apply();
-                                closeApp();
-                                startActivity(new Intent(Data.this, MainActivity.class));
-                            }
-                        });
-                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                bottomNavigationView.setSelectedItemId(R.id.navigation_data);
-                            }
-                        });
-                        AlertDialog alertDialog = builder.create();
-                        alertDialog.setTitle("Status");
-                        alertDialog.setCancelable(false);
-                        alertDialog.setCanceledOnTouchOutside(false);
-                        alertDialog.show();
-                        break;
-                    }
-                    case R.id.navigation_data: {
-
+                    case R.id.navigation_board: {
                         break;
                     }
                     case R.id.navigation_report: {
                         closeApp();
-                        startActivity(new Intent(Data.this, Report.class));
+                        startActivity(new Intent(Board.this, Report.class));
                         break;
                     }
                     case R.id.navigation_trip: {
                         closeApp();
-                        startActivity(new Intent(Data.this, Trip.class));
+                        startActivity(new Intent(Board.this, Trip.class));
                         break;
                     }
                     case R.id.navigation_fleet: {
                         closeApp();
-                        startActivity(new Intent(Data.this, Fleet.class));
+                        startActivity(new Intent(Board.this, Fleet.class));
                         break;
                     }
                 }
@@ -220,7 +226,6 @@ public class Data extends AppCompatActivity {
         //mWebView1.loadUrl("https://safetravel.ph/dashboard/barchart.html");
         //mWebView3.loadUrl("https://safetravel.ph/dashboard/gaugechart.html");
         //mWebView1.loadUrl("https://safetravel.ph/");
-
 
     } // onCreate
 

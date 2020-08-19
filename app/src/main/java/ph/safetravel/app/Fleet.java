@@ -14,19 +14,13 @@ import android.location.Location;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Looper;
-import android.os.Vibrator;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewAnimationUtils;
 import android.view.WindowManager;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -42,11 +36,9 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -65,11 +57,9 @@ import androidx.appcompat.widget.Toolbar;
 //import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
 import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 //import androidx.viewpager.widget.ViewPager;
 
@@ -79,17 +69,13 @@ import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttClientPersistence;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -325,7 +311,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
 
-        // Navigation
+        // Navigation view
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -336,27 +322,66 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
                 switch(id) {
                     case R.id.profile:
                     {
-                        Toast.makeText(Fleet.this, "Profile", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(Data.this, "Profile", Toast.LENGTH_SHORT).show();
+                        break;
                     }
                     case R.id.settings:
                     {
-                        Toast.makeText(Fleet.this, "Settings", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(Data.this, "Settings", Toast.LENGTH_SHORT).show();
+                        break;
                     }
                     case R.id.help:
                     {
-                        Toast.makeText(Fleet.this, "Help", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(Data.this, "Settings", Toast.LENGTH_SHORT).show();
+                        break;
                     }
                     case R.id.feedback:
                     {
-                        Toast.makeText(Fleet.this, "Feedback", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(Data.this, "Settings", Toast.LENGTH_SHORT).show();
+                        break;
                     }
                     case R.id.about:
                     {
-                        drawerLayout.closeDrawer(Gravity.LEFT);
                         startActivity(new Intent(Fleet.this, About.class));
                     }
+                    case R.id.share:
+                    {
+                        //Toast.makeText(Data.this, "Settings", Toast.LENGTH_SHORT).show();
+                        break;
+                    }
+                    case R.id.logout:
+                    {
+                        // Dialog
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Fleet.this);
+                        builder.setMessage("Are you sure you want to logout?");
+                        builder.setCancelable(false);
+                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Clear shared preferences
+                                myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = myPrefs  .edit();
+                                editor.clear();
+                                editor.apply();
+                                closeApp();
+                                startActivity(new Intent(Fleet.this, MainActivity.class));
+                            }
+                        });
+                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                        AlertDialog alertDialog = builder.create();
+                        alertDialog.setTitle("Logout");
+                        alertDialog.setCancelable(false);
+                        alertDialog.setCanceledOnTouchOutside(false);
+                        alertDialog.show();
+                        break;
+                    }
                 }
-                return false;
+                return true;
             }
         });
 
@@ -650,42 +675,14 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
         final BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav_view);
         bottomNavigationView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
         Menu menu = bottomNavigationView.getMenu();
-        MenuItem menuItem = menu.getItem(4);
+        MenuItem menuItem = menu.getItem(3);
         menuItem.setChecked(true);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
-                    case R.id.navigation_logout: {
-                        // Dialog
-                        AlertDialog.Builder builder = new AlertDialog.Builder(Fleet.this);
-                        builder.setMessage("Are you sure you want to Logout?");
-                        builder.setCancelable(false);
-                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                clearSharedPreferences();
-                                closeApp();
-                                // Go to main activity
-                                startActivity(new Intent(Fleet.this, MainActivity.class));
-                            }
-                        });
-                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                bottomNavigationView.setSelectedItemId(R.id.navigation_fleet);
-                            }
-                        });
-                        AlertDialog alertDialog = builder.create();
-                        alertDialog.setTitle("Status");
-                        alertDialog.setCancelable(false);
-                        alertDialog.setCanceledOnTouchOutside(false);
-                        alertDialog.show();
-                        break;
-                    }
-                    case R.id.navigation_data: {
+                    case R.id.navigation_board: {
                         // Dialog
                         AlertDialog.Builder builder = new AlertDialog.Builder(Fleet.this);
                         builder.setMessage("Are you sure you want to exit Fleet?");
@@ -694,7 +691,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 closeApp();
-                                startActivity(new Intent(Fleet.this, Data.class));
+                                startActivity(new Intent(Fleet.this, Board.class));
                             }
                         });
                         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {

@@ -40,7 +40,7 @@
         <activity android:name=".ScanTrip" />
         <activity android:name=".ScanFleet" />
         <activity android:name=".BarcodeReader" />
-        <activity android:name=".Data" />
+        <activity android:name=".Board" />
         <activity android:name=".TripHistory" />
         <activity android:name=".FleetHistory" />
         <activity android:name=".TripSettings"/>
@@ -53,6 +53,10 @@
              sign the APK for publishing.
              You can define the keys for the debug and release targets in src/debug/ and src/release/.
         -->
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value=".MainActivity" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />

@@ -11,7 +11,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
@@ -20,7 +19,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -58,7 +56,6 @@ import androidx.appcompat.widget.Toolbar;
 //import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentTransaction;
@@ -382,7 +379,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Navig
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
 
-        // Navigation
+        // Navigation view
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -393,27 +390,66 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Navig
                 switch(id) {
                     case R.id.profile:
                     {
-                        Toast.makeText(Trip.this, "Profile", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(Data.this, "Profile", Toast.LENGTH_SHORT).show();
+                        break;
                     }
                     case R.id.settings:
                     {
-                        Toast.makeText(Trip.this, "Settings", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(Data.this, "Settings", Toast.LENGTH_SHORT).show();
+                        break;
                     }
                     case R.id.help:
                     {
-                        Toast.makeText(Trip.this, "Help", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(Data.this, "Settings", Toast.LENGTH_SHORT).show();
+                        break;
                     }
                     case R.id.feedback:
                     {
-                        Toast.makeText(Trip.this, "Feedback", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(Data.this, "Settings", Toast.LENGTH_SHORT).show();
+                        break;
                     }
                     case R.id.about:
                     {
-                        drawerLayout.closeDrawer(Gravity.LEFT);
                         startActivity(new Intent(Trip.this, About.class));
                     }
+                    case R.id.share:
+                    {
+                        //Toast.makeText(Data.this, "Settings", Toast.LENGTH_SHORT).show();
+                        break;
+                    }
+                    case R.id.logout:
+                    {
+                        // Dialog
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Trip.this);
+                        builder.setMessage("Are you sure you want to logout?");
+                        builder.setCancelable(false);
+                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Clear shared preferences
+                                myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = myPrefs  .edit();
+                                editor.clear();
+                                editor.apply();
+                                closeApp();
+                                startActivity(new Intent(Trip.this, MainActivity.class));
+                            }
+                        });
+                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                        AlertDialog alertDialog = builder.create();
+                        alertDialog.setTitle("Logout");
+                        alertDialog.setCancelable(false);
+                        alertDialog.setCanceledOnTouchOutside(false);
+                        alertDialog.show();
+                        break;
+                    }
                 }
-                return false;
+                return true;
             }
         });
 
@@ -550,38 +586,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Navig
             @Override
             public boolean onNavigationItemSelected(@NonNull final MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
-                    case R.id.navigation_logout: {
-                        // Dialog
-                        AlertDialog.Builder builder = new AlertDialog.Builder(Trip.this);
-                        builder.setMessage("Are you sure you want to Logout?");
-                        builder.setCancelable(false);
-                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // Clear shared preferences
-                                myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
-                                SharedPreferences.Editor editor = myPrefs.edit();
-                                editor.clear();
-                                editor.apply();
-                                closeApp();
-                                startActivity(new Intent(Trip.this, MainActivity.class));
-                            }
-                        });
-                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                bottomNavigationView.setSelectedItemId(R.id.navigation_trip);
-                            }
-                        });
-                        AlertDialog alertDialog = builder.create();
-                        alertDialog.setTitle("Confirm");
-                        alertDialog.setCancelable(false);
-                        alertDialog.setCanceledOnTouchOutside(false);
-                        alertDialog.show();
-                        break;
-                    }
-                    case R.id.navigation_data: {
+                    case R.id.navigation_board: {
                         // Dialog
                         AlertDialog.Builder builder = new AlertDialog.Builder(Trip.this);
                         builder.setMessage("Are you sure you want to exit Trip?");
@@ -590,7 +595,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Navig
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 closeApp();
-                                startActivity(new Intent(Trip.this, Data.class));
+                                startActivity(new Intent(Trip.this, Board.class));
                             }
                         });
                         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {

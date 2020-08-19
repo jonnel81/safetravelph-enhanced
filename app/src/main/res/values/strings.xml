@@ -24,6 +24,7 @@
     <string name="title_report">Report</string>
     <string name="title_trip">Trip</string>
     <string name="title_fleet">Fleet</string>
+    <string name="title_help">Help</string>
     <string name="appbar_scrolling_view_behavior" translatable="false">com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior</string>
     <string name="nav_info1">The SafeTravelPH mobile app allows commuters to report and view road conditions and accidents; monitor Public Utility Vehicle (PUV) availability and locations, arrival times at transit stops, and occupancies of buses; and rate and record the quality of their trips. At the same time, the app allows bus providers to better calibrate their routes, monitor their operations and improve their overall systems in response to crowdsourced data provided by the application.</string>
     <string name="nav_info2">The app, which is free to use by all stakeholders, aims to help improve the quality, sustainability, and reliability of public transport services. It provides relevant real-time information to commuters and bus operators and more importantly, government agencies involved in the planning and management of the public transportation sector. We believe that the system will contribute in improving public transport systems in the country by providing an open data platform for public transport planning and policy-making.</string>

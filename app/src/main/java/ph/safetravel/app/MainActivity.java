@@ -1,12 +1,6 @@
 package ph.safetravel.app;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.view.WindowCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -18,17 +12,10 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.MediaController;
-import android.widget.ProgressBar;
 import android.widget.Toast;
-
-import com.google.android.material.navigation.NavigationView;
-
-import java.util.UUID;
 
 
 public class MainActivity extends AppCompatActivity implements AsyncResponse {
@@ -40,8 +27,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
     String password = "";
     String androidId = "";
     View view;
-    //AlertDialog.Builder builder;
-    //AlertDialog alertDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +42,9 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         String username = myPrefs.getString("username",null);
         String password = myPrefs.getString("password",null);
 
-        // Check if shared preferences contains username and password then redirect to dashboard activity
+        // Check if shared preferences contains username and password then redirect to board activity
         if(username != null && password != null ){
-            startActivity(new Intent(this, Data.class));
+            startActivity(new Intent(MainActivity.this, Board.class));
         }
     } // onCreate
 
@@ -123,22 +108,23 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             editor.apply();
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("Success! You are logged in.");
+            builder.setMessage("Welcome! Have a safe travel.");
             builder.setCancelable(false);
             builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
-                    startActivity(new Intent(view.getContext(), Navigation.class));
+                    startActivity(new Intent(MainActivity.this, Board.class));
+
                 }
             });
             AlertDialog alertDialog = builder.create();
-            alertDialog.setTitle("Status");
+            alertDialog.setTitle("Login");
             alertDialog.setCancelable(false);
             alertDialog.setCanceledOnTouchOutside(false);
             alertDialog.setOwnerActivity(this);
             alertDialog.show();
-        } else{
+        } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Wrong username/password. Please try again.");
             builder.setCancelable(false);
@@ -150,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
                 }
             });
             AlertDialog alertDialog = builder.create();
-            alertDialog.setTitle("Status");
+            alertDialog.setTitle("Login");
             alertDialog.setCancelable(false);
             alertDialog.setCanceledOnTouchOutside(false);
             alertDialog.setOwnerActivity(this);
@@ -159,8 +145,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
     } // processFinish
 
     public void OpenReg(View view) {
-        // start register activity
-        startActivity(new Intent(this,Register.class));
+        startActivity(new Intent(MainActivity.this, Register.class));
     } // OpenReg
 
     @Override

@@ -51,24 +51,24 @@ message Alert {
 }
 
 message Contact {
-    string deviceId = 1;
-    string lat = 2;
-    string lng = 3;
-    string timestamp = 4;
-    string userId = 5;
-    string vehicleId = 6;
-    string vehicleDetails = 7;
-    string contactId = 8;
-    string contactDetails = 9;
-}
+     string deviceId = 1;
+     string lat = 2;
+     string lng = 3;
+     string timestamp = 4;
+     string userId = 5;
+     string vehicleId = 6;
+     string vehicleDetails = 7;
+     string contactId = 8;
+     string contactDetails = 9;
+ }
 
-message SelfReport {
-    string deviceId = 1;
-    string lat = 2;
-    string lng = 3;
-    string timestamp = 4;
-    string userId = 5;
-}
+ message SelfReport {
+     string deviceId = 1;
+     string lat = 2;
+     string lng = 3;
+     string timestamp = 4;
+     string userId = 5;
+ }
 
 message Feed {
     string topic = 1;

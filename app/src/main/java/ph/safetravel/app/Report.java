@@ -7,7 +7,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.FragmentActivity;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -23,7 +22,6 @@ import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -32,7 +30,6 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Base64;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -136,28 +133,76 @@ public class Report extends AppCompatActivity implements OnMapReadyCallback, Goo
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
 
-        // Navigation
+        // Navigation view
         navigationView = (NavigationView)findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                int id = menuItem.getItemId();
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                drawerLayout.closeDrawers();
+                int id = item.getItemId();
                 switch(id) {
                     case R.id.profile:
                     {
-                        Toast.makeText(Report.this, "Profile", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(Data.this, "Profile", Toast.LENGTH_SHORT).show();
+                        break;
                     }
                     case R.id.settings:
                     {
-                        Toast.makeText(Report.this, "Settings", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(Data.this, "Settings", Toast.LENGTH_SHORT).show();
+                        break;
+                    }
+                    case R.id.help:
+                    {
+                        //Toast.makeText(Data.this, "Settings", Toast.LENGTH_SHORT).show();
+                        break;
+                    }
+                    case R.id.feedback:
+                    {
+                        //Toast.makeText(Data.this, "Settings", Toast.LENGTH_SHORT).show();
+                        break;
                     }
                     case R.id.about:
                     {
-                        drawerLayout.closeDrawer(Gravity.LEFT);
-                        startActivity( new Intent(Report.this, About.class));
+                        startActivity(new Intent(Report.this, About.class));
+                    }
+                    case R.id.share:
+                    {
+                        //Toast.makeText(Data.this, "Settings", Toast.LENGTH_SHORT).show();
+                        break;
+                    }
+                    case R.id.logout:
+                    {
+                        // Dialog
+                        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(Report.this);
+                        builder.setMessage("Are you sure you want to logout?");
+                        builder.setCancelable(false);
+                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Clear shared preferences
+                                myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = myPrefs  .edit();
+                                editor.clear();
+                                editor.apply();
+                                closeApp();
+                                startActivity(new Intent(Report.this, MainActivity.class));
+                            }
+                        });
+                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                        androidx.appcompat.app.AlertDialog alertDialog = builder.create();
+                        alertDialog.setTitle("Logout");
+                        alertDialog.setCancelable(false);
+                        alertDialog.setCanceledOnTouchOutside(false);
+                        alertDialog.show();
+                        break;
                     }
                 }
-                return false;
+                return true;
             }
         });
 
@@ -236,45 +281,14 @@ public class Report extends AppCompatActivity implements OnMapReadyCallback, Goo
         final BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav_view);
         bottomNavigationView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
         Menu menu = bottomNavigationView.getMenu();
-        MenuItem menuItem = menu.getItem(2);
+        MenuItem menuItem = menu.getItem(1);
         menuItem.setChecked(true);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
-                    case R.id.navigation_logout: {
-                        // Dialog
-                        androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(Report.this);
-                        builder.setMessage("Are you sure you want to Logout?");
-                        builder.setCancelable(false);
-                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // Clear shared preferences
-                                myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
-                                SharedPreferences.Editor editor = myPrefs.edit();
-                                editor.clear();
-                                editor.apply();
-                                startActivity(new Intent(Report.this, MainActivity.class));
-                            }
-                        });
-                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                bottomNavigationView.setSelectedItemId(R.id.navigation_report);
-                            }
-                        });
-                        androidx.appcompat.app.AlertDialog alertDialog = builder.create();
-                        alertDialog.setTitle("Status");
-                        alertDialog.setCancelable(false);
-                        alertDialog.setCanceledOnTouchOutside(false);
-                        alertDialog.show();
-
-                        break;
-                    }
-                    case R.id.navigation_data: {
+                    case R.id.navigation_board: {
                         // Dialog
                         androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(Report.this);
                         builder.setMessage("Are you sure you want to exit Report?");
@@ -283,7 +297,7 @@ public class Report extends AppCompatActivity implements OnMapReadyCallback, Goo
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 //closeApp();
-                                startActivity(new Intent(Report.this, Data.class));
+                                startActivity(new Intent(Report.this, Board.class));
                             }
                         });
                         builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -611,11 +625,6 @@ public class Report extends AppCompatActivity implements OnMapReadyCallback, Goo
         startActivity(new Intent(this, MainActivity.class));
     } // onLogout
 
-    @Override
-    public void onBackPressed() {
-
-    } // onBackPressed
-
     @SuppressLint("DefaultLocale")
     @Override
     public void onMapClick(LatLng point) {
@@ -768,5 +777,15 @@ public class Report extends AppCompatActivity implements OnMapReadyCallback, Goo
             lng.setText(String.format ("%.9f", mmla.longitude));
         }
     } // onMapReady
+
+    @Override
+    public void onBackPressed() {
+
+    } // onBackPressed
+
+
+    public void closeApp(){
+        this.finish();
+    } // closeApp
 
 }

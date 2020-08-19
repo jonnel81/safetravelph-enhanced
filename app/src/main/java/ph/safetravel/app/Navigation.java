@@ -33,18 +33,7 @@ public class Navigation extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
-                    case R.id.navigation_logout: {
-                        // Clear shared preferences
-                        myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = myPrefs.edit();
-                        editor.clear();
-                        editor.apply();
-                        // Go to main activity
-                        Intent intent0 = new Intent(Navigation.this, MainActivity.class);
-                        startActivity(intent0);
-                        break;
-                    }
-                    case R.id.navigation_data: {
+                    case R.id.navigation_board: {
                         Intent intent1 = new Intent(Navigation.this, Report.class);
                         startActivity(intent1);
                         break;

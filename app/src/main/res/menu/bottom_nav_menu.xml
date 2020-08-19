@@ -2,13 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/navigation_logout"
-        android:icon="@drawable/ic_exit"
-        android:enabled="true"
-        android:title="Logout" />
-
-    <item
-        android:id="@+id/navigation_data"
+        android:id="@+id/navigation_board"
         android:icon="@drawable/ic_dashboard"
         android:enabled="true"
         android:title="@string/title_board" />
@@ -30,5 +24,12 @@
         android:icon="@drawable/ic_pub"
         android:enabled="true"
         android:title="@string/title_fleet" />
+
+    <item
+        android:id="@+id/navigation_help"
+        android:icon="@drawable/ic_cross"
+        android:enabled="true"
+        android:iconTint="@color/white"
+        android:title="@string/title_help" />
 
 </menu>

@@ -101,41 +101,7 @@ public class Info extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull final MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
-                    case R.id.navigation_logout: {
-                        // Dialog
-                        AlertDialog.Builder builder = new AlertDialog.Builder(Info.this);
-                        builder.setMessage("Are you sure you want to logout?");
-                        builder.setCancelable(false);
-                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // Clear shared preferences
-                                myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
-                                SharedPreferences.Editor editor = myPrefs.edit();
-                                editor.clear();
-                                editor.apply();
-                                // Go to main activity
-                                Intent intent0 = new Intent(Info.this, MainActivity.class);
-                                startActivity(intent0);
-                            }
-                        });
-                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                Intent intent1 = new Intent(Info.this, Info.class);
-                                startActivity(intent1);
-                            }
-                        });
-                        AlertDialog alertDialog = builder.create();
-                        alertDialog.setTitle("Status");
-                        alertDialog.setCancelable(false);
-                        alertDialog.setCanceledOnTouchOutside(false);
-                        alertDialog.show();
-
-                        break;
-                    }
-                    case R.id.navigation_data: {
+                    case R.id.navigation_board: {
 
                         break;
                     }
