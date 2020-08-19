@@ -224,13 +224,13 @@ public class Data extends AppCompatActivity {
 
     } // onCreate
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(actionBarDrawerToggle.onOptionsItemSelected(item))
-            return true;
-
-        return super.onOptionsItemSelected(item);
-    }
+    //@Override
+    //public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    //    if(actionBarDrawerToggle.onOptionsItemSelected(item))
+    //        return true;
+//
+    //    return super.onOptionsItemSelected(item);
+    //}
 
     @Override
     public void onBackPressed() {
