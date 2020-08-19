@@ -16,7 +16,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Looper;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -148,7 +147,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
         // Floating action bar
         bi = DataBindingUtil.setContentView(this, R.layout.activity_fleet);
         ViewAnimation.init(bi.fabFleetInfo);
-        ViewAnimation.init(bi.fabFleetContact);
+        ViewAnimation.init(bi.fabFleetPassenger);
         ViewAnimation.init(bi.fabFleetFeeds);
         ViewAnimation.init(bi.txtFeedsCount);
 
@@ -162,7 +161,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
                 isRotate = ViewAnimation.rotateFab(v, !isRotate);
                 if(isRotate){
                     ViewAnimation.showIn(bi.fabFleetInfo);
-                    ViewAnimation.showIn(bi.fabFleetContact);
+                    ViewAnimation.showIn(bi.fabFleetPassenger);
                     ViewAnimation.showIn(bi.fabFleetFeeds);
                     if(feedsCount!=0){
                         ViewAnimation.showIn(bi.txtFeedsCount);
@@ -174,7 +173,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
                     }
                 }else{
                     ViewAnimation.showOut(bi.fabFleetInfo);
-                    ViewAnimation.showOut(bi.fabFleetContact);
+                    ViewAnimation.showOut(bi.fabFleetPassenger);
                     ViewAnimation.showOut(bi.fabFleetFeeds);
                     if(feedsCount!=0){
                         ViewAnimation.showOut(bi.txtFeedsCount);
@@ -191,7 +190,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
                 if(isRotate){
                     bi.fabFleetAdd.hide();
                     bi.fabFleetInfo.hide();
-                    bi.fabFleetContact.hide();
+                    bi.fabFleetPassenger.hide();
                     bi.fabFleetFeeds.hide();
                     isRotate=true;
                 } else{
@@ -218,6 +217,41 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
             }
         });
 
+        // Fleet Contact Fab
+        bi.fabFleetPassenger.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Hide Fab
+                if(isRotate){
+                    bi.fabFleetAdd.hide();
+                    bi.fabFleetInfo.hide();
+                    bi.fabFleetPassenger.hide();
+                    bi.fabFleetFeeds.hide();
+                    isRotate=true;
+                } else{
+                    bi.fabFleetAdd.hide();
+                }
+
+                // Show fragment
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+
+                FleetPassengerFragment fleetContactFragment = new FleetPassengerFragment();
+
+                FrameLayout layout = (FrameLayout) findViewById(R.id.container_frame);
+                layout.setVisibility(View.VISIBLE);
+
+                if (fleetContactFragment.isAdded()) {
+                    ft.show(fleetContactFragment);
+                } else {
+                    ft.add(R.id.container_frame, fleetContactFragment);
+                    ft.show(fleetContactFragment);
+                }
+
+                ft.commit();
+            }
+        });
+
         // Fleet Feeds Fab
         bi.fabFleetFeeds.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -226,7 +260,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
                 if(isRotate){
                     bi.fabFleetAdd.hide();
                     bi.fabFleetInfo.hide();
-                    bi.fabFleetContact.hide();
+                    bi.fabFleetPassenger.hide();
                     bi.fabFleetFeeds.hide();
                     isRotate=true;
                 } else{
@@ -286,7 +320,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
                 if(isRotate){
                     bi.fabFleetAdd.hide();
                     bi.fabFleetInfo.hide();
-                    bi.fabFleetContact.hide();
+                    bi.fabFleetPassenger.hide();
                     bi.fabFleetFeeds.hide();
                 } else{
                     bi.fabFleetAdd.hide();
@@ -300,7 +334,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
                 if(isRotate){
                     bi.fabFleetAdd.show();
                     bi.fabFleetInfo.show();
-                    bi.fabFleetContact.show();
+                    bi.fabFleetPassenger.show();
                     bi.fabFleetFeeds.show();
                 } else{
                     bi.fabFleetAdd.show();
@@ -1155,7 +1189,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
         if(isRotate){
             bi.fabFleetAdd.show();
             bi.fabFleetInfo.show();
-            bi.fabFleetContact.show();
+            bi.fabFleetPassenger.show();
             bi.fabFleetFeeds.show();
         } else{
             bi.fabFleetAdd.show();
