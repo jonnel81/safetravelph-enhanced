@@ -30,16 +30,6 @@ message Vehicle {
     int32 numPass = 10;
 }
 
-message Rating {
-    string deviceId = 1;
-    string lat = 2;
-    string lng = 3;
-    string timestamp = 4;
-    string userId = 5;
-    string description = 6;
-    string vehicleId = 7;
-}
-
 message Alert {
     string deviceId = 1;
     string lat = 2;
@@ -48,6 +38,18 @@ message Alert {
     string userId = 5;
     string description = 6;
     string vehicleId = 7;
+    string vehicleDetails = 8;
+}
+
+message Rating {
+    string deviceId = 1;
+    string lat = 2;
+    string lng = 3;
+    string timestamp = 4;
+    string userId = 5;
+    string description = 6;
+    string vehicleId = 7;
+    string vehicleDetails = 8;
 }
 
 message Contact {
@@ -62,18 +64,13 @@ message Contact {
      string contactDetails = 9;
  }
 
- message SelfReport {
+ message Help {
      string deviceId = 1;
      string lat = 2;
      string lng = 3;
      string timestamp = 4;
      string userId = 5;
+     string description = 6;
  }
-
-message Feed {
-    string topic = 1;
-    string timestamp = 2;
-    string message = 3;
-}
 
 

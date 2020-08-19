@@ -48,6 +48,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 import com.google.android.material.navigation.NavigationView;
+import com.hsalf.smilerating.SmileRating;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -85,6 +86,7 @@ import java.util.TimeZone;
 import ph.safetravel.app.databinding.ActivityTripBinding;
 import ph.safetravel.app.protos.Passenger;
 import ph.safetravel.app.protos.Alert;
+import ph.safetravel.app.protos.Rating;
 
 public class Trip extends AppCompatActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener {
     SharedPreferences myPrefs;
@@ -354,6 +356,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Navig
                 if(isRotate){
                     bi.fabTripAdd.hide();
                     bi.fabTripInfo.hide();
+                    bi.fabTripRating.hide();
                     bi.fabTripFeeds.hide();
                     bi.fabTripAlert.hide();
                 } else{
@@ -368,6 +371,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Navig
                 if(isRotate){
                     bi.fabTripAdd.show();
                     bi.fabTripInfo.show();
+                    bi.fabTripRating.hide();
                     bi.fabTripFeeds.show();
                     bi.fabTripAlert.show();
                 } else{
@@ -480,9 +484,12 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Navig
 
         //vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 
+        //
+        final Button sendAlertButton = (Button) findViewById(R.id.btnSendAlert);
+        final Button sendRatingButton = (Button) findViewById(R.id.btnSendRating);
+
         // Toogle button
         startButton = findViewById(R.id.toggleTrip);
-        final Button sendAlertButton = (Button) findViewById(R.id.btnSendAlert);
         startButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
@@ -579,7 +586,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Navig
         final BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav_view);
         bottomNavigationView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_LABELED);
         Menu menu = bottomNavigationView.getMenu();
-        MenuItem menuItem = menu.getItem(3);
+        MenuItem menuItem = menu.getItem(2);
         menuItem.setChecked(true);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -674,6 +681,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Navig
 
     } // onCreate
 
+    // Send alerts from trip alert fragment
     public void sendAlert() {
         CheckBox checkbox1 = (CheckBox) findViewById(R.id.checkBox1);
         CheckBox checkbox2 = (CheckBox) findViewById(R.id.checkBox2);
@@ -721,6 +729,8 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Navig
         if(checkbox11.isChecked()) {
             alertString.append("," + checkbox11.getText());
         }
+        // Alert description
+        String description = alertString.toString();
 
         if (mLastLocation != null) {
             String lat = String.valueOf(mLastLocation.getLatitude());
@@ -749,15 +759,73 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Navig
                 e.printStackTrace();
             }
 
-            String description = alertString.toString();
+            String vehicleId = myPrefs.getString("vehicleId","");
+            String vehicleDetails = myPrefs.getString("vehicleDetails","");
 
             // Publish message
-            publishAlert(alertMessage(deviceId, lat, lng, timeStamp, userId, description));
-            //System.out.println(alertMessage(androidId, lat, lng, timeStamp, userId, description));
+            publishAlert(alertMessage(deviceId, lat, lng, timeStamp, userId, description, vehicleId, vehicleDetails));
+            Toast.makeText(getApplicationContext(), "Alert sent.", Toast.LENGTH_SHORT).show();
         }
-        Toast.makeText(getApplicationContext(), "Alert sent.", Toast.LENGTH_SHORT).show();
-
     } // sendAlert
+
+    // Send alerts from trip alert fragment
+    public void sendRating() {
+        SmileRating rating_vehiclecondition = (SmileRating) findViewById(R.id.rating_vehiclecondition);
+        SmileRating rating_ridecomfort = (SmileRating) findViewById(R.id.rating_ridecomfort);
+        SmileRating rating_serviceadequacy = (SmileRating) findViewById(R.id.rating_serviceadequacy);
+        SmileRating rating_stopaccessibility = (SmileRating) findViewById(R.id.rating_stopaccessibility);
+        SmileRating rating_infoprovision = (SmileRating) findViewById(R.id.rating_infoprovision);
+        SmileRating rating_serviceavailability = (SmileRating) findViewById(R.id.rating_serviceavailability);
+        SmileRating rating_routeconnectivity = (SmileRating) findViewById(R.id.rating_routeconnectivity);
+        SmileRating rating_overall = (SmileRating) findViewById(R.id.rating_overall);
+
+        StringBuilder ratingString = new StringBuilder();
+        ratingString.append(rating_vehiclecondition.getRating());
+        ratingString.append("," + rating_ridecomfort.getRating());
+        ratingString.append("," + rating_serviceadequacy.getRating());
+        ratingString.append("," + rating_stopaccessibility.getRating());
+        ratingString.append("," + rating_infoprovision.getRating());
+        ratingString.append("," + rating_serviceavailability.getRating());
+        ratingString.append("," + rating_routeconnectivity.getRating());
+        ratingString.append("," + rating_overall.getRating());
+        // Rating description
+        String description = ratingString.toString();
+
+        if (mLastLocation != null) {
+            String lat = String.valueOf(mLastLocation.getLatitude());
+            String lng = String.valueOf(mLastLocation.getLongitude());
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+            sdf.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
+            String timeStamp = sdf.format(new Date());
+
+            // Get shared preferences
+            myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
+            String username = myPrefs.getString("username","");
+            String userId = "";
+            try {
+                String decrypted_username = AESUtils.decrypt(username);
+                userId = decrypted_username;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            String androidId = myPrefs.getString("androidId","");
+            String deviceId = "";
+            try {
+                String decrypted_androidId = AESUtils.decrypt(androidId);
+                deviceId = decrypted_androidId;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            String vehicleId = myPrefs.getString("vehicleId","");
+            String vehicleDetails = myPrefs.getString("vehicleDetails","");
+
+            // Publish message
+            publishRating(ratingMessage(deviceId, lat, lng, timeStamp, userId, description, vehicleId, vehicleDetails));
+            Toast.makeText(getApplicationContext(), "Rating sent.", Toast.LENGTH_SHORT).show();
+        }
+    } // sendRating
 
     public boolean connected() {
         if (brokerIsConnected) {
@@ -779,18 +847,6 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Navig
             bi.fabTripAdd.show();
         }
     } // restoreFab
-
-
-    // Drawerlayout menu item clicked
-    //@Override
-    //public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-    //    // fetch the user selected value
-    //    String item = parent.getItemAtPosition(position).toString();
-    //    // create Toast with user selected value
-    //    Toast.makeText(Trip.this, "Selected Item is: \t" + item, Toast.LENGTH_LONG).show();
-    //    // set user selected value to the TextView
-//
-    //}
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
@@ -1057,7 +1113,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Navig
         }
     } // publishMessage
 
-    public byte[] alertMessage(String deviceId, String lat, String lng, String timestamp, String userId, String description) {
+    public byte[] alertMessage(String deviceId, String lat, String lng, String timestamp, String userId, String description, String vehicleId, String vehicleDetails) {
         Alert alert = Alert.newBuilder()
                 .setDeviceId(deviceId)
                 .setLat(lat)
@@ -1065,6 +1121,8 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Navig
                 .setTimestamp(timestamp)
                 .setUserId(userId)
                 .setDescription(description)
+                .setVehicleId(vehicleId)
+                .setVehicleDetails(vehicleDetails)
                 .build();
         byte message[] = alert.toByteArray();
         return message;
@@ -1093,6 +1151,45 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Navig
             e.printStackTrace();
         }
     } // publishAlert
+
+    public byte[] ratingMessage(String deviceId, String lat, String lng, String timestamp, String userId, String description, String vehicleId, String vehicleDetails) {
+        Rating rating = Rating.newBuilder()
+                .setDeviceId(deviceId)
+                .setLat(lat)
+                .setLng(lng)
+                .setTimestamp(timestamp)
+                .setUserId(userId)
+                .setDescription(description)
+                .setVehicleId(vehicleId)
+                .setVehicleDetails(vehicleDetails)
+                .build();
+        byte message[] = rating.toByteArray();
+        return message;
+    } // ratingMessage
+
+    public void publishRating(byte[] payload) {
+        try {
+            if (!client.isConnected()) {
+                client.connect();
+            }
+            MqttMessage message = new MqttMessage();
+            message.setPayload(payload);
+            message.setQos(0);
+            client.publish("ratings", message,null, new IMqttActionListener() {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+                    //
+                }
+
+                @Override
+                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                    //
+                }
+            });
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+    } // publishRating
 
     public void connectBroker() {
         try {
@@ -1182,12 +1279,14 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Navig
             mMap.setTrafficEnabled(true);
         }
 
-        // Initialize marker array
-        //mMarkerArrayList = new ArrayList<>();
-
+        // Initialize
         LatLng mmla = new LatLng(14.6091, 121.0223);
-        //mMap.addMarker(new MarkerOptions().position(mmla).title("Marker Position"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mmla, 11));
+        MarkerOptions markerOptions = new MarkerOptions().position(mmla)
+                .icon(BitmapDescriptorFactory
+                        .defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                .title("Current Position");
+        mMap.addMarker(markerOptions);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mmla, 10));
     } // onMapReady
 
     public void closeApp(){
