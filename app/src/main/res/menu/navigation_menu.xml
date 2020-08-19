@@ -33,4 +33,9 @@
                 android:title="Share" />
         </menu>
     </item>
+    <item
+        android:id="@+id/logout"
+        android:title="Logout"
+        android:icon="@drawable/ic_logout">
+    </item>
 </menu>
