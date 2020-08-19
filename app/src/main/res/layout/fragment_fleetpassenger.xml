@@ -78,42 +78,60 @@
         android:hint="User Details"
         android:inputType="textMultiLine"
         android:lines="4"
-        app:layout_constraintBottom_toTopOf="@+id/btnPassengerBoard"
         app:layout_constraintEnd_toStartOf="@id/btnScan"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txtUserId" />
 
     <Button
-        android:id="@+id/btnPassengerBoard"
-        android:layout_width="200dp"
+        android:id="@+id/btnSend"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="64dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="64dp"
-        android:layout_marginBottom="40dp"
-        android:background="@color/green"
+        android:layout_alignParentRight="true"
+        android:layout_gravity="center"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="8dp"
         android:fontFamily="@font/gothammedium_font"
-        android:text="BOARDING"
-        android:textColor="@color/white"
+        android:text="Send"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtUserDetails" />
+
+    <TextView
+        android:id="@+id/txtStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center"
+        android:hint="Status"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@id/imageCorrect"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txtUserDetails" />
 
-    <Button
-        android:id="@+id/btnPassengerAlight"
-        android:layout_width="200dp"
+    <ImageView
+        android:id="@+id/imageCorrect"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="64dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="64dp"
-        android:layout_marginBottom="40dp"
-        android:background="@color/red"
-        android:fontFamily="@font/gothammedium_font"
-        android:text="ALIGHTING"
-        android:textColor="@color/white"
+        android:layout_marginTop="16dp"
+        app:srcCompat="@drawable/sign_correct"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnPassengerBoard" />
+        app:layout_constraintTop_toBottomOf="@id/txtUserDetails" />
+
+    <ImageView
+        android:id="@+id/imageWrong"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtUserDetails"
+        app:srcCompat="@drawable/sign_wrong" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

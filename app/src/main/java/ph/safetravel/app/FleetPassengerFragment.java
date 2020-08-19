@@ -29,6 +29,7 @@ import java.util.TimeZone;
 public class FleetPassengerFragment extends Fragment {
     SharedPreferences myPrefs;
     Button closeButton;
+    Button sendButton;
     Button setFleetPassengerButton, clearFleetPassengerButton;
     ImageButton scanButton;
     String userId, userDetails;
@@ -78,42 +79,60 @@ public class FleetPassengerFragment extends Fragment {
         };
         clearFleetPassengerButton.setOnClickListener(clearfleetinfoClickListener);
 
-        // Set passenger board
-        setFleetPassengerButton = (Button) view.findViewById(R.id.btnPassengerBoard);
-        View.OnClickListener fleetinfoClickListener = new View.OnClickListener() {
+        // Send
+        sendButton = (Button) view.findViewById(R.id.btnSend);
+        View.OnClickListener sendClickListener = new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                myPrefs = getActivity().getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = myPrefs.edit();
+            public void onClick(View v) {
+                int secs = 5; // Delay in seconds
 
-                // Get info
-                userId = txtUserId.getText().toString();
-                userDetails = txtUserDetails.getText().toString();
-
-                if(userId.equals("") || userDetails.equals("")) {
-                    Toast.makeText(getContext(), "Please complete required fields.", Toast.LENGTH_SHORT).show();
-                } else {
-                    // Save to shared preferences
-                    //editor.putString("vehicleId", vehicleId);
-                    //editor.putString("vehicleDetails", vehicleDetails);
-                    //editor.apply();
-
-                    // Get datetime
-                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
-                    sdf.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
-                    String timeStamp = sdf.format(new Date());
-
-                    // Save to database
-                    //FleetHistoryDBHelper db = new FleetHistoryDBHelper(getContext());
-
-                    //FleetRecord fleetRecord = new FleetRecord(1, route, "", "", vehicleId ,vehicleDetails, timeStamp);
-                    //db.addTripRecord(fleetRecord);
-
-                    Toast.makeText(getContext(), "Passenger Info set.", Toast.LENGTH_SHORT).show();
-                }
+                Utils.delay(secs, new Utils.DelayCallback() {
+                    @Override
+                    public void afterDelay() {
+                        // Do something after delay
+                        Toast.makeText(getContext(), "Sending message", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         };
-        setFleetPassengerButton.setOnClickListener(fleetinfoClickListener);
+        sendButton.setOnClickListener(sendClickListener);
+
+        // Set passenger board
+        //setFleetPassengerButton = (Button) view.findViewById(R.id.btnPassengerBoard);
+        //View.OnClickListener fleetinfoClickListener = new View.OnClickListener() {
+        //    @Override
+        //    public void onClick(View view) {
+        //        myPrefs = getActivity().getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
+        //        SharedPreferences.Editor editor = myPrefs.edit();
+//
+        //        // Get info
+        //        userId = txtUserId.getText().toString();
+        //        userDetails = txtUserDetails.getText().toString();
+//
+        //        if(userId.equals("") || userDetails.equals("")) {
+        //            Toast.makeText(getContext(), "Please complete required fields.", Toast.LENGTH_SHORT).show();
+        //        } else {
+        //            // Save to shared preferences
+        //            //editor.putString("vehicleId", vehicleId);
+        //            //editor.putString("vehicleDetails", vehicleDetails);
+        //            //editor.apply();
+//
+        //            // Get datetime
+        //            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+        //            sdf.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
+        //            String timeStamp = sdf.format(new Date());
+//
+        //            // Save to database
+        //            //FleetHistoryDBHelper db = new FleetHistoryDBHelper(getContext());
+//
+        //            //FleetRecord fleetRecord = new FleetRecord(1, route, "", "", vehicleId ,vehicleDetails, timeStamp);
+        //            //db.addTripRecord(fleetRecord);
+//
+        //            Toast.makeText(getContext(), "Passenger Info set.", Toast.LENGTH_SHORT).show();
+        //        }
+        //    }
+        //};
+        //setFleetPassengerButton.setOnClickListener(fleetinfoClickListener);
 
         // Scan results
         txtUserDetails = (TextView) view.findViewById(R.id.txtUserDetails);
