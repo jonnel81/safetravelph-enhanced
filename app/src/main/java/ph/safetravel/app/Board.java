@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,6 +21,10 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 import com.google.android.material.navigation.NavigationView;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
 
 public class Board extends AppCompatActivity {
     SharedPreferences myPrefs;
@@ -27,6 +32,7 @@ public class Board extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private NavigationView navigationView;
+    int QRcodeWidth = 400;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -229,13 +235,33 @@ public class Board extends AppCompatActivity {
 
     } // onCreate
 
-    //@Override
-    //public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-    //    if(actionBarDrawerToggle.onOptionsItemSelected(item))
-    //        return true;
-//
-    //    return super.onOptionsItemSelected(item);
-    //}
+    private Bitmap TextToImageEncode(String Value) throws WriterException {
+        BitMatrix bitMatrix;
+        try {
+            bitMatrix = new MultiFormatWriter().encode(
+                    Value,
+                    BarcodeFormat.DATA_MATRIX.QR_CODE,
+                    QRcodeWidth, QRcodeWidth, null
+            );
+
+        } catch (IllegalArgumentException Illegalargumentexception) {
+            return null;
+        }
+        int bitMatrixWidth = bitMatrix.getWidth();
+        int bitMatrixHeight = bitMatrix.getHeight();
+        int[] pixels = new int[bitMatrixWidth * bitMatrixHeight];
+
+        for (int y = 0; y < bitMatrixHeight; y++) {
+            int offset = y * bitMatrixWidth;
+            for (int x = 0; x < bitMatrixWidth; x++) {
+                pixels[offset + x] = bitMatrix.get(x, y) ?
+                        getResources().getColor(R.color.black):getResources().getColor(R.color.white);
+            }
+        }
+        Bitmap bitmap = Bitmap.createBitmap(bitMatrixWidth, bitMatrixHeight, Bitmap.Config.ARGB_4444);
+        bitmap.setPixels(pixels, 0, 500, 0, 0, bitMatrixWidth, bitMatrixHeight);
+        return bitmap;
+    }
 
     @Override
     public void onBackPressed() {
