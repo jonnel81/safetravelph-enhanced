@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -42,9 +43,19 @@ public class QRCode extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        String qrstring = "Username:spiderman***Firstname:Peter***Lastname:Parker***Contactnumber:123-4567";
+        String encrypted = "";
+        try {
+            encrypted = AESUtils.encrypt(qrstring);
+            Log.d("Encrypt", encrypted);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
         ImageView imageQRCode = (ImageView) findViewById(R.id.imageQRCode);
         try {
-            Bitmap bitmap = encodeAsBitmap(encrypted_username);
+            Bitmap bitmap = encodeAsBitmap(encrypted);
             imageQRCode.setImageBitmap(bitmap);
         } catch (WriterException e) {
             e.printStackTrace();
