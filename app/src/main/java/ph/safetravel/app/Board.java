@@ -9,7 +9,10 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -17,6 +20,8 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
@@ -32,14 +37,13 @@ public class Board extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private NavigationView navigationView;
-    int QRcodeWidth = 400;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_board);
 
-        // Tollbar
+        // Toolbar
         toolbar = findViewById(R.id.toolbar);
         toolbar.inflateMenu(R.menu.board_menu);
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
@@ -101,6 +105,7 @@ public class Board extends AppCompatActivity {
                     case R.id.about:
                     {
                         startActivity(new Intent(Board.this, About.class));
+                        break;
                     }
                     case R.id.share:
                     {
@@ -147,16 +152,28 @@ public class Board extends AppCompatActivity {
         myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
         String username = myPrefs.getString("username", null);
 
-        // Display header values
+        // Display username on header
         View headerView = navigationView.getHeaderView(0);
         TextView navUsername =  headerView.findViewById(R.id.nav_header_textView);
+        String nav_username = username;
         // Decrypt username
         try {
             String decrypted_username = AESUtils.decrypt(username);
+            nav_username = decrypted_username;
             navUsername.setText(decrypted_username);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        // Display QR code button on header
+        ImageButton showQRCode = headerView.findViewById(R.id.nav_header_imageButtonQRCode);
+        showQRCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.closeDrawers();
+                startActivity(new Intent(Board.this, QRCode.class));
+            }
+        });
 
         // Bottom navigation
         final BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav_view);
@@ -192,9 +209,6 @@ public class Board extends AppCompatActivity {
             }
         });
 
-        // Get shared preferences
-        myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
-        username = myPrefs.getString("username", null);
 
         //View headerView = navigationView.getHeaderView(0);
         //TextView navUsername =  headerView.findViewById(R.id.nav_header_textView);
@@ -234,34 +248,6 @@ public class Board extends AppCompatActivity {
         //mWebView1.loadUrl("https://safetravel.ph/");
 
     } // onCreate
-
-    private Bitmap TextToImageEncode(String Value) throws WriterException {
-        BitMatrix bitMatrix;
-        try {
-            bitMatrix = new MultiFormatWriter().encode(
-                    Value,
-                    BarcodeFormat.DATA_MATRIX.QR_CODE,
-                    QRcodeWidth, QRcodeWidth, null
-            );
-
-        } catch (IllegalArgumentException Illegalargumentexception) {
-            return null;
-        }
-        int bitMatrixWidth = bitMatrix.getWidth();
-        int bitMatrixHeight = bitMatrix.getHeight();
-        int[] pixels = new int[bitMatrixWidth * bitMatrixHeight];
-
-        for (int y = 0; y < bitMatrixHeight; y++) {
-            int offset = y * bitMatrixWidth;
-            for (int x = 0; x < bitMatrixWidth; x++) {
-                pixels[offset + x] = bitMatrix.get(x, y) ?
-                        getResources().getColor(R.color.black):getResources().getColor(R.color.white);
-            }
-        }
-        Bitmap bitmap = Bitmap.createBitmap(bitMatrixWidth, bitMatrixHeight, Bitmap.Config.ARGB_4444);
-        bitmap.setPixels(pixels, 0, 500, 0, 0, bitMatrixWidth, bitMatrixHeight);
-        return bitmap;
-    }
 
     @Override
     public void onBackPressed() {

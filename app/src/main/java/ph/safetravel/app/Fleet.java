@@ -2,6 +2,7 @@ package ph.safetravel.app;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
@@ -9,11 +10,14 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.location.Location;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Looper;
 import android.util.Log;
 import android.view.Menu;
@@ -28,6 +32,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.facebook.FacebookSdk;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -56,6 +61,7 @@ import androidx.appcompat.widget.Toolbar;
 //import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.FileProvider;
 import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -73,11 +79,14 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -133,6 +142,8 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
         setContentView(R.layout.activity_fleet);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         //getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        FacebookSdk.sdkInitialize(getApplicationContext());
 
         final MediaPlayer mp = new MediaPlayer();
 
@@ -380,7 +391,16 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
                     }
                     case R.id.share:
                     {
-                        //Toast.makeText(Data.this, "Settings", Toast.LENGTH_SHORT).show();
+                        ////Toast.makeText(Data.this, "Settings", Toast.LENGTH_SHORT).show();
+                        //int secs = 2; // Delay in seconds
+//
+                        //Utils.delay(secs, new Utils.DelayCallback() {
+                        //    @Override
+                        //    public void afterDelay() {
+                        //        // Do something after delay
+                        //        shareScreenShot();
+                        //    }
+                        //});
                         break;
                     }
                     case R.id.logout:
@@ -625,20 +645,16 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
-
                             // Indicate 'Start Tracking'
                             startButton.setChecked(false);
-
                             // Stop tracking
                             stopLocationUpdates();
                             disconnectBroker();
                             boardButton.setOnClickListener(null);
                             alightButton.setOnClickListener(null);
                             pgsBar.setVisibility(View.INVISIBLE);
-
                             // Reset speed
                             Speed.setText("0.00");
-
                             // Save GPS tracks
                             SaveTracks saveTracks = new SaveTracks();
                             saveTracks.execute();
@@ -823,29 +839,34 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+        drawerLayout.closeDrawers();
         int id = item.getItemId();
         switch(id) {
             case R.id.profile:
             {
+                break;
                 //Toast.makeText(Fleet.this, "My Profile", Toast.LENGTH_SHORT).show();
             }
             case R.id.settings:
             {
+                break;
                 //Toast.makeText(Fleet.this, "Settings", Toast.LENGTH_SHORT).show();
             }
             case R.id.help:
             {
+                break;
                 //Toast.makeText(Fleet.this, "Help", Toast.LENGTH_SHORT).show();
             }
             case R.id.about:
             {
+                break;
                 //drawerLayout.closeDrawer(Gravity.LEFT);
                 //Intent intent = new Intent(Fleet.this, About.class);
                 //startActivity(intent);
             }
         }
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        //DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        //drawer.closeDrawer(GravityCompat.START);
         //return true;
         //this.drawerLayout.closeDrawer(GravityCompat.START);
         return true;
@@ -1280,5 +1301,69 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
                 Toast.makeText(getApplicationContext(), "Error saving tracks.", Toast.LENGTH_SHORT).show();
         }
     } // SaveTracks
+
+    public void shareScreenShot(){
+        View rootView = getWindow().getDecorView().getRootView();
+        rootView.setDrawingCacheEnabled(true);
+
+        Bitmap bitmap = Bitmap.createBitmap(rootView.getDrawingCache());
+        rootView.setDrawingCacheEnabled(false);
+
+        // create directory
+        //ContextWrapper cw = new ContextWrapper(getBaseContext());
+        //File mypath = cw.getDir("pics", Context.MODE_PRIVATE);
+        //try {
+        //    if (!mypath.exists()) {
+        //        mypath.createNewFile();
+        //        mypath.mkdir();
+        //    }
+        //} catch (IOException e) {
+        //    e.printStackTrace();
+        //}
+
+        File path = Environment.getExternalStorageDirectory();
+        File dir = new File(path + "/storage/emulated/safetravelph");
+        boolean success= true;
+        if(!dir.exists()){
+            Toast.makeText(this, "Directory does not exist, create it", Toast.LENGTH_SHORT).show();
+        }
+        if(success){
+            dir.mkdirs();
+            Toast.makeText(this, "Directory created ", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            Toast.makeText(this, "Failed to create directory", Toast.LENGTH_SHORT).show();
+        }
+
+        // Create file
+        String imagename =   Calendar.getInstance().getTime().toString()+".jpeg";
+        File filePath = new File(path, imagename);
+        File fileScreenshot = new File(String.valueOf(filePath));
+
+        FileOutputStream fileOutputStream = null;
+        try {
+            fileOutputStream = new FileOutputStream(fileScreenshot);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
+            fileOutputStream.flush();
+            fileOutputStream.close();
+            Toast.makeText(Fleet.this, "Image Save in DCN", Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Share content
+        try {
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setAction(Intent.ACTION_SEND);
+            Uri contentUri = FileProvider.getUriForFile(this, "com.your.package.fileProvider",fileScreenshot );
+            intent.setDataAndType(contentUri, "image/jpeg");
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra(Intent.EXTRA_STREAM, contentUri);
+            intent.setType("image/*");
+            startActivity(Intent.createChooser(intent,"Share Image Via"));
+        } catch (ActivityNotFoundException anfe) {
+            Toast.makeText(this, "No activity found to open this attachment.", Toast.LENGTH_LONG).show();
+        }
+    }
 
 }

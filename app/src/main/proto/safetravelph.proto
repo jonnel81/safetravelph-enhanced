@@ -62,7 +62,7 @@ message Contact {
      string vehicleDetails = 7;
      string contactId = 8;
      string contactDetails = 9;
- }
+}
 
  message Help {
      string deviceId = 1;

@@ -78,6 +78,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -514,8 +515,8 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Navig
                             disconnectBroker();
                             pgsBar.setVisibility(View.INVISIBLE);
                             // Save GPS tracks
-                            //Fleet.SaveTracks saveTracks  = new Fleet.SaveTracks();
-                            //saveTracks.execute();
+                            SaveTracks saveTracks  = new Trip.SaveTracks();
+                            saveTracks.execute();
                         }
                     });
                     builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -1367,8 +1368,11 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Navig
             sdf.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
             String timeStamp = sdf.format(new Date());
 
+            // Create file
+            String filename =  Calendar.getInstance().getTime().toString();
+            File gpxfile = new File(mypath, filename +".gpx");
             // Gpx filename, e.g. [userId]-tracks-2020-08-16 14_09_33.gpx
-            File gpxfile = new File(mypath, userId + "-tracks-" + timeStamp +".gpx");
+            //File gpxfile = new File(mypath, userId + "-tracks-" + timeStamp +".gpx");
 
             if(generateGpx(gpxfile, "tracks-" + timeStamp, routeTracks))
                 return true;

@@ -21,6 +21,7 @@
         android:layout_marginBottom="8dp"
         android:fontFamily="@font/gothammedium_font"
         android:text="Clear"
+        android:visibility="invisible"
         android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -39,15 +40,31 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/txtInstruction"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="left"
+        android:hint="Scan the Passenger QR Code for boarding."
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@id/btnScan"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnClose" />
+
     <ImageButton
         android:id="@+id/btnScan"
         android:layout_width="120dp"
         android:layout_height="120dp"
+        android:layout_marginTop="16dp"
         android:background="@drawable/ic_qrcode"
         android:text="Scan"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnClose" />
+        app:layout_constraintTop_toBottomOf="@id/txtInstruction" />
 
     <TextView
         android:id="@+id/txtUserId"
@@ -92,6 +109,7 @@
         android:layout_marginBottom="8dp"
         android:fontFamily="@font/gothammedium_font"
         android:text="Send"
+        android:visibility="invisible"
         android:textSize="14sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txtUserDetails" />
@@ -104,12 +122,12 @@
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
         android:gravity="center"
-        android:hint="Status"
-        android:visibility="invisible"
+        android:hint="Passenger captured."
+        android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@id/imageCorrect"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtUserDetails" />
+        app:layout_constraintTop_toBottomOf="@+id/txtUserDetails" />
 
     <ImageView
         android:id="@+id/imageCorrect"
@@ -117,7 +135,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         app:srcCompat="@drawable/sign_correct"
-        android:visibility="invisible"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txtUserDetails" />
