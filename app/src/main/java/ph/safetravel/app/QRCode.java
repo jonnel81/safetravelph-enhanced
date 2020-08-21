@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -35,7 +36,6 @@ public class QRCode extends AppCompatActivity {
         myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
         String encrypted_username = myPrefs.getString("username", null);
         String username = "";
-
         // Decrypt username
         try {
             username = AESUtils.decrypt(encrypted_username);
@@ -43,15 +43,30 @@ public class QRCode extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        String qrstring = "Username:spiderman***Firstname:Peter***Lastname:Parker***Contactnumber:123-4567";
+        TextView userQRCode = (TextView) findViewById(R.id.userQRCode);
+        userQRCode.setText(username);
+
+        // Generate QR code
+        username = "nctiglao";
+        String firstname = "Noriel";
+        String lastname = "Tiglao";
+        String contactnumber = "123-4567";
+
+        StringBuilder qrString = new StringBuilder();
+        qrString.append("Username:" + username);
+        qrString.append("***Firstname:" + firstname);
+        qrString.append("***Lastname:" + lastname);
+        qrString.append("***Contactnumber:" + contactnumber);
+        String forEncryption = qrString.toString();
+
+        //String qrString = "Username:nctiglao***Firstname:Noriel***Lastname:Tiglao***Contactnumber:123-4567";
         String encrypted = "";
         try {
-            encrypted = AESUtils.encrypt(qrstring);
+            encrypted = AESUtils.encrypt(forEncryption);
             Log.d("Encrypt", encrypted);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 
         ImageView imageQRCode = (ImageView) findViewById(R.id.imageQRCode);
         try {
