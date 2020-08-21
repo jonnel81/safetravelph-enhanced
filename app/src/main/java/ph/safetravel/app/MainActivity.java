@@ -17,6 +17,9 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 
 public class MainActivity extends AppCompatActivity implements AsyncResponse {
     EditText UserNameEt, PasswordEt;
@@ -70,11 +73,29 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
 
     @Override
     public void processFinish(String result) {
+        String firstname="", lastname="", role="", age="", contactnumber="", datereg="";
         // Login success
         //if (result.equals("Login success")) {
         if (!result.equals("Login failed")) {
             // Get user details
+            //Log.d("result", result);
+            try {
+                JSONObject jObj = new JSONObject(result);
+                //Log.d("json", result);
 
+                String usernameString = jObj.getString("username");
+                firstname = jObj.getString("firstname");
+                lastname = jObj.getString("lastname");
+                role = jObj.getString("role");
+                age = jObj.getString("age");
+                contactnumber = jObj.getString("contactnumber");
+                datereg = jObj.getString("datereg");
+
+            } catch (JSONException e) {
+                // JSON error
+                e.printStackTrace();
+                Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            }
 
             // Update shared preferences
             SharedPreferences.Editor editor = myPrefs.edit();
@@ -88,12 +109,16 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            //editor.putString("username", username);
-            //editor.putString("password", password);
+            editor.putString("firstname", firstname);
+            editor.putString("lastname", lastname);
+            editor.putString("role", role);
+            editor.putString("age", age);
+            editor.putString("contactnumber", contactnumber);
+            editor.putString("datereg", datereg);
 
-            // AndroidID
+            // Set AndroidId
             androidId = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-            // Alternative is UUID
+            //---Alternative is UUID
             //androidId = UUID.randomUUID().toString();
             // Encrypt androidId
             try {
@@ -102,9 +127,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
-            //editor.putString("androidId", androidId);
-            //Log.d("prefs", androidId);
             editor.apply();
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -124,6 +146,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             alertDialog.setCanceledOnTouchOutside(false);
             alertDialog.setOwnerActivity(this);
             alertDialog.show();
+
         } else {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("Wrong username/password. Please try again.");

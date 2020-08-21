@@ -32,10 +32,8 @@ import java.util.List;
 
 public class Register extends AppCompatActivity implements AsyncResponse {
     EditText firstname, lastname, age, contactnumber, username, password, retypepassword;
-    View view;
     AsyncResponse aR = Register.this;
     BackgroundWorker backgroundWorker = new BackgroundWorker(Register.this, aR);
-    Context context;
     AlertDialog.Builder builder;
     AlertDialog alertDialog;
     Spinner spinnerRole;
@@ -375,7 +373,7 @@ public class Register extends AppCompatActivity implements AsyncResponse {
                 }
             });
             androidx.appcompat.app.AlertDialog alertDialog = builder.create();
-            alertDialog.setTitle("Status");
+            alertDialog.setTitle("Register");
             alertDialog.setCancelable(false);
             alertDialog.setCanceledOnTouchOutside(false);
             alertDialog.show();
@@ -390,7 +388,7 @@ public class Register extends AppCompatActivity implements AsyncResponse {
                 }
             });
             androidx.appcompat.app.AlertDialog alertDialog = builder.create();
-            alertDialog.setTitle("Status");
+            alertDialog.setTitle("Register");
             alertDialog.setCancelable(false);
             alertDialog.setCanceledOnTouchOutside(false);
             alertDialog.show();
@@ -399,7 +397,7 @@ public class Register extends AppCompatActivity implements AsyncResponse {
                 backgroundWorker.execute(type, str_firstname, str_lastname, str_age, str_contactnumber, str_username, str_password, str_role, str_question1, str_answer1, str_question2, str_answer2, str_question3, str_answer3);
 
             }else {
-                Toast.makeText(getApplicationContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Register.this, "No Internet Connection", Toast.LENGTH_SHORT).show();
             }
         }
 
@@ -416,8 +414,8 @@ public class Register extends AppCompatActivity implements AsyncResponse {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
-                    //finish();
-                    startActivity(new Intent(view.getContext(), MainActivity.class));
+                    finish();
+                    startActivity(new Intent(Register.this, MainActivity.class));
                 }
             });
             alertDialog = builder.create();
@@ -434,12 +432,12 @@ public class Register extends AppCompatActivity implements AsyncResponse {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     dialog.dismiss();
-                    //finish();
-                    startActivity(new Intent(view.getContext(), Register.class));
+                    finish();
+                    startActivity(new Intent(Register.this, Register.class));
                 }
             });
             alertDialog = builder.create();
-            alertDialog.setTitle("Status");
+            alertDialog.setTitle("Register");
             alertDialog.setCancelable(false);
             alertDialog.setCanceledOnTouchOutside(false);
             alertDialog.setOwnerActivity(this);

@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -23,7 +25,9 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -458,6 +462,33 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Navig
             }
         });
 
+        // Get shared preferences
+        myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
+        String username = myPrefs.getString("username", "");
+
+        // Display username on header
+        View headerView = navigationView.getHeaderView(0);
+        TextView navUsername =  headerView.findViewById(R.id.nav_header_textView);
+        String nav_username = username;
+        // Decrypt username
+        try {
+            String decrypted_username = AESUtils.decrypt(username);
+            nav_username = decrypted_username;
+            navUsername.setText(decrypted_username);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Display QR code button on header
+        ImageButton showQRCode = headerView.findViewById(R.id.nav_header_imageButtonQRCode);
+        showQRCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.closeDrawers();
+                startActivity(new Intent(Trip.this, QRCode.class));
+            }
+        });
+
         // FuseLocationProviderClient
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
@@ -590,6 +621,30 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Navig
         MenuItem menuItem = menu.getItem(2);
         menuItem.setChecked(true);
 
+        // Get shared preferences
+        myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
+        String role = myPrefs.getString("role", "");
+
+        if(role.equals("Driver") || role.equals("Conductor") || role.equals("Driver-Operator")) {
+            // Disable Trip item
+            MenuItem item = menu.findItem(R.id.navigation_trip);
+            Drawable resIcon = getResources().getDrawable(R.drawable.ic_navigate);
+            resIcon.mutate().setColorFilter(Color.GRAY, PorterDuff.Mode.SRC_IN);
+            item.setEnabled(false); // any text will be automatically disabled
+            item.setIcon(resIcon);
+            item.getIcon().setAlpha(130);
+        }
+
+        if(role.equals("Commuter")) {
+            // Disable Fleet item
+            MenuItem item = menu.findItem(R.id.navigation_fleet);
+            Drawable resIcon = getResources().getDrawable(R.drawable.ic_pub);
+            resIcon.mutate().setColorFilter(Color.GRAY, PorterDuff.Mode.SRC_IN);
+            item.setEnabled(false); // any text will be automatically disabled
+            item.setIcon(resIcon);
+            item.getIcon().setAlpha(130);
+        }
+
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull final MenuItem menuItem) {
@@ -667,6 +722,32 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Navig
                                 dialog.dismiss();
                                 bottomNavigationView.setSelectedItemId(R.id.navigation_trip);
                              }
+                        });
+                        AlertDialog alertDialog = builder.create();
+                        alertDialog.setTitle("Confirm");
+                        alertDialog.setCancelable(false);
+                        alertDialog.setCanceledOnTouchOutside(false);
+                        alertDialog.show();
+                        break;
+                    }
+                    case R.id.navigation_help: {
+                        // Dialog
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Trip.this);
+                        builder.setMessage("Are you sure you want to exit Trip?");
+                        builder.setCancelable(false);
+                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                closeApp();
+                                startActivity(new Intent(Trip.this, Help.class));
+                            }
+                        });
+                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                bottomNavigationView.setSelectedItemId(R.id.navigation_trip);
+                            }
                         });
                         AlertDialog alertDialog = builder.create();
                         alertDialog.setTitle("Confirm");

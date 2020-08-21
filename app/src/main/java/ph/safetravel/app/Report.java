@@ -19,6 +19,9 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -36,6 +39,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -208,18 +212,30 @@ public class Report extends AppCompatActivity implements OnMapReadyCallback, Goo
 
         // Get shared preferences
         myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
-        String username = myPrefs.getString("username", null);
+        String username = myPrefs.getString("username", "");
 
-        // Display header values
+        // Display username on header
         View headerView = navigationView.getHeaderView(0);
         TextView navUsername =  headerView.findViewById(R.id.nav_header_textView);
+        String nav_username = username;
         // Decrypt username
         try {
             String decrypted_username = AESUtils.decrypt(username);
+            nav_username = decrypted_username;
             navUsername.setText(decrypted_username);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        // Display QR code button on header
+        ImageButton showQRCode = headerView.findViewById(R.id.nav_header_imageButtonQRCode);
+        showQRCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.closeDrawers();
+                startActivity(new Intent(Report.this, QRCode.class));
+            }
+        });
 
         // Avoid Uri issues
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
@@ -283,6 +299,30 @@ public class Report extends AppCompatActivity implements OnMapReadyCallback, Goo
         Menu menu = bottomNavigationView.getMenu();
         MenuItem menuItem = menu.getItem(1);
         menuItem.setChecked(true);
+
+        // Get shared preferences
+        myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
+        String role = myPrefs.getString("role", "");
+
+        if(role.equals("Driver") || role.equals("Conductor") || role.equals("Driver-Operator")) {
+            // Disable Trip item
+            MenuItem item = menu.findItem(R.id.navigation_trip);
+            Drawable resIcon = getResources().getDrawable(R.drawable.ic_navigate);
+            resIcon.mutate().setColorFilter(Color.GRAY, PorterDuff.Mode.SRC_IN);
+            item.setEnabled(false); // any text will be automatically disabled
+            item.setIcon(resIcon);
+            item.getIcon().setAlpha(130);
+        }
+
+        if(role.equals("Commuter")) {
+            // Disable Fleet item
+            MenuItem item = menu.findItem(R.id.navigation_fleet);
+            Drawable resIcon = getResources().getDrawable(R.drawable.ic_pub);
+            resIcon.mutate().setColorFilter(Color.GRAY, PorterDuff.Mode.SRC_IN);
+            item.setEnabled(false); // any text will be automatically disabled
+            item.setIcon(resIcon);
+            item.getIcon().setAlpha(130);
+        }
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -367,6 +407,11 @@ public class Report extends AppCompatActivity implements OnMapReadyCallback, Goo
                         alertDialog.setCancelable(false);
                         alertDialog.setCanceledOnTouchOutside(false);
                         alertDialog.show();
+                        break;
+                    }
+                    case R.id.navigation_help: {
+                        closeApp();
+                        startActivity(new Intent(Report.this, Help.class));
                         break;
                     }
                 }

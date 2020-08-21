@@ -93,7 +93,9 @@
         android:gravity="start|top"
         android:hint="Vehicle Details"
         android:inputType="textMultiLine"
-        android:lines="10"
+        android:lines="8"
+        android:textSize="14sp"
+        android:lineSpacingExtra="4dp"
         app:layout_constraintEnd_toStartOf="@id/btnScan"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txtVehicleId"/>

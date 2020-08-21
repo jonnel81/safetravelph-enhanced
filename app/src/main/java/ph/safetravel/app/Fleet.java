@@ -12,6 +12,8 @@ import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -439,6 +441,33 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
             }
         });
 
+        // Get shared preferences
+        myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
+        String username = myPrefs.getString("username", "");
+
+        // Display username on header
+        View headerView = navigationView.getHeaderView(0);
+        TextView navUsername =  headerView.findViewById(R.id.nav_header_textView);
+        String nav_username = username;
+        // Decrypt username
+        try {
+            String decrypted_username = AESUtils.decrypt(username);
+            nav_username = decrypted_username;
+            navUsername.setText(decrypted_username);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        // Display QR code button on header
+        ImageButton showQRCode = headerView.findViewById(R.id.nav_header_imageButtonQRCode);
+        showQRCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.closeDrawers();
+                startActivity(new Intent(Fleet.this, QRCode.class));
+            }
+        });
+
         // Display text values
         NumPassengers = findViewById(R.id.txtNumPass);
         NumPassengers.setText(String.valueOf(numPass));
@@ -568,19 +597,19 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
         alightButton.setOnClickListener(null);
 
         // Get shared preferences
-        myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
-        String username = myPrefs.getString("username", null);
-
-         // Display header values
-        View headerView = navigationView.getHeaderView(0);
-        TextView navUsername =  headerView.findViewById(R.id.nav_header_textView);
-        // Decrypt username
-        try {
-            String decrypted_username = AESUtils.decrypt(username);
-            navUsername.setText(decrypted_username);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        //myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
+        //String username = myPrefs.getString("username", "");
+//
+        // // Display header values
+        //View headerView = navigationView.getHeaderView(0);
+        //TextView navUsername =  headerView.findViewById(R.id.nav_header_textView);
+        //// Decrypt username
+        //try {
+        //    String decrypted_username = AESUtils.decrypt(username);
+        //    navUsername.setText(decrypted_username);
+        //} catch (Exception e) {
+        //    e.printStackTrace();
+        //}
 
         //  Sensors
         //sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -728,6 +757,30 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
         MenuItem menuItem = menu.getItem(3);
         menuItem.setChecked(true);
 
+        // Get shared preferences
+        myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
+        String role = myPrefs.getString("role", "");
+
+        if(role.equals("Driver") || role.equals("Conductor") || role.equals("Driver-Operator")) {
+            // Disable Trip item
+            MenuItem item = menu.findItem(R.id.navigation_trip);
+            Drawable resIcon = getResources().getDrawable(R.drawable.ic_navigate);
+            resIcon.mutate().setColorFilter(Color.GRAY, PorterDuff.Mode.SRC_IN);
+            item.setEnabled(false); // any text will be automatically disabled
+            item.setIcon(resIcon);
+            item.getIcon().setAlpha(130);
+        }
+
+        if(role.equals("Commuter")) {
+            // Disable Fleet item
+            MenuItem item = menu.findItem(R.id.navigation_fleet);
+            Drawable resIcon = getResources().getDrawable(R.drawable.ic_pub);
+            resIcon.mutate().setColorFilter(Color.GRAY, PorterDuff.Mode.SRC_IN);
+            item.setEnabled(false); // any text will be automatically disabled
+            item.setIcon(resIcon);
+            item.getIcon().setAlpha(130);
+        }
+
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -811,6 +864,32 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
                         break;
                     }
                     case R.id.navigation_fleet: {
+                        break;
+                    }
+                    case R.id.navigation_help: {
+                        // Dialog
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Fleet.this);
+                        builder.setMessage("Are you sure you want to exit Fleet?");
+                        builder.setCancelable(false);
+                        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                closeApp();
+                                startActivity(new Intent(Fleet.this, Help.class));
+                            }
+                        });
+                        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                bottomNavigationView.setSelectedItemId(R.id.navigation_fleet);
+                            }
+                        });
+                        AlertDialog alertDialog = builder.create();
+                        alertDialog.setTitle("Confirm");
+                        alertDialog.setCancelable(false);
+                        alertDialog.setCanceledOnTouchOutside(false);
+                        alertDialog.show();
                         break;
                     }
                 }
