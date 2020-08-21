@@ -39,13 +39,12 @@
             android:id="@+id/btnSendHelp"
             android:layout_width="0dp"
             android:layout_height="48dp"
-            android:background="@color/red"
+            android:background="@color/blue"
             android:fontFamily="@font/gothammedium_font"
             android:onClick="OnReport"
             android:text="Send Help"
             android:textColor="@color/white"
             android:textSize="14sp"
-            android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/framelayout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -69,7 +68,7 @@
                 android:layout_height="match_parent">
 
                 <CheckBox
-                    android:id="@+id/checkExposure"
+                    android:id="@+id/checkCovid19"
                     android:layout_width="300dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
@@ -86,7 +85,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <CheckBox
-                    android:id="@+id/checkAmbulance"
+                    android:id="@+id/checkMedicalEmergency"
                     android:layout_width="300dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -100,10 +99,10 @@
                     android:lineSpacingExtra="4dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/checkExposure" />
+                    app:layout_constraintTop_toBottomOf="@id/checkCovid19" />
 
                 <CheckBox
-                    android:id="@+id/checkQuarantine"
+                    android:id="@+id/checkMedicalAdvice"
                     android:layout_width="300dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -112,12 +111,12 @@
                     android:background="@drawable/edit_text_border"
                     android:drawableRight="@drawable/ic_quarantine"
                     android:fontFamily="@font/gothammedium_font"
-                    android:text="I need medical advise or information"
+                    android:text="I need medical advice or information"
                     android:textSize="14sp"
                     android:lineSpacingExtra="4dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/checkAmbulance" />
+                    app:layout_constraintTop_toBottomOf="@id/checkMedicalEmergency" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>

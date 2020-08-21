@@ -98,7 +98,7 @@ import ph.safetravel.app.databinding.ActivityFleetBinding;
 import ph.safetravel.app.protos.Vehicle;
 
 
-public class Fleet extends AppCompatActivity implements OnMapReadyCallback, NavigationView.OnNavigationItemSelectedListener  {
+public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
     SharedPreferences myPrefs;
     MqttAndroidClient client;
     MqttConnectOptions options;
@@ -137,6 +137,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
     Polyline route;
     List<LatLng> routePoints = new ArrayList<LatLng>();
     List<Location> routeTracks = new ArrayList<Location>();
+    final MediaPlayer mp = new MediaPlayer();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,9 +146,8 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         //getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+        // Facebook SDK
         FacebookSdk.sdkInitialize(getApplicationContext());
-
-        final MediaPlayer mp = new MediaPlayer();
 
         // Map Fragment
         final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -209,7 +209,6 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
                 } else{
                     bi.fabFleetAdd.hide();
                 }
-
                 // Show fragment
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
@@ -225,7 +224,6 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
                     ft.add(R.id.container_frame, fleetInfoFragment);
                     ft.show(fleetInfoFragment);
                 }
-
                 ft.commit();
             }
         });
@@ -244,7 +242,6 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
                 } else{
                     bi.fabFleetAdd.hide();
                 }
-
                 // Show fragment
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
@@ -260,7 +257,6 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
                     ft.add(R.id.container_frame, fleetContactFragment);
                     ft.show(fleetContactFragment);
                 }
-
                 ft.commit();
             }
         });
@@ -279,7 +275,6 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
                 } else{
                     bi.fabFleetAdd.hide();
                 }
-
                 // Show fragment
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
@@ -360,7 +355,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
 
         // Navigation view
         navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        //navigationView.setNavigationItemSelectedListener(this);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -449,6 +444,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
         View headerView = navigationView.getHeaderView(0);
         TextView navUsername =  headerView.findViewById(R.id.nav_header_textView);
         String nav_username = username;
+
         // Decrypt username
         try {
             String decrypted_username = AESUtils.decrypt(username);
@@ -596,21 +592,6 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
         };
         alightButton.setOnClickListener(null);
 
-        // Get shared preferences
-        //myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
-        //String username = myPrefs.getString("username", "");
-//
-        // // Display header values
-        //View headerView = navigationView.getHeaderView(0);
-        //TextView navUsername =  headerView.findViewById(R.id.nav_header_textView);
-        //// Decrypt username
-        //try {
-        //    String decrypted_username = AESUtils.decrypt(username);
-        //    navUsername.setText(decrypted_username);
-        //} catch (Exception e) {
-        //    e.printStackTrace();
-        //}
-
         //  Sensors
         //sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         // Accelerometer
@@ -674,8 +655,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
-                            // Indicate 'Start Tracking'
-                            startButton.setChecked(false);
+                            startButton.setChecked(false);  // Indicate 'Start Tracking'
                             // Stop tracking
                             stopLocationUpdates();
                             disconnectBroker();
@@ -692,8 +672,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
                     builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            // Indicate 'Stop Tracking'
-                            startButton.setChecked(true);
+                            startButton.setChecked(true); // Indicate 'Stop Tracking'
                             dialog.dismiss();
                         }
                     });
@@ -748,7 +727,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
             public void deliveryComplete(IMqttDeliveryToken token) {
                 //Log.i(TAG, "msg delivered");
             }
-        }); // mqtt client callback
+        }); // Mqtt client callback
 
         // Bottom navigation
         final BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav_view);
@@ -916,40 +895,40 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
         return true;
     }
 
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        drawerLayout.closeDrawers();
-        int id = item.getItemId();
-        switch(id) {
-            case R.id.profile:
-            {
-                break;
-                //Toast.makeText(Fleet.this, "My Profile", Toast.LENGTH_SHORT).show();
-            }
-            case R.id.settings:
-            {
-                break;
-                //Toast.makeText(Fleet.this, "Settings", Toast.LENGTH_SHORT).show();
-            }
-            case R.id.help:
-            {
-                break;
-                //Toast.makeText(Fleet.this, "Help", Toast.LENGTH_SHORT).show();
-            }
-            case R.id.about:
-            {
-                break;
-                //drawerLayout.closeDrawer(Gravity.LEFT);
-                //Intent intent = new Intent(Fleet.this, About.class);
-                //startActivity(intent);
-            }
-        }
-        //DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        //drawer.closeDrawer(GravityCompat.START);
-        //return true;
-        //this.drawerLayout.closeDrawer(GravityCompat.START);
-        return true;
-    }
+    //@Override
+    //public boolean onNavigationItemSelected(MenuItem item) {
+    //    drawerLayout.closeDrawers();
+    //    int id = item.getItemId();
+    //    switch(id) {
+    //        case R.id.profile:
+    //        {
+    //            break;
+    //            //Toast.makeText(Fleet.this, "My Profile", Toast.LENGTH_SHORT).show();
+    //        }
+    //        case R.id.settings:
+    //        {
+    //            break;
+    //            //Toast.makeText(Fleet.this, "Settings", Toast.LENGTH_SHORT).show();
+    //        }
+    //        case R.id.help:
+    //        {
+    //            break;
+    //            //Toast.makeText(Fleet.this, "Help", Toast.LENGTH_SHORT).show();
+    //        }
+    //        case R.id.about:
+    //        {
+    //            break;
+    //            //drawerLayout.closeDrawer(Gravity.LEFT);
+    //            //Intent intent = new Intent(Fleet.this, About.class);
+    //            //startActivity(intent);
+    //        }
+    //    }
+    //    //DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+    //    //drawer.closeDrawer(GravityCompat.START);
+    //    //return true;
+    //    //this.drawerLayout.closeDrawer(GravityCompat.START);
+    //    return true;
+    //}
 
     //@Override
     //public void onSensorChanged(SensorEvent sensorEvent){
@@ -1007,7 +986,6 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
                 //Log.d("Route", routePoints.toString());
 
                 if(mLastLocation != null) {
-                    // Get loc1 and loc2
                     Location prevLocation = mLastLocation;
                     Location currLocation = location;
                     distance = distance + computeDistance(prevLocation, currLocation)/1000;
@@ -1108,8 +1086,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             if (requestCode == AppConstants.GPS_REQUEST) {
-                // flag maintain before get location
-                isGPS = true;
+                isGPS = true;  // flag maintain before get location
             }
         }
     } // onActivityResult
@@ -1180,13 +1157,13 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
             token.setActionCallback(new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    Toast.makeText(getApplicationContext(),"Connected", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Fleet.this,"Connected", Toast.LENGTH_SHORT).show();
                     //vibrator.vibrate(500);
                 }
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
                     exception.printStackTrace();
-                    Toast.makeText(getApplicationContext(),"Connect Failed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Fleet.this,"Connect Failed", Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (MqttException e) {
@@ -1201,13 +1178,11 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
             token.setActionCallback(new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    Toast.makeText(getApplicationContext(),"Disconnected", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Fleet.this,"Disconnected", Toast.LENGTH_SHORT).show();
                 }
-
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
-                    Toast.makeText(getApplicationContext(),"Could Not Disconnect", Toast.LENGTH_SHORT).show();
-
+                    Toast.makeText(Fleet.this,"Could Not Disconnect", Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (MqttException e) {
@@ -1215,24 +1190,17 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback, Navi
         }
     } // disconnectBroker
 
-    //@Override
-    //public void onBackPressed() {
-
-    //} // onBackPressed
-
     @Override
     protected void onResume() {
         super.onResume();
         if (isContinue) {
             startLocationUpdates();
         }
-        //sensorManager.registerListener(acListener, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
     } // onResume
 
     @Override
     protected void onPause() {
         super.onPause();
-        //sensorManager.unregisterListener(acListener);
     } // onPause
 
     private void startLocationUpdates() {

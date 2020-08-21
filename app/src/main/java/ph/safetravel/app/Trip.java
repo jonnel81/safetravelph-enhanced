@@ -325,7 +325,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Navig
 
         // Toolbar
         toolbar = findViewById(R.id.toolbar);
-        toolbar.inflateMenu(R.menu.main_menu);
+        toolbar.inflateMenu(R.menu.trip_menu);
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
