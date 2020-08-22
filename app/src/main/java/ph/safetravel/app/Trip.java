@@ -150,7 +150,7 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Navig
         ViewAnimation.init(bi.txtFeedsCount);
 
         // Get feeds count
-        feedsCount=10;
+        feedsCount=0;
 
         // Trip Add Fab
         bi.fabTripAdd.setOnClickListener(new View.OnClickListener() {

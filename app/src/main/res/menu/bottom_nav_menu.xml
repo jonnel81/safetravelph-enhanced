@@ -3,13 +3,13 @@
 
     <item
         android:id="@+id/navigation_board"
-        android:icon="@drawable/ic_dashboard"
+        android:icon="@drawable/ic_nav_board"
         android:enabled="true"
         android:title="@string/title_board" />
 
     <item
         android:id="@+id/navigation_report"
-        android:icon="@drawable/ic_location"
+        android:icon="@drawable/ic_nav_report"
         android:enabled="true"
         android:title="@string/title_report" />
 
@@ -21,13 +21,13 @@
 
     <item
         android:id="@+id/navigation_fleet"
-        android:icon="@drawable/ic_pub"
+        android:icon="@drawable/ic_nav_bus"
         android:enabled="true"
         android:title="@string/title_fleet" />
 
     <item
         android:id="@+id/navigation_help"
-        android:icon="@drawable/ic_cross"
+        android:icon="@drawable/ic_nav_help"
         android:enabled="true"
         android:iconTint="@color/white"
         android:title="@string/title_help" />
