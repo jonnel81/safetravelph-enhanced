@@ -11,10 +11,12 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -30,6 +32,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
     String password = "";
     String androidId = "";
     View view;
+    ImageView imgPassword;
+    private boolean isShowPassword = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +44,22 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         UserNameEt = findViewById(R.id.etUserName);
         PasswordEt = findViewById(R.id.etPassword);
         view = findViewById(android.R.id.content);
+
+        imgPassword = findViewById(R.id.imagePassword);
+        imgPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isShowPassword) {
+                    PasswordEt.setTransformationMethod(new PasswordTransformationMethod());
+                    imgPassword.setImageResource(R.drawable.ic_eyeshow);
+                    isShowPassword = false;
+                }else{
+                    PasswordEt.setTransformationMethod(null);
+                    imgPassword.setImageResource(R.drawable.ic_eyehide);
+                    isShowPassword = true;
+                }
+            }
+        });
 
         myPrefs=getSharedPreferences("MYPREFS",Context.MODE_PRIVATE);
         String username = myPrefs.getString("username",null);

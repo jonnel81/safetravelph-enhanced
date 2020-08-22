@@ -13,7 +13,7 @@
 
     <EditText
         android:id="@+id/etUserName"
-        android:layout_width="0dp"
+        android:layout_width="220dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="75dp"
         android:layout_marginEnd="75dp"
@@ -30,7 +30,7 @@
 
     <EditText
         android:id="@+id/etPassword"
-        android:layout_width="0dp"
+        android:layout_width="220dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="75dp"
         android:layout_marginEnd="75dp"
@@ -44,6 +44,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etUserName" />
+
+    <ImageView
+        android:id="@+id/imagePassword"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@id/etPassword"
+        app:layout_constraintStart_toEndOf="@+id/etPassword"
+        app:srcCompat="@drawable/ic_eyeshow" />
 
     <Button
         android:id="@+id/btnLogin"
