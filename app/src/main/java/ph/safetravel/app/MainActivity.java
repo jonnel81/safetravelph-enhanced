@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         if (isConnected()) {
             backgroundWorker.execute(type, username, password);
         }else {
-            Toast.makeText(getApplicationContext(), "No Internet Connection", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "No Internet Connection", Toast.LENGTH_SHORT).show();
         }
     } // OnLogin
 
@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             } catch (JSONException e) {
                 // JSON error
                 e.printStackTrace();
-                Toast.makeText(getApplicationContext(), "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "Json error: " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
 
             // Update shared preferences
@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             editor.apply();
 
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("Welcome! Have a safe travel.");
+            builder.setMessage("Hello, " + firstname + ".  Have a safe travel!");
             builder.setCancelable(false);
             builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                 @Override
