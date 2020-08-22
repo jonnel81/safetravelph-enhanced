@@ -12,7 +12,9 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.LinkMovementMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -22,6 +24,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,6 +42,9 @@ public class Register extends AppCompatActivity implements AsyncResponse {
     Spinner spinnerRole;
     Spinner spinnerQuestion1, spinnerQuestion2, spinnerQuestion3;
     EditText answer1, answer2, answer3;
+    private boolean isShowPassword = false;
+    private boolean isShowRetypePassword = false;
+    ImageView imgPassword, imgRetypePassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +61,38 @@ public class Register extends AppCompatActivity implements AsyncResponse {
         answer1 = findViewById(R.id.etAnswer1);
         answer2 = findViewById(R.id.etAnswer2);
         answer3 = findViewById(R.id.etAnswer3);
+
+        imgPassword = findViewById(R.id.imagePassword);
+        imgPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isShowPassword) {
+                    password.setTransformationMethod(new PasswordTransformationMethod());
+                    imgPassword.setImageResource(R.drawable.ic_eyeshow);
+                    isShowPassword = false;
+                }else{
+                    password.setTransformationMethod(null);
+                    imgPassword.setImageResource(R.drawable.ic_eyehide);
+                    isShowPassword = true;
+                }
+            }
+        });
+
+        imgRetypePassword = findViewById(R.id.imageRetypePassword);
+        imgRetypePassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (isShowRetypePassword) {
+                    retypepassword.setTransformationMethod(new PasswordTransformationMethod());
+                    imgRetypePassword.setImageResource(R.drawable.ic_eyeshow);
+                    isShowRetypePassword = false;
+                }else{
+                    retypepassword.setTransformationMethod(null);
+                    imgRetypePassword.setImageResource(R.drawable.ic_eyehide);
+                    isShowRetypePassword = true;
+                }
+            }
+        });
 
         //==============================================================================
         spinnerRole = findViewById(R.id.spinnerRole);

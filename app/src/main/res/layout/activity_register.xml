@@ -70,7 +70,6 @@
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
-            android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:background="@drawable/edit_text_border"
             android:fontFamily="@font/gothammedium_font"
@@ -175,6 +174,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/etUserName" />
 
+        <ImageView
+            android:id="@+id/imagePassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@+id/etPassword"
+            app:layout_constraintBottom_toBottomOf="@id/etPassword"
+            app:srcCompat="@drawable/ic_eyeshow" />
+
         <EditText
             android:id="@+id/etRetypePassword"
             android:layout_width="180dp"
@@ -189,6 +196,14 @@
             app:layout_constraintBottom_toTopOf="@+id/txtPasswordRecovery"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/etPassword" />
+
+        <ImageView
+            android:id="@+id/imageRetypePassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@+id/etRetypePassword"
+            app:layout_constraintBottom_toBottomOf="@id/etRetypePassword"
+            app:srcCompat="@drawable/ic_eyeshow" />
 
         <TextView
             android:id="@+id/txtRegister"
@@ -329,6 +344,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/etAnswer3" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
 
