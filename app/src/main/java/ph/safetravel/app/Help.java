@@ -255,7 +255,7 @@ public class Help extends AppCompatActivity {
             public void deliveryComplete(IMqttDeliveryToken token) {
                 //Log.i(TAG, "msg delivered");
             }
-        }); // mqtt client callback
+        }); // Mqtt client callback
 
         // Bottom navigation
         final BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_nav_view);

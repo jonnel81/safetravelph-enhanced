@@ -55,6 +55,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 import com.google.android.material.navigation.NavigationView;
+import com.hsalf.smilerating.SmileRating;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -81,7 +82,6 @@ import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -96,6 +96,7 @@ import java.util.TimeZone;
 
 import ph.safetravel.app.databinding.ActivityFleetBinding;
 import ph.safetravel.app.protos.Vehicle;
+import ph.safetravel.app.protos.Boarding;
 
 
 public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
@@ -110,6 +111,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
     private LocationRequest locationRequest;
     private boolean isGPS = false;
     private boolean isContinue = false;
+    Boolean brokerIsConnected = false;
     ToggleButton startButton;
     Location mLastLocation;
     Marker mCurrLocationMarker;
@@ -160,7 +162,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
         // Floating action bar
         bi = DataBindingUtil.setContentView(this, R.layout.activity_fleet);
         ViewAnimation.init(bi.fabFleetInfo);
-        ViewAnimation.init(bi.fabFleetPassenger);
+        ViewAnimation.init(bi.fabFleetBoarding);
         ViewAnimation.init(bi.fabFleetFeeds);
         ViewAnimation.init(bi.txtFeedsCount);
 
@@ -174,7 +176,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                 isRotate = ViewAnimation.rotateFab(v, !isRotate);
                 if(isRotate){
                     ViewAnimation.showIn(bi.fabFleetInfo);
-                    ViewAnimation.showIn(bi.fabFleetPassenger);
+                    ViewAnimation.showIn(bi.fabFleetBoarding);
                     ViewAnimation.showIn(bi.fabFleetFeeds);
                     if(feedsCount!=0){
                         ViewAnimation.showIn(bi.txtFeedsCount);
@@ -186,7 +188,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                     }
                 }else{
                     ViewAnimation.showOut(bi.fabFleetInfo);
-                    ViewAnimation.showOut(bi.fabFleetPassenger);
+                    ViewAnimation.showOut(bi.fabFleetBoarding);
                     ViewAnimation.showOut(bi.fabFleetFeeds);
                     if(feedsCount!=0){
                         ViewAnimation.showOut(bi.txtFeedsCount);
@@ -203,7 +205,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                 if(isRotate){
                     bi.fabFleetAdd.hide();
                     bi.fabFleetInfo.hide();
-                    bi.fabFleetPassenger.hide();
+                    bi.fabFleetBoarding.hide();
                     bi.fabFleetFeeds.hide();
                     isRotate=true;
                 } else{
@@ -228,15 +230,15 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
             }
         });
 
-        // Fleet Contact Fab
-        bi.fabFleetPassenger.setOnClickListener(new View.OnClickListener() {
+        // Fleet Boarding Fab
+        bi.fabFleetBoarding.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Hide Fab
                 if(isRotate){
                     bi.fabFleetAdd.hide();
                     bi.fabFleetInfo.hide();
-                    bi.fabFleetPassenger.hide();
+                    bi.fabFleetBoarding.hide();
                     bi.fabFleetFeeds.hide();
                     isRotate=true;
                 } else{
@@ -246,7 +248,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
 
-                FleetPassengerFragment fleetContactFragment = new FleetPassengerFragment();
+                FleetBoardingFragment fleetContactFragment = new FleetBoardingFragment();
 
                 FrameLayout layout = (FrameLayout) findViewById(R.id.container_frame);
                 layout.setVisibility(View.VISIBLE);
@@ -269,7 +271,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                 if(isRotate){
                     bi.fabFleetAdd.hide();
                     bi.fabFleetInfo.hide();
-                    bi.fabFleetPassenger.hide();
+                    bi.fabFleetBoarding.hide();
                     bi.fabFleetFeeds.hide();
                     isRotate=true;
                 } else{
@@ -328,7 +330,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                 if(isRotate){
                     bi.fabFleetAdd.hide();
                     bi.fabFleetInfo.hide();
-                    bi.fabFleetPassenger.hide();
+                    bi.fabFleetBoarding.hide();
                     bi.fabFleetFeeds.hide();
                 } else{
                     bi.fabFleetAdd.hide();
@@ -342,7 +344,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                 if(isRotate){
                     bi.fabFleetAdd.show();
                     bi.fabFleetInfo.show();
-                    bi.fabFleetPassenger.show();
+                    bi.fabFleetBoarding.show();
                     bi.fabFleetFeeds.show();
                 } else{
                     bi.fabFleetAdd.show();
@@ -1148,7 +1150,47 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
             //Log.e(TAG, e.toString());
             e.printStackTrace();
         }
-    }
+    } // publishMessage
+
+    public byte[] boardingMessage(String deviceId, String lat, String lng, String timestamp, String userId, String vehicleId, String vehicleDetails, String commuterId, String coomuterDetails) {
+        protos.Boarding boarding = protos.Boarding.newBuilder()
+                .setDeviceId(deviceId)
+                .setLat(lat)
+                .setLng(lng)
+                .setTimestamp(timestamp)
+                .setUserId(userId)
+                .setVehicleId(vehicleId)
+                .setVehicleDetails(vehicleDetails)
+                .setCommuterId(commuterId)
+                .setCommuterDetails(coomuterDetails)
+                .build();
+        byte message[] = boarding.toByteArray();
+        return message;
+    } // boardingMessage
+
+    public void publishBoarding(byte[] payload) {
+        try {
+            if (!client.isConnected()) {
+                client.connect();
+            }
+            MqttMessage message = new MqttMessage();
+            message.setPayload(payload);
+            message.setQos(0);
+            client.publish("boardings", message,null, new IMqttActionListener() {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+                    //
+                }
+
+                @Override
+                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                    //
+                }
+            });
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+    } // publishBoarding
 
     public void connectBroker() {
         // Connect to Mqtt broker
@@ -1158,12 +1200,14 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     Toast.makeText(Fleet.this,"Connected", Toast.LENGTH_SHORT).show();
+                    brokerIsConnected = true;
                     //vibrator.vibrate(500);
                 }
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
                     exception.printStackTrace();
                     Toast.makeText(Fleet.this,"Connect Failed", Toast.LENGTH_SHORT).show();
+                    brokerIsConnected = false;
                 }
             });
         } catch (MqttException e) {
@@ -1179,10 +1223,12 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
                     Toast.makeText(Fleet.this,"Disconnected", Toast.LENGTH_SHORT).show();
+                    brokerIsConnected = false;
                 }
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
                     Toast.makeText(Fleet.this,"Could Not Disconnect", Toast.LENGTH_SHORT).show();
+                    brokerIsConnected = true;
                 }
             });
         } catch (MqttException e) {
@@ -1252,12 +1298,65 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
         this.finish();
     } // closeApp
 
+    // Send boarding from fleet boarding fragment
+    public void sendBoarding() {
+
+        TextView txtCommuterId = findViewById(R.id.txtCommuterId);
+        TextView txtCommuterDetails = findViewById(R.id.txtCommuterDetails);
+
+        String commuterId = txtCommuterId.getText().toString();
+        String commuterDetails = txtCommuterDetails.getText().toString();
+
+        if (mLastLocation != null) {
+            String lat = String.valueOf(mLastLocation.getLatitude());
+            String lng = String.valueOf(mLastLocation.getLongitude());
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+            sdf.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
+            String timeStamp = sdf.format(new Date());
+
+            // Get shared preferences
+            myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
+            String username = myPrefs.getString("username","");
+            String userId = "";
+            try {
+                String decrypted_username = AESUtils.decrypt(username);
+                userId = decrypted_username;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            String androidId = myPrefs.getString("androidId","");
+            String deviceId = "";
+            try {
+                String decrypted_androidId = AESUtils.decrypt(androidId);
+                deviceId = decrypted_androidId;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            String vehicleId = myPrefs.getString("vehicleId","");
+            String vehicleDetails = myPrefs.getString("vehicleDetails","");
+
+            // Publish message
+            publishBoarding(boardingMessage(deviceId, lat, lng, timeStamp, userId, vehicleId, vehicleDetails, commuterId, commuterDetails));
+            Toast.makeText(Fleet.this, "Boarding sent.", Toast.LENGTH_SHORT).show();
+        }
+    } // sendRating
+
+    public boolean connected() {
+        if (brokerIsConnected) {
+            return true;
+        } else {
+            return false;
+        }
+    } // connected
+
     public void restoreFleetFab() {
         // Show Fab
         if(isRotate){
             bi.fabFleetAdd.show();
             bi.fabFleetInfo.show();
-            bi.fabFleetPassenger.show();
+            bi.fabFleetBoarding.show();
             bi.fabFleetFeeds.show();
         } else{
             bi.fabFleetAdd.show();

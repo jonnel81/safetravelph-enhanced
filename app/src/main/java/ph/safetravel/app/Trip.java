@@ -1279,14 +1279,14 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Navig
             token.setActionCallback(new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    Toast.makeText(getApplicationContext(),"Connected", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Trip.this,"Connected", Toast.LENGTH_SHORT).show();
                     brokerIsConnected = true;
                     //vibrator.vibrate(500);
                 }
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
                     exception.printStackTrace();
-                    Toast.makeText(getApplicationContext(),"Connect Failed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Trip.this,"Connect Failed", Toast.LENGTH_SHORT).show();
                     brokerIsConnected = false;
                 }
             });
@@ -1301,14 +1301,14 @@ public class Trip extends AppCompatActivity implements OnMapReadyCallback, Navig
             token.setActionCallback(new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    Toast.makeText(getApplicationContext(),"Disconnected", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Trip.this,"Disconnected", Toast.LENGTH_SHORT).show();
                     brokerIsConnected = false;
                 }
 
                 @Override
                 public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
                     exception.printStackTrace();
-                    Toast.makeText(getApplicationContext(),"Could Not Disconnect", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Trip.this,"Could Not Disconnect", Toast.LENGTH_SHORT).show();
                     brokerIsConnected = true;
                 }
             });

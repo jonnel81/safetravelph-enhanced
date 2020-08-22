@@ -52,7 +52,7 @@ message Rating {
     string vehicleDetails = 8;
 }
 
-message Contact {
+message Boarding {
      string deviceId = 1;
      string lat = 2;
      string lng = 3;
@@ -60,8 +60,8 @@ message Contact {
      string userId = 5;
      string vehicleId = 6;
      string vehicleDetails = 7;
-     string contactId = 8;
-     string contactDetails = 9;
+     string commuterId = 8;
+     string commuterDetails = 9;
 }
 
  message Help {

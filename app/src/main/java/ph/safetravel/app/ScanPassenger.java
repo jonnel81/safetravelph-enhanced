@@ -37,15 +37,22 @@ public class ScanPassenger extends AppCompatActivity implements ZXingScannerView
     public void handleResult(Result rawResult) {
         // Do something with the result here
 
-        FleetPassengerFragment.txtUserDetails.setText(rawResult.getText());
+        // Decrypt the result
+        String decrypted_result = "";
+        try {
+            decrypted_result = AESUtils.decrypt(rawResult.getText());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        FleetBoardingFragment.txtCommuterDetails.setText(decrypted_result);
 
         // Extract User Id
-        String str = rawResult.getText();
+        String str = decrypted_result;
         Pattern pattern = Pattern.compile("Username:(.*?)\\*\\*\\*");
         Matcher matcher = pattern.matcher(str);
         while (matcher.find()) {
-            FleetPassengerFragment.txtUserId.setText(matcher.group(1));
-            //Log.d("Veh Id", matcher.group(1));
+            FleetBoardingFragment.txtCommuterId.setText(matcher.group(1));
         }
         onBackPressed();
     }

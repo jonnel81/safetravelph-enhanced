@@ -67,7 +67,7 @@
         app:layout_constraintTop_toBottomOf="@id/txtInstruction" />
 
     <TextView
-        android:id="@+id/txtUserId"
+        android:id="@+id/txtCommuterId"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -82,7 +82,7 @@
         app:layout_constraintTop_toBottomOf="@id/btnScan" />
 
     <TextView
-        android:id="@+id/txtUserDetails"
+        android:id="@+id/txtCommuterDetails"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -94,10 +94,10 @@
         android:gravity="start|top"
         android:hint="User Details"
         android:inputType="textMultiLine"
-        android:lines="4"
+        android:lines="6"
         app:layout_constraintEnd_toStartOf="@id/btnScan"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtUserId" />
+        app:layout_constraintTop_toBottomOf="@id/txtCommuterId" />
 
     <Button
         android:id="@+id/btnSend"
@@ -106,31 +106,30 @@
         android:layout_alignParentRight="true"
         android:layout_gravity="center"
         android:layout_marginStart="16dp"
-        android:layout_marginBottom="8dp"
         android:fontFamily="@font/gothammedium_font"
         android:text="Send"
-        android:visibility="invisible"
         android:textSize="14sp"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtUserDetails" />
+        app:layout_constraintTop_toBottomOf="@id/txtCommuterDetails" />
 
     <TextView
-        android:id="@+id/txtStatus"
+        android:id="@+id/txtBoardingStatus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
         android:gravity="center"
-        android:hint="Passenger captured."
+        android:hint="Boarding status."
         android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@id/imageCorrect"
+        app:layout_constraintBottom_toTopOf="@id/imageBoardingStatus"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtUserDetails" />
+        app:layout_constraintTop_toBottomOf="@+id/txtCommuterDetails" />
 
     <ImageView
-        android:id="@+id/imageCorrect"
+        android:id="@+id/imageBoardingStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -138,18 +137,7 @@
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtUserDetails" />
-
-    <ImageView
-        android:id="@+id/imageWrong"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtUserDetails"
-        app:srcCompat="@drawable/sign_wrong" />
+        app:layout_constraintTop_toBottomOf="@id/txtCommuterDetails" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>
