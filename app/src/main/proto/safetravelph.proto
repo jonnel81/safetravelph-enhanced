@@ -60,8 +60,8 @@ message Boarding {
      string userId = 5;
      string vehicleId = 6;
      string vehicleDetails = 7;
-     string commuterId = 8;
-     string commuterDetails = 9;
+     string passengerId = 8;
+     string passengerDetails = 9;
 }
 
  message Help {

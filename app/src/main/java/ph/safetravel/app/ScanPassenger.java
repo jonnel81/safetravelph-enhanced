@@ -45,14 +45,15 @@ public class ScanPassenger extends AppCompatActivity implements ZXingScannerView
             e.printStackTrace();
         }
 
-        FleetBoardingFragment.txtCommuterDetails.setText(decrypted_result);
+        // Extract CommuterDetails
+        FleetBoardingFragment.txtPassengerDetails.setText(decrypted_result);
 
-        // Extract User Id
+        // Extract CommuterId
         String str = decrypted_result;
         Pattern pattern = Pattern.compile("Username:(.*?)\\*\\*\\*");
         Matcher matcher = pattern.matcher(str);
         while (matcher.find()) {
-            FleetBoardingFragment.txtCommuterId.setText(matcher.group(1));
+            FleetBoardingFragment.txtPassengerId.setText(matcher.group(1));
         }
         onBackPressed();
     }

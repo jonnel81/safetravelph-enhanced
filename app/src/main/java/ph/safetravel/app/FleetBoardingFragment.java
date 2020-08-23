@@ -19,14 +19,12 @@ import androidx.fragment.app.Fragment;
 
 
 public class FleetBoardingFragment extends Fragment {
-    SharedPreferences myPrefs;
     Button closeButton;
-    Button sendButton;
     ImageView imageBoardingStatus;
     ImageButton scanButton;
     TextView txtBoardingStatus;
-    public static TextView txtCommuterDetails;
-    public static TextView txtCommuterId;
+    public static TextView txtPassengerDetails;
+    public static TextView txtPassengerId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
@@ -40,8 +38,8 @@ public class FleetBoardingFragment extends Fragment {
         txtBoardingStatus = (TextView) view.findViewById(R.id.txtBoardingStatus);
         txtBoardingStatus.setVisibility(View.INVISIBLE);
 
-        txtCommuterId = (TextView) view.findViewById(R.id.txtCommuterId);
-        txtCommuterDetails = (TextView) view.findViewById(R.id.txtCommuterDetails);
+        txtPassengerId = (TextView) view.findViewById(R.id.txtPassengerId);
+        txtPassengerDetails = (TextView) view.findViewById(R.id.txtPassengerDetails);
 
         // Scan button
         //sendButton = (Button) view.findViewById(R.id.btnSend);
@@ -68,9 +66,13 @@ public class FleetBoardingFragment extends Fragment {
         View.OnClickListener scanClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getContext(), ScanPassenger.class));
-                int secs = 3; // Delay in seconds
+                //imageBoardingStatus.setVisibility(View.INVISIBLE);
+                //txtBoardingStatus.setVisibility(View.INVISIBLE);
+                txtPassengerId.setText("");
+                txtPassengerDetails.setText("");
 
+                startActivity(new Intent(getContext(), ScanPassenger.class));
+                int secs = 2; // Delay in seconds
                 Utils.delay(secs, new Utils.DelayCallback() {
                     @Override
                     public void afterDelay() {
@@ -78,13 +80,12 @@ public class FleetBoardingFragment extends Fragment {
                         // Check if broker is connected
                         if(((Fleet) getActivity()).connected()) {
                             ((Fleet) getActivity()).sendBoarding();
-                            //Toast.makeText(getContext(), "Sending message", Toast.LENGTH_SHORT).show();
-                            //imageBoardingStatus.setVisibility(View.VISIBLE);
-                            //imageBoardingStatus.setImageResource(R.drawable.sign_correct);
                         }
                         // Clear screen
-                        txtCommuterId.setText("");
-                        txtCommuterDetails.setText("");
+                        txtPassengerId.setText("");
+                        txtPassengerDetails.setText("");
+                        //imageBoardingStatus.setVisibility(View.INVISIBLE);
+                        //txtBoardingStatus.setVisibility(View.INVISIBLE);
                     }
                 });
             }

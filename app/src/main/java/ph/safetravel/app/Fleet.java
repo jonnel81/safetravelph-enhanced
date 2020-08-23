@@ -29,6 +29,7 @@ import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -1152,7 +1153,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
         }
     } // publishMessage
 
-    public byte[] boardingMessage(String deviceId, String lat, String lng, String timestamp, String userId, String vehicleId, String vehicleDetails, String commuterId, String coomuterDetails) {
+    public byte[] boardingMessage(String deviceId, String lat, String lng, String timestamp, String userId, String vehicleId, String vehicleDetails, String passengerId, String passengerDetails) {
         protos.Boarding boarding = protos.Boarding.newBuilder()
                 .setDeviceId(deviceId)
                 .setLat(lat)
@@ -1161,8 +1162,8 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                 .setUserId(userId)
                 .setVehicleId(vehicleId)
                 .setVehicleDetails(vehicleDetails)
-                .setCommuterId(commuterId)
-                .setCommuterDetails(coomuterDetails)
+                .setPassengerId(passengerId)
+                .setPassengerDetails(passengerDetails)
                 .build();
         byte message[] = boarding.toByteArray();
         return message;
@@ -1301,11 +1302,13 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
     // Send boarding from fleet boarding fragment
     public void sendBoarding() {
 
-        TextView txtCommuterId = findViewById(R.id.txtCommuterId);
-        TextView txtCommuterDetails = findViewById(R.id.txtCommuterDetails);
+        TextView txtPassengerId = findViewById(R.id.txtPassengerId);
+        TextView txtPassengerDetails = findViewById(R.id.txtPassengerDetails);
+        String commuterId = txtPassengerId.getText().toString();
+        String commuterDetails = txtPassengerDetails.getText().toString();
 
-        String commuterId = txtCommuterId.getText().toString();
-        String commuterDetails = txtCommuterDetails.getText().toString();
+        ImageView imageBoardingStatus = findViewById(R.id.imageBoardingStatus);
+        TextView txtBoardingStatus = findViewById(R.id.txtBoardingStatus);
 
         if (mLastLocation != null) {
             String lat = String.valueOf(mLastLocation.getLatitude());
@@ -1337,9 +1340,24 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
             String vehicleId = myPrefs.getString("vehicleId","");
             String vehicleDetails = myPrefs.getString("vehicleDetails","");
 
-            // Publish message
-            publishBoarding(boardingMessage(deviceId, lat, lng, timeStamp, userId, vehicleId, vehicleDetails, commuterId, commuterDetails));
-            Toast.makeText(Fleet.this, "Boarding sent.", Toast.LENGTH_SHORT).show();
+            if(!vehicleId.equals("") && !vehicleDetails.equals("") && !commuterId.equals("") && !commuterDetails.equals("")) {
+                // Publish message
+                publishBoarding(boardingMessage(deviceId, lat, lng, timeStamp, userId, vehicleId, vehicleDetails, commuterId, commuterDetails));
+                Toast.makeText(Fleet.this, "Boarding sent.", Toast.LENGTH_SHORT).show();
+                imageBoardingStatus.setVisibility(View.VISIBLE);
+                imageBoardingStatus.setImageResource(R.drawable.sign_correct);
+                txtBoardingStatus.setVisibility(View.VISIBLE);
+                txtBoardingStatus.setText("Boarding successful.");
+                numPass = numPass + 1;
+                NumPassengers.setText(String.valueOf(numPass));
+            } else {
+                Toast.makeText(Fleet.this, "Boarding failed.", Toast.LENGTH_SHORT).show();
+                imageBoardingStatus.setVisibility(View.VISIBLE);
+                imageBoardingStatus.setImageResource(R.drawable.sign_wrong);
+                txtBoardingStatus.setVisibility(View.VISIBLE);
+                txtBoardingStatus.setText("Boarding failed.");
+            }
+
         }
     } // sendRating
 

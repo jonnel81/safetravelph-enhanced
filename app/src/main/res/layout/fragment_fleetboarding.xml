@@ -48,7 +48,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:gravity="left"
-        android:hint="Scan the Passenger QR Code for boarding."
+        android:hint="Scan the Passenger QR Code before boarding."
         android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@id/btnScan"
         app:layout_constraintEnd_toEndOf="parent"
@@ -67,7 +67,7 @@
         app:layout_constraintTop_toBottomOf="@id/txtInstruction" />
 
     <TextView
-        android:id="@+id/txtCommuterId"
+        android:id="@+id/txtPassengerId"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -75,14 +75,14 @@
         android:layout_marginEnd="16dp"
         android:background="@drawable/edit_text_border"
         android:fontFamily="@font/gothammedium_font"
-        android:hint="User Id"
-        app:layout_constraintBottom_toTopOf="@+id/txtUserDetails"
+        android:hint="Passenger Id"
+        app:layout_constraintBottom_toTopOf="@+id/txtPassengerDetails"
         app:layout_constraintEnd_toStartOf="@id/btnScan"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btnScan" />
 
     <TextView
-        android:id="@+id/txtCommuterDetails"
+        android:id="@+id/txtPassengerDetails"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -92,12 +92,12 @@
         android:background="@drawable/edit_text_border"
         android:fontFamily="@font/gothammedium_font"
         android:gravity="start|top"
-        android:hint="User Details"
+        android:hint="Passenger Details"
         android:inputType="textMultiLine"
         android:lines="6"
         app:layout_constraintEnd_toStartOf="@id/btnScan"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtCommuterId" />
+        app:layout_constraintTop_toBottomOf="@id/txtPassengerId" />
 
     <Button
         android:id="@+id/btnSend"
@@ -111,7 +111,7 @@
         android:textSize="14sp"
         android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtCommuterDetails" />
+        app:layout_constraintTop_toBottomOf="@id/txtPassengerDetails" />
 
     <TextView
         android:id="@+id/txtBoardingStatus"
@@ -126,7 +126,7 @@
         app:layout_constraintBottom_toTopOf="@id/imageBoardingStatus"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtCommuterDetails" />
+        app:layout_constraintTop_toBottomOf="@+id/txtPassengerDetails" />
 
     <ImageView
         android:id="@+id/imageBoardingStatus"
@@ -137,7 +137,7 @@
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtCommuterDetails" />
+        app:layout_constraintTop_toBottomOf="@id/txtPassengerDetails" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>
