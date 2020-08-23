@@ -35,7 +35,7 @@
         android:layout_marginBottom="8dp"
         android:fontFamily="@font/gothammedium_font"
         android:gravity="center"
-        android:hint="PASSENGER BOARDING CHECK"
+        android:hint="PASSENGER ALIGHTING CHECK"
         android:textColorHint="@color/blue"
         android:textSize="14sp"
         android:visibility="visible"
@@ -52,15 +52,15 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:gravity="left"
-        android:hint="Scan the Passenger QR Code before boarding."
+        android:hint="Scan the Passenger QR Code before alighting."
         android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@id/btnScanBoardingPassenger"
+        app:layout_constraintBottom_toTopOf="@id/btnScanAlightingPassenger"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/txtHeader" />
 
     <ImageButton
-        android:id="@+id/btnScanBoardingPassenger"
+        android:id="@+id/btnScanAlightingPassenger"
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:background="@drawable/ic_qrcode"
@@ -70,7 +70,7 @@
         app:layout_constraintTop_toBottomOf="@id/txtInstruction" />
 
     <TextView
-        android:id="@+id/txtBoardingPassengerId"
+        android:id="@+id/txtAlightingPassengerId"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -80,12 +80,11 @@
         android:fontFamily="@font/gothammedium_font"
         android:hint="Passenger Id"
         app:layout_constraintBottom_toTopOf="@+id/txtPassengerDetails"
-        app:layout_constraintEnd_toStartOf="@id/btnScanBoardingPassenger"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/btnScanBoardingPassenger" />
+        app:layout_constraintTop_toBottomOf="@id/btnScanAlightingPassenger" />
 
     <TextView
-        android:id="@+id/txtBoardingPassengerDetails"
+        android:id="@+id/txtAlightingPassengerDetails"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -98,27 +97,27 @@
         android:hint="Passenger Details"
         android:inputType="textMultiLine"
         android:lines="6"
-        app:layout_constraintEnd_toStartOf="@id/btnScanBoardingPassenger"
+        app:layout_constraintEnd_toStartOf="@id/btnScanAlightingPassenger"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtBoardingPassengerId" />
+        app:layout_constraintTop_toBottomOf="@id/txtAlightingPassengerId" />
 
     <TextView
-        android:id="@+id/txtBoardingStatus"
+        android:id="@+id/txtAlightingStatus"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
         android:gravity="center"
-        android:hint="Boarding status."
+        android:hint="Aligthing status."
         android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@id/imageBoardingStatus"
+        app:layout_constraintBottom_toTopOf="@id/imageAlightingStatus"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtBoardingPassengerDetails" />
+        app:layout_constraintTop_toBottomOf="@+id/txtAlightingPassengerDetails" />
 
     <ImageView
-        android:id="@+id/imageBoardingStatus"
+        android:id="@+id/imageAlightingStatus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -126,7 +125,7 @@
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtBoardingPassengerDetails" />
+        app:layout_constraintTop_toBottomOf="@id/txtAlightingPassengerDetails" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

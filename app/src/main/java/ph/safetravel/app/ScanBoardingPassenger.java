@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 
 import me.dm7.barcodescanner.zxing.ZXingScannerView;
 
-public class ScanPassenger extends AppCompatActivity implements ZXingScannerView.ResultHandler {
+public class ScanBoardingPassenger extends AppCompatActivity implements ZXingScannerView.ResultHandler {
     private ZXingScannerView mScannerView;
 
     @Override
@@ -45,15 +45,15 @@ public class ScanPassenger extends AppCompatActivity implements ZXingScannerView
             e.printStackTrace();
         }
 
-        // Extract CommuterDetails
-        FleetBoardingFragment.txtPassengerDetails.setText(decrypted_result);
+        // Extract Boarding Passenger Details
+        FleetBoardingFragment.txtBoardingPassengerDetails.setText(decrypted_result);
 
-        // Extract CommuterId
+        // Extract Boarding Passenger Id
         String str = decrypted_result;
         Pattern pattern = Pattern.compile("Username:(.*?)\\*\\*\\*");
         Matcher matcher = pattern.matcher(str);
         while (matcher.find()) {
-            FleetBoardingFragment.txtPassengerId.setText(matcher.group(1));
+            FleetBoardingFragment.txtBoardingPassengerId.setText(matcher.group(1));
         }
         onBackPressed();
     }

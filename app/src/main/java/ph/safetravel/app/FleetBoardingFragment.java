@@ -1,10 +1,6 @@
 package ph.safetravel.app;
 
-import android.app.AlertDialog;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +9,6 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
@@ -21,10 +16,10 @@ import androidx.fragment.app.Fragment;
 public class FleetBoardingFragment extends Fragment {
     Button closeButton;
     ImageView imageBoardingStatus;
-    ImageButton scanButton;
+    ImageButton scanButtonBoardingPassenger;
     TextView txtBoardingStatus;
-    public static TextView txtPassengerDetails;
-    public static TextView txtPassengerId;
+    public static TextView txtBoardingPassengerDetails;
+    public static TextView txtBoardingPassengerId;
 
     @Override
     public View onCreateView(LayoutInflater inflater, final ViewGroup container,
@@ -38,8 +33,8 @@ public class FleetBoardingFragment extends Fragment {
         txtBoardingStatus = (TextView) view.findViewById(R.id.txtBoardingStatus);
         txtBoardingStatus.setVisibility(View.INVISIBLE);
 
-        txtPassengerId = (TextView) view.findViewById(R.id.txtPassengerId);
-        txtPassengerDetails = (TextView) view.findViewById(R.id.txtPassengerDetails);
+        txtBoardingPassengerId = (TextView) view.findViewById(R.id.txtBoardingPassengerId);
+        txtBoardingPassengerDetails = (TextView) view.findViewById(R.id.txtBoardingPassengerDetails);
 
         // Scan button
         //sendButton = (Button) view.findViewById(R.id.btnSend);
@@ -62,35 +57,36 @@ public class FleetBoardingFragment extends Fragment {
         //sendButton.setOnClickListener(sendClickListener);
 
         // Scan results
-        scanButton = (ImageButton) view.findViewById(R.id.btnScan);
+        scanButtonBoardingPassenger = (ImageButton) view.findViewById(R.id.btnScanBoardingPassenger);
         View.OnClickListener scanClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //imageBoardingStatus.setVisibility(View.INVISIBLE);
-                //txtBoardingStatus.setVisibility(View.INVISIBLE);
-                txtPassengerId.setText("");
-                txtPassengerDetails.setText("");
+                imageBoardingStatus.setVisibility(View.INVISIBLE);
+                txtBoardingStatus.setVisibility(View.INVISIBLE);
+                //txtBoardingPassengerId.setText("");
+                //txtBoardingPassengerDetails.setText("");
 
-                startActivity(new Intent(getContext(), ScanPassenger.class));
-                int secs = 2; // Delay in seconds
+                startActivity(new Intent(getContext(), ScanBoardingPassenger.class));
+                //if (((Fleet) getActivity()).connected()) {
+                //    ((Fleet) getActivity()).sendBoarding();
+                //}
+
+                int secs = 4; // Delay in seconds
                 Utils.delay(secs, new Utils.DelayCallback() {
                     @Override
                     public void afterDelay() {
                         // Do something after delay
                         // Check if broker is connected
-                        if(((Fleet) getActivity()).connected()) {
+                        if (((Fleet) getActivity()).connected()) {
                             ((Fleet) getActivity()).sendBoarding();
                         }
-                        // Clear screen
-                        txtPassengerId.setText("");
-                        txtPassengerDetails.setText("");
-                        //imageBoardingStatus.setVisibility(View.INVISIBLE);
-                        //txtBoardingStatus.setVisibility(View.INVISIBLE);
+                        txtBoardingPassengerId.setText("");
+                        txtBoardingPassengerDetails.setText("");
                     }
                 });
             }
         };
-        scanButton.setOnClickListener(scanClickListener);
+        scanButtonBoardingPassenger.setOnClickListener(scanClickListener);
 
         // Close button
         closeButton = (Button) view.findViewById(R.id.btnClose);

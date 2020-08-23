@@ -62,259 +62,296 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="0dp"
-        android:layout_marginBottom="180dp"
+        android:layout_marginBottom="190dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/progressBarFleet">
+        app:layout_constraintTop_toBottomOf="@+id/progressBarFleet" />
 
-        <FrameLayout
-            android:id="@+id/container_frame"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginBottom="60dp"
-            android:background="@color/white"
-            android:visibility="invisible" />
-    </FrameLayout>
+
+   <TextView
+       android:id="@+id/txtBoard"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_marginStart="48dp"
+       android:text="Boarding"
+       android:textColor="@color/blue"
+       android:textSize="12sp"
+       android:textStyle="bold"
+       app:layout_constraintBottom_toTopOf="@+id/btnBoard"
+       app:layout_constraintEnd_toStartOf="@+id/txtPass"
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintTop_toBottomOf="@+id/mapFragFleet" />
+
+   <TextView
+       android:id="@+id/txtPass"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:text="Onboard"
+       android:textColor="@color/blue"
+       android:textSize="12sp"
+       android:textStyle="bold"
+       app:layout_constraintBottom_toTopOf="@+id/txtNumPass"
+       app:layout_constraintEnd_toStartOf="@+id/txtAlight"
+       app:layout_constraintStart_toEndOf="@id/txtBoard"
+       app:layout_constraintTop_toBottomOf="@+id/mapFragFleet" />
+
+   <TextView
+       android:id="@+id/txtAlight"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_marginEnd="48dp"
+       android:text="Alighting"
+       android:textColor="@color/blue"
+       android:textSize="12sp"
+       android:textStyle="bold"
+       app:layout_constraintBottom_toTopOf="@id/btnAlight"
+       app:layout_constraintEnd_toEndOf="parent"
+       app:layout_constraintStart_toEndOf="@+id/txtPass"
+       app:layout_constraintTop_toBottomOf="@+id/mapFragFleet" />
+
+   <ImageButton
+       android:id="@+id/btnBoard"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_marginStart="48dp"
+       android:layout_marginBottom="90dp"
+       android:background="@drawable/ic_plus"
+       android:text="Board"
+       android:visibility="visible"
+       app:layout_constraintBottom_toBottomOf="parent"
+       app:layout_constraintEnd_toStartOf="@id/txtNumPass"
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintTop_toBottomOf="@id/mapFragFleet" />
+
+   <ImageButton
+       android:id="@+id/btnAlight"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_marginEnd="48dp"
+       android:layout_marginBottom="90dp"
+       android:background="@drawable/ic_minus"
+       android:text="Alight"
+       android:visibility="visible"
+       app:layout_constraintBottom_toBottomOf="parent"
+       app:layout_constraintEnd_toEndOf="parent"
+       app:layout_constraintStart_toEndOf="@id/txtNumPass"
+       app:layout_constraintTop_toBottomOf="@id/mapFragFleet" />
+
+   <TextView
+       android:id="@+id/txtNumPass"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_marginBottom="100dp"
+       android:background="@drawable/border"
+       android:text="#"
+       android:textSize="24sp"
+       android:textStyle="bold"
+       app:layout_constraintBottom_toBottomOf="parent"
+       app:layout_constraintEnd_toStartOf="@+id/btnAlight"
+       app:layout_constraintStart_toEndOf="@+id/btnBoard"
+       app:layout_constraintTop_toBottomOf="@+id/mapFragFleet" />
 
     <TextView
-        android:id="@+id/txtBoard"
+        android:id="@+id/txtNumBoard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="48dp"
-        android:text="Boarding"
-        android:textColor="@color/blue"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/btnBoard"
-        app:layout_constraintEnd_toStartOf="@+id/txtPass"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/mapFragFleet" />
-
-    <TextView
-        android:id="@+id/txtPass"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Total Pax"
-        android:textColor="@color/blue"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/txtNumPass"
-        app:layout_constraintEnd_toStartOf="@+id/txtAlight"
-        app:layout_constraintStart_toEndOf="@id/txtBoard"
-        app:layout_constraintTop_toBottomOf="@+id/mapFragFleet" />
-
-    <TextView
-        android:id="@+id/txtAlight"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="48dp"
-        android:text="Alighting"
-        android:textColor="@color/blue"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/btnAlight"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/txtPass"
-        app:layout_constraintTop_toBottomOf="@+id/mapFragFleet" />
-
-    <ImageButton
-        android:id="@+id/btnBoard"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="48dp"
-        android:layout_marginBottom="90dp"
-        android:background="@drawable/ic_plus"
-        android:text="Board"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/txtNumPass"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/mapFragFleet" />
-
-    <ImageButton
-        android:id="@+id/btnAlight"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="48dp"
-        android:layout_marginBottom="90dp"
-        android:background="@drawable/ic_minus"
-        android:text="Alight"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/txtNumPass"
-        app:layout_constraintTop_toBottomOf="@id/mapFragFleet" />
-
-    <TextView
-        android:id="@+id/txtNumPass"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="90dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginBottom="100dp"
         android:background="@drawable/border"
         android:text="#"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btnAlight"
-        app:layout_constraintStart_toEndOf="@+id/btnBoard"
+        app:layout_constraintEnd_toStartOf="@id/btnBoard"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mapFragFleet" />
 
     <TextView
-        android:id="@+id/txtSpeed"
-        android:layout_width="100dp"
+        android:id="@+id/txtNumAlight"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
-        android:background="@color/blue"
-        android:gravity="right"
-        android:text="Current Spd (kph):"
-        android:textColor="@color/white"
-        android:textSize="10sp"
-        app:layout_constraintBottom_toTopOf="@id/txtAveSpeed"
-        app:layout_constraintEnd_toStartOf="@+id/txtSpeedNum"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtNumPass" />
-
-    <TextView
-        android:id="@+id/txtAveSpeed"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="2dp"
-        android:background="@color/blue"
-        android:gravity="right"
-        android:text="Ave. Spd (kph):"
-        android:textColor="@color/white"
-        android:textSize="10sp"
-        app:layout_constraintBottom_toTopOf="@id/txtMaxSpeed"
-        app:layout_constraintEnd_toStartOf="@+id/txtSpeedNum"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtSpeed" />
-
-    <TextView
-        android:id="@+id/txtMaxSpeed"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginBottom="60dp"
-        android:background="@color/blue"
-        android:gravity="right"
-        android:text="Max. Spd (kph):"
-        android:textColor="@color/white"
-        android:textSize="10sp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="100dp"
+        android:background="@drawable/border"
+        android:text="#"
+        android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/txtSpeedNum"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btnAlight"
+        app:layout_constraintTop_toBottomOf="@+id/mapFragFleet" />
+
+   <TextView
+       android:id="@+id/txtSpeed"
+       android:layout_width="100dp"
+       android:layout_height="wrap_content"
+       android:layout_marginStart="16dp"
+       android:layout_marginTop="8dp"
+       android:background="@color/blue"
+       android:gravity="right"
+       android:text="Current Spd (kph):"
+       android:textColor="@color/white"
+       android:textSize="10sp"
+       app:layout_constraintBottom_toTopOf="@id/txtAveSpeed"
+       app:layout_constraintEnd_toStartOf="@+id/txtSpeedNum"
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintTop_toBottomOf="@id/txtNumPass" />
+
+   <TextView
+       android:id="@+id/txtAveSpeed"
+       android:layout_width="100dp"
+       android:layout_height="wrap_content"
+       android:layout_marginStart="16dp"
+       android:layout_marginTop="2dp"
+       android:background="@color/blue"
+       android:gravity="right"
+       android:text="Ave. Spd (kph):"
+       android:textColor="@color/white"
+       android:textSize="10sp"
+       app:layout_constraintBottom_toTopOf="@id/txtMaxSpeed"
+       app:layout_constraintEnd_toStartOf="@+id/txtSpeedNum"
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintTop_toBottomOf="@id/txtSpeed" />
+
+   <TextView
+       android:id="@+id/txtMaxSpeed"
+       android:layout_width="100dp"
+       android:layout_height="wrap_content"
+       android:layout_marginStart="16dp"
+       android:layout_marginTop="2dp"
+       android:layout_marginBottom="60dp"
+       android:background="@color/blue"
+       android:gravity="right"
+       android:text="Max. Spd (kph):"
+       android:textColor="@color/white"
+       android:textSize="10sp"
+       app:layout_constraintBottom_toBottomOf="parent"
+       app:layout_constraintEnd_toStartOf="@+id/txtSpeedNum"
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintTop_toBottomOf="@id/txtAveSpeed" />
+
+   <TextView
+       android:id="@+id/txtSpeedNum"
+       android:layout_width="60dp"
+       android:layout_height="wrap_content"
+       android:gravity="right"
+       android:text="0.00"
+       android:textSize="12sp"
+       android:textStyle="bold"
+       app:layout_constraintBottom_toBottomOf="@id/txtSpeed"
+       app:layout_constraintStart_toEndOf="@+id/txtSpeed" />
+
+   <TextView
+       android:id="@+id/txtAveSpeedNum"
+       android:layout_width="60dp"
+       android:layout_height="wrap_content"
+       android:gravity="right"
+       android:text="0.00"
+       android:textSize="12sp"
+       android:textStyle="bold"
+       app:layout_constraintBottom_toBottomOf="@id/txtAveSpeed"
+       app:layout_constraintStart_toEndOf="@id/txtAveSpeed"
+       app:layout_constraintTop_toBottomOf="@id/txtSpeedNum" />
+
+   <TextView
+       android:id="@+id/txtMaxSpeedNum"
+       android:layout_width="60dp"
+       android:layout_height="wrap_content"
+       android:gravity="right"
+       android:text="0.00"
+       android:textSize="12sp"
+       android:textStyle="bold"
+       app:layout_constraintBottom_toBottomOf="@id/txtMaxSpeed"
+       app:layout_constraintStart_toEndOf="@id/txtMaxSpeed"
+       app:layout_constraintTop_toBottomOf="@id/txtAveSpeedNum" />
+
+   <TextView
+       android:id="@+id/txtTravelDist"
+       android:layout_width="100dp"
+       android:layout_height="wrap_content"
+       android:layout_marginTop="8dp"
+       android:background="@color/blue"
+       android:gravity="right"
+       android:text="Travel Dist (km):"
+       android:textColor="@color/white"
+       android:textSize="10sp"
+       app:layout_constraintBottom_toBottomOf="@id/txtSpeed"
+       app:layout_constraintEnd_toStartOf="@+id/txtTravelDistNum"
+       app:layout_constraintStart_toEndOf="@id/txtSpeedNum"
+       app:layout_constraintTop_toBottomOf="@id/txtNumPass" />
+
+   <TextView
+       android:id="@+id/txtTravelTime"
+       android:layout_width="100dp"
+       android:layout_height="wrap_content"
+       android:layout_marginTop="2dp"
+       android:background="@color/blue"
+       android:gravity="right"
+       android:text="Travel Time (hrs):"
+       android:textColor="@color/white"
+       android:textSize="10sp"
+       app:layout_constraintBottom_toBottomOf="@id/txtAveSpeed"
+       app:layout_constraintEnd_toStartOf="@+id/txtTravelTimeNum"
+       app:layout_constraintStart_toEndOf="@id/txtAveSpeedNum"
+       app:layout_constraintTop_toBottomOf="@id/txtTravelDist" />
+
+   <TextView
+       android:id="@+id/txtTravelDistNum"
+       android:layout_width="60dp"
+       android:layout_height="wrap_content"
+       android:layout_marginEnd="16dp"
+       android:gravity="right"
+       android:text="0.00"
+       android:textSize="12sp"
+       android:textStyle="bold"
+       app:layout_constraintBottom_toBottomOf="@id/txtTravelDist"
+       app:layout_constraintEnd_toEndOf="parent"
+       app:layout_constraintStart_toEndOf="@+id/txtTravelDist" />
+
+   <TextView
+       android:id="@+id/txtTravelTimeNum"
+       android:layout_width="60dp"
+       android:layout_height="wrap_content"
+       android:layout_marginEnd="16dp"
+       android:gravity="right"
+       android:text="0.00"
+       android:textSize="12sp"
+       android:textStyle="bold"
+       app:layout_constraintBottom_toBottomOf="@id/txtTravelTime"
+       app:layout_constraintEnd_toEndOf="parent"
+       app:layout_constraintStart_toEndOf="@+id/txtTravelTime"
+       app:layout_constraintTop_toBottomOf="@id/txtTravelDistNum" />
+
+    <FrameLayout
+        android:id="@+id/Fleetcontainer_frame"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginBottom="60dp"
+        android:background="@color/white"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/txtAveSpeed" />
+        app:layout_constraintTop_toBottomOf="@id/progressBarFleet" />
 
-    <TextView
-        android:id="@+id/txtSpeedNum"
-        android:layout_width="60dp"
-        android:layout_height="wrap_content"
-        android:gravity="right"
-        android:text="0.00"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@id/txtSpeed"
-        app:layout_constraintStart_toEndOf="@+id/txtSpeed" />
-
-    <TextView
-        android:id="@+id/txtAveSpeedNum"
-        android:layout_width="60dp"
-        android:layout_height="wrap_content"
-        android:gravity="right"
-        android:text="0.00"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@id/txtAveSpeed"
-        app:layout_constraintStart_toEndOf="@id/txtAveSpeed"
-        app:layout_constraintTop_toBottomOf="@id/txtSpeedNum" />
-
-    <TextView
-        android:id="@+id/txtMaxSpeedNum"
-        android:layout_width="60dp"
-        android:layout_height="wrap_content"
-        android:gravity="right"
-        android:text="0.00"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@id/txtMaxSpeed"
-        app:layout_constraintStart_toEndOf="@id/txtMaxSpeed"
-        app:layout_constraintTop_toBottomOf="@id/txtAveSpeedNum" />
-
-    <TextView
-        android:id="@+id/txtDist"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        android:background="@color/blue"
-        android:gravity="right"
-        android:text="Total Dist (km):"
-        android:textColor="@color/white"
-        android:textSize="10sp"
-        app:layout_constraintBottom_toBottomOf="@id/txtSpeed"
-        app:layout_constraintEnd_toStartOf="@+id/txtDistNum"
-        app:layout_constraintStart_toEndOf="@id/txtSpeedNum"
-        app:layout_constraintTop_toBottomOf="@+id/btnAlight" />
-
-    <TextView
-        android:id="@+id/txtTime"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:background="@color/blue"
-        android:gravity="right"
-        android:text="Total Time (hrs):"
-        android:textColor="@color/white"
-        android:textSize="10sp"
-        app:layout_constraintBottom_toBottomOf="@id/txtAveSpeed"
-        app:layout_constraintEnd_toStartOf="@+id/txtTimeNum"
-        app:layout_constraintStart_toEndOf="@id/txtAveSpeedNum"
-        app:layout_constraintTop_toBottomOf="@id/txtDist" />
-
-    <TextView
-        android:id="@+id/txtDistNum"
-        android:layout_width="60dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:gravity="right"
-        android:text="0.00"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@id/txtDist"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/txtDist" />
-
-    <TextView
-        android:id="@+id/txtTimeNum"
-        android:layout_width="60dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:gravity="right"
-        android:text="0.00"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@id/txtTime"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/txtTime"
-        app:layout_constraintTop_toBottomOf="@id/txtDistNum" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottom_nav_view"
-        app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toStartOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_gravity="bottom"
-        app:itemTextAppearanceActive="@style/BottomNavigation.ActiveItemTextAppearance"
-        app:itemTextAppearanceInactive="@style/BottomNavigation.InactiveItemTextAppearance"
-        android:background="?android:attr/windowBackground"
-        app:labelVisibilityMode="labeled"
-        app:itemBackground="@color/colorPrimary"
-        app:itemIconTint="@color/blue"
-        app:itemTextColor="@color/blue"
-        app:menu="@menu/bottom_nav_menu"/>
+       android:id="@+id/bottom_nav_view"
+       app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       app:layout_constraintEnd_toStartOf="parent"
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintBottom_toBottomOf="parent"
+       android:layout_gravity="bottom"
+       app:itemTextAppearanceActive="@style/BottomNavigation.ActiveItemTextAppearance"
+       app:itemTextAppearanceInactive="@style/BottomNavigation.InactiveItemTextAppearance"
+       android:background="?android:attr/windowBackground"
+       app:labelVisibilityMode="labeled"
+       app:itemBackground="@color/colorPrimary"
+       app:itemIconTint="@color/blue"
+       app:itemTextColor="@color/blue"
+       app:menu="@menu/bottom_nav_menu"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

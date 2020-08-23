@@ -129,10 +129,11 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private NavigationView navigationView;
     ImageButton boardButton, alightButton;
-    int numPass;
-    double speed=0.0, distance=0.0;
+    int numPass, numBoard, numAlight;
+    double speed=0.0, avespeed=0.0, maxspeed=0.0, traveldist=0.0, traveltime=0.0;
     TextView NumPassengers;
-    TextView Speed, Distance;
+    TextView NumBoarding, NumAlighting;
+    TextView Speed, TravelDist, AveSpeed, MaxSpeed, TravelTime;
     ProgressBar pgsBar;
     ActivityFleetBinding bi;
     boolean isRotate = false;
@@ -164,6 +165,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
         bi = DataBindingUtil.setContentView(this, R.layout.activity_fleet);
         ViewAnimation.init(bi.fabFleetInfo);
         ViewAnimation.init(bi.fabFleetBoarding);
+        ViewAnimation.init(bi.fabFleetAlighting);
         ViewAnimation.init(bi.fabFleetFeeds);
         ViewAnimation.init(bi.txtFeedsCount);
 
@@ -178,6 +180,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                 if(isRotate){
                     ViewAnimation.showIn(bi.fabFleetInfo);
                     ViewAnimation.showIn(bi.fabFleetBoarding);
+                    ViewAnimation.showIn(bi.fabFleetAlighting);
                     ViewAnimation.showIn(bi.fabFleetFeeds);
                     if(feedsCount!=0){
                         ViewAnimation.showIn(bi.txtFeedsCount);
@@ -190,6 +193,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                 }else{
                     ViewAnimation.showOut(bi.fabFleetInfo);
                     ViewAnimation.showOut(bi.fabFleetBoarding);
+                    ViewAnimation.showOut(bi.fabFleetAlighting);
                     ViewAnimation.showOut(bi.fabFleetFeeds);
                     if(feedsCount!=0){
                         ViewAnimation.showOut(bi.txtFeedsCount);
@@ -207,6 +211,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                     bi.fabFleetAdd.hide();
                     bi.fabFleetInfo.hide();
                     bi.fabFleetBoarding.hide();
+                    bi.fabFleetAlighting.hide();
                     bi.fabFleetFeeds.hide();
                     isRotate=true;
                 } else{
@@ -218,13 +223,13 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
 
                 FleetInfoFragment fleetInfoFragment = new FleetInfoFragment();
 
-                FrameLayout layout = (FrameLayout) findViewById(R.id.container_frame);
+                FrameLayout layout = (FrameLayout) findViewById(R.id.Fleetcontainer_frame);
                 layout.setVisibility(View.VISIBLE);
 
                 if (fleetInfoFragment.isAdded()) {
                     ft.show(fleetInfoFragment);
                 } else {
-                    ft.add(R.id.container_frame, fleetInfoFragment);
+                    ft.add(R.id.Fleetcontainer_frame, fleetInfoFragment);
                     ft.show(fleetInfoFragment);
                 }
                 ft.commit();
@@ -240,6 +245,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                     bi.fabFleetAdd.hide();
                     bi.fabFleetInfo.hide();
                     bi.fabFleetBoarding.hide();
+                    bi.fabFleetAlighting.hide();
                     bi.fabFleetFeeds.hide();
                     isRotate=true;
                 } else{
@@ -249,16 +255,50 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                 FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                 ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
 
-                FleetBoardingFragment fleetContactFragment = new FleetBoardingFragment();
+                FleetBoardingFragment fleetBoardingFragment = new FleetBoardingFragment();
 
-                FrameLayout layout = (FrameLayout) findViewById(R.id.container_frame);
+                FrameLayout layout = (FrameLayout) findViewById(R.id.Fleetcontainer_frame);
                 layout.setVisibility(View.VISIBLE);
 
-                if (fleetContactFragment.isAdded()) {
-                    ft.show(fleetContactFragment);
+                if (fleetBoardingFragment.isAdded()) {
+                    ft.show(fleetBoardingFragment);
                 } else {
-                    ft.add(R.id.container_frame, fleetContactFragment);
-                    ft.show(fleetContactFragment);
+                    ft.add(R.id.Fleetcontainer_frame, fleetBoardingFragment);
+                    ft.show(fleetBoardingFragment);
+                }
+                ft.commit();
+            }
+        });
+
+        // Fleet Alighting Fab
+        bi.fabFleetAlighting.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Hide Fab
+                if(isRotate){
+                    bi.fabFleetAdd.hide();
+                    bi.fabFleetInfo.hide();
+                    bi.fabFleetBoarding.hide();
+                    bi.fabFleetAlighting.hide();
+                    bi.fabFleetFeeds.hide();
+                    isRotate=true;
+                } else{
+                    bi.fabFleetAdd.hide();
+                }
+                // Show fragment
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
+
+                FleetAlightingFragment fleetAlightingFragment = new FleetAlightingFragment();
+
+                FrameLayout layout = (FrameLayout) findViewById(R.id.Fleetcontainer_frame);
+                layout.setVisibility(View.VISIBLE);
+
+                if (fleetAlightingFragment.isAdded()) {
+                    ft.show(fleetAlightingFragment);
+                } else {
+                    ft.add(R.id.Fleetcontainer_frame, fleetAlightingFragment);
+                    ft.show(fleetAlightingFragment);
                 }
                 ft.commit();
             }
@@ -273,6 +313,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                     bi.fabFleetAdd.hide();
                     bi.fabFleetInfo.hide();
                     bi.fabFleetBoarding.hide();
+                    bi.fabFleetAlighting.hide();
                     bi.fabFleetFeeds.hide();
                     isRotate=true;
                 } else{
@@ -284,13 +325,13 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
 
                 FleetFeedsFragment fleetFeedsFragment = new FleetFeedsFragment();
 
-                FrameLayout layout = (FrameLayout) findViewById(R.id.container_frame);
+                FrameLayout layout = (FrameLayout) findViewById(R.id.Fleetcontainer_frame);
                 layout.setVisibility(View.VISIBLE);
 
                 if (fleetFeedsFragment.isAdded()) {
                     ft.show(fleetFeedsFragment);
                 } else {
-                    ft.add(R.id.container_frame, fleetFeedsFragment);
+                    ft.add(R.id.Fleetcontainer_frame, fleetFeedsFragment);
                     ft.show(fleetFeedsFragment);
                 }
                 ft.commit();
@@ -332,6 +373,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                     bi.fabFleetAdd.hide();
                     bi.fabFleetInfo.hide();
                     bi.fabFleetBoarding.hide();
+                    bi.fabFleetAlighting.hide();
                     bi.fabFleetFeeds.hide();
                 } else{
                     bi.fabFleetAdd.hide();
@@ -346,6 +388,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                     bi.fabFleetAdd.show();
                     bi.fabFleetInfo.show();
                     bi.fabFleetBoarding.show();
+                    bi.fabFleetAlighting.show();
                     bi.fabFleetFeeds.show();
                 } else{
                     bi.fabFleetAdd.show();
@@ -470,8 +513,32 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
         // Display text values
         NumPassengers = findViewById(R.id.txtNumPass);
         NumPassengers.setText(String.valueOf(numPass));
+
+        NumBoarding = findViewById(R.id.txtNumBoard);
+        NumBoarding.setText(String.valueOf(numBoard));
+
+        NumAlighting= findViewById(R.id.txtNumAlight);
+        NumAlighting.setText(String.valueOf(numAlight));
+
         Speed = findViewById(R.id.txtSpeedNum);
-        Distance =  findViewById(R.id.txtDistNum);
+        //Speed.setText(String.valueOf(speed));
+        Speed.setText("0.00");
+
+        AveSpeed = findViewById(R.id.txtAveSpeedNum);
+        //AveSpeed.setText(String.valueOf(avespeed));
+        AveSpeed.setText("0.00");
+
+        MaxSpeed = findViewById(R.id.txtMaxSpeedNum);
+        //MaxSpeed.setText(String.valueOf(maxspeed));
+        MaxSpeed.setText("0.00");
+
+        TravelDist = findViewById(R.id.txtTravelDistNum);
+        //TravelDist.setText(String.valueOf(traveldist));
+        TravelDist.setText("0.00");
+
+        TravelTime = findViewById(R.id.txtTravelTimeNum);
+        //TravelTime.setText(String.valueOf(traveltime));
+        TravelTime.setText("0.00");
 
         // Board button
         boardButton = findViewById(R.id.btnBoard);
@@ -991,7 +1058,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                 if(mLastLocation != null) {
                     Location prevLocation = mLastLocation;
                     Location currLocation = location;
-                    distance = distance + computeDistance(prevLocation, currLocation)/1000;
+                    traveldist = traveldist + computeDistance(prevLocation, currLocation)/1000;
                     //speed = computeSpeed(loc1, loc2);
                     speed=location.getSpeed()*3600/1000;
                     //Log.d("Loc/Speed/Dist", String.valueOf(loc1.getLatitude()) + "," + String.valueOf(loc2.getLatitude()) + "," + String.valueOf(speed)+ ","
@@ -1008,7 +1075,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                     String lng = String.valueOf(location.getLongitude());
 
                     Speed.setText(String.format("%.2f", speed));
-                    Distance.setText(String.format("%.2f", distance));
+                    TravelDist.setText(String.format("%.2f", traveldist));
 
                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
                     sdf.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
@@ -1301,11 +1368,10 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
 
     // Send boarding from fleet boarding fragment
     public void sendBoarding() {
-
-        TextView txtPassengerId = findViewById(R.id.txtPassengerId);
-        TextView txtPassengerDetails = findViewById(R.id.txtPassengerDetails);
-        String commuterId = txtPassengerId.getText().toString();
-        String commuterDetails = txtPassengerDetails.getText().toString();
+        TextView txtBoardingPassengerId = findViewById(R.id.txtBoardingPassengerId);
+        TextView txtBoardingPassengerDetails = findViewById(R.id.txtBoardingPassengerDetails);
+        String commuterId = txtBoardingPassengerId.getText().toString();
+        String commuterDetails = txtBoardingPassengerDetails.getText().toString();
 
         ImageView imageBoardingStatus = findViewById(R.id.imageBoardingStatus);
         TextView txtBoardingStatus = findViewById(R.id.txtBoardingStatus);
@@ -1350,6 +1416,8 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
                 txtBoardingStatus.setText("Boarding successful.");
                 numPass = numPass + 1;
                 NumPassengers.setText(String.valueOf(numPass));
+                numBoard = numBoard + 1;
+                NumBoarding.setText(String.valueOf(numBoard));
             } else {
                 Toast.makeText(Fleet.this, "Boarding failed.", Toast.LENGTH_SHORT).show();
                 imageBoardingStatus.setVisibility(View.VISIBLE);
@@ -1359,7 +1427,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
             }
 
         }
-    } // sendRating
+    } // sendBoarding
 
     public boolean connected() {
         if (brokerIsConnected) {
@@ -1375,6 +1443,7 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
             bi.fabFleetAdd.show();
             bi.fabFleetInfo.show();
             bi.fabFleetBoarding.show();
+            bi.fabFleetAlighting.show();
             bi.fabFleetFeeds.show();
         } else{
             bi.fabFleetAdd.show();
