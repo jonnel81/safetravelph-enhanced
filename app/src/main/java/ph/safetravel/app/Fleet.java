@@ -1260,6 +1260,46 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
         }
     } // publishBoarding
 
+    public byte[] alightingMessage(String deviceId, String lat, String lng, String timestamp, String userId, String vehicleId, String vehicleDetails, String passengerId, String passengerDetails) {
+        protos.Boarding boarding = protos.Boarding.newBuilder()
+                .setDeviceId(deviceId)
+                .setLat(lat)
+                .setLng(lng)
+                .setTimestamp(timestamp)
+                .setUserId(userId)
+                .setVehicleId(vehicleId)
+                .setVehicleDetails(vehicleDetails)
+                .setPassengerId(passengerId)
+                .setPassengerDetails(passengerDetails)
+                .build();
+        byte message[] = boarding.toByteArray();
+        return message;
+    } // alightingMessage
+
+    public void publishAlighting(byte[] payload) {
+        try {
+            if (!client.isConnected()) {
+                client.connect();
+            }
+            MqttMessage message = new MqttMessage();
+            message.setPayload(payload);
+            message.setQos(0);
+            client.publish("alightings", message,null, new IMqttActionListener() {
+                @Override
+                public void onSuccess(IMqttToken asyncActionToken) {
+                    //
+                }
+
+                @Override
+                public void onFailure(IMqttToken asyncActionToken, Throwable exception) {
+                    //
+                }
+            });
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+    } // publishAlighting
+
     public void connectBroker() {
         // Connect to Mqtt broker
         try {
@@ -1366,12 +1406,12 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
         this.finish();
     } // closeApp
 
-    // Send boarding from fleet boarding fragment
+    // Send from fleet boarding fragment
     public void sendBoarding() {
         TextView txtBoardingPassengerId = findViewById(R.id.txtBoardingPassengerId);
         TextView txtBoardingPassengerDetails = findViewById(R.id.txtBoardingPassengerDetails);
-        String commuterId = txtBoardingPassengerId.getText().toString();
-        String commuterDetails = txtBoardingPassengerDetails.getText().toString();
+        String passengerId = txtBoardingPassengerId.getText().toString();
+        String passengerDetails = txtBoardingPassengerDetails.getText().toString();
 
         ImageView imageBoardingStatus = findViewById(R.id.imageBoardingStatus);
         TextView txtBoardingStatus = findViewById(R.id.txtBoardingStatus);
@@ -1406,9 +1446,9 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
             String vehicleId = myPrefs.getString("vehicleId","");
             String vehicleDetails = myPrefs.getString("vehicleDetails","");
 
-            if(!vehicleId.equals("") && !vehicleDetails.equals("") && !commuterId.equals("") && !commuterDetails.equals("")) {
+            if(!vehicleId.equals("") && !vehicleDetails.equals("") && !passengerId.equals("") && !passengerDetails.equals("")) {
                 // Publish message
-                publishBoarding(boardingMessage(deviceId, lat, lng, timeStamp, userId, vehicleId, vehicleDetails, commuterId, commuterDetails));
+                publishBoarding(boardingMessage(deviceId, lat, lng, timeStamp, userId, vehicleId, vehicleDetails, passengerId, passengerDetails));
                 Toast.makeText(Fleet.this, "Boarding sent.", Toast.LENGTH_SHORT).show();
                 imageBoardingStatus.setVisibility(View.VISIBLE);
                 imageBoardingStatus.setImageResource(R.drawable.sign_correct);
@@ -1428,6 +1468,68 @@ public class Fleet extends AppCompatActivity implements OnMapReadyCallback  {
 
         }
     } // sendBoarding
+
+    // Send from fleet alighting fragment
+    public void sendAlighting() {
+        TextView txAlightingPassengerId = findViewById(R.id.txtAlightingPassengerId);
+        TextView txtAlightingPassengerDetails = findViewById(R.id.txtAlightingPassengerDetails);
+        String passengerId = txAlightingPassengerId.getText().toString();
+        String passengerDetails = txtAlightingPassengerDetails.getText().toString();
+
+        ImageView imageAlightingStatus = findViewById(R.id.imageAlightingStatus);
+        TextView txtAlightingStatus = findViewById(R.id.txtAlightingStatus);
+
+        if (mLastLocation != null) {
+            String lat = String.valueOf(mLastLocation.getLatitude());
+            String lng = String.valueOf(mLastLocation.getLongitude());
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+            sdf.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
+            String timeStamp = sdf.format(new Date());
+
+            // Get shared preferences
+            myPrefs = getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
+            String username = myPrefs.getString("username","");
+            String userId = "";
+            try {
+                String decrypted_username = AESUtils.decrypt(username);
+                userId = decrypted_username;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            String androidId = myPrefs.getString("androidId","");
+            String deviceId = "";
+            try {
+                String decrypted_androidId = AESUtils.decrypt(androidId);
+                deviceId = decrypted_androidId;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            String vehicleId = myPrefs.getString("vehicleId","");
+            String vehicleDetails = myPrefs.getString("vehicleDetails","");
+
+            if(!vehicleId.equals("") && !vehicleDetails.equals("") && !passengerId.equals("") && !passengerDetails.equals("")) {
+                // Publish message
+                publishAlighting(alightingMessage(deviceId, lat, lng, timeStamp, userId, vehicleId, vehicleDetails, passengerId, passengerDetails));
+                Toast.makeText(Fleet.this, "Alighting sent.", Toast.LENGTH_SHORT).show();
+                imageAlightingStatus.setVisibility(View.VISIBLE);
+                imageAlightingStatus.setImageResource(R.drawable.sign_correct);
+                txtAlightingStatus.setVisibility(View.VISIBLE);
+                txtAlightingStatus.setText("Alighting successful.");
+                numPass = numPass - 1;
+                NumPassengers.setText(String.valueOf(numPass));
+                numAlight = numAlight + 1;
+                NumAlighting.setText(String.valueOf(numAlight));
+            } else {
+                Toast.makeText(Fleet.this, "Alighting failed.", Toast.LENGTH_SHORT).show();
+                imageAlightingStatus.setVisibility(View.VISIBLE);
+                imageAlightingStatus.setImageResource(R.drawable.sign_wrong);
+                txtAlightingStatus.setVisibility(View.VISIBLE);
+                txtAlightingStatus.setText("Alighting failed.");
+            }
+        }
+    } // sendAlighting
 
     public boolean connected() {
         if (brokerIsConnected) {

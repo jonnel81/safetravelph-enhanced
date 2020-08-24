@@ -64,6 +64,18 @@ message Boarding {
      string passengerDetails = 9;
 }
 
+message Aligthing {
+     string deviceId = 1;
+     string lat = 2;
+     string lng = 3;
+     string timestamp = 4;
+     string userId = 5;
+     string vehicleId = 6;
+     string vehicleDetails = 7;
+     string passengerId = 8;
+     string passengerDetails = 9;
+}
+
  message Help {
      string deviceId = 1;
      string lat = 2;

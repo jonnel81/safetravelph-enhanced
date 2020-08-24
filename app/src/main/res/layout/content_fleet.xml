@@ -118,7 +118,7 @@
        android:layout_marginBottom="90dp"
        android:background="@drawable/ic_plus"
        android:text="Board"
-       android:visibility="visible"
+       android:visibility="invisible"
        app:layout_constraintBottom_toBottomOf="parent"
        app:layout_constraintEnd_toStartOf="@id/txtNumPass"
        app:layout_constraintStart_toStartOf="parent"
@@ -132,7 +132,7 @@
        android:layout_marginBottom="90dp"
        android:background="@drawable/ic_minus"
        android:text="Alight"
-       android:visibility="visible"
+       android:visibility="invisible"
        app:layout_constraintBottom_toBottomOf="parent"
        app:layout_constraintEnd_toEndOf="parent"
        app:layout_constraintStart_toEndOf="@id/txtNumPass"
@@ -163,7 +163,7 @@
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/btnBoard"
+        app:layout_constraintEnd_toStartOf="@id/txtNumPass"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/mapFragFleet" />
 
@@ -179,7 +179,7 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/btnAlight"
+        app:layout_constraintStart_toEndOf="@id/txtNumPass"
         app:layout_constraintTop_toBottomOf="@+id/mapFragFleet" />
 
    <TextView

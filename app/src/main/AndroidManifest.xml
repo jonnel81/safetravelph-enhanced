@@ -40,6 +40,7 @@
         <activity android:name=".ScanTrip" />
         <activity android:name=".ScanFleet" />
         <activity android:name=".ScanBoardingPassenger" />
+        <activity android:name=".ScanAlightingPassenger" />
         <activity android:name=".BarcodeReader" />
         <activity android:name=".Board" />
         <activity android:name=".Help" />

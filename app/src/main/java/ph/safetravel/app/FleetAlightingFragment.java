@@ -50,7 +50,7 @@ public class FleetAlightingFragment extends Fragment {
                     @Override
                     public void afterDelay() {
                         if(((Fleet) getActivity()).connected()) {
-                            ((Fleet) getActivity()).sendBoarding();
+                            ((Fleet) getActivity()).sendAlighting();
                         }
                         // Clear screen
                         txtAlightingPassengerId.setText("");
