@@ -122,7 +122,7 @@ public class TripInfoFragment extends Fragment {
                 vehicleDetails = txtVehDetails.getText().toString();
 
                 if(origin.equals("") || destination.equals("") || purpose.equals("") || mode.equals("")) {
-                    Toast.makeText(getContext(), "Please complete required fields.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getContext(), "Please complete all fields.", Toast.LENGTH_SHORT).show();
                 } else {
                     // Save to shared preferences
                     editor.putString("origin", origin);
@@ -399,30 +399,30 @@ public class TripInfoFragment extends Fragment {
         // Get shared preferences
         myPrefs = getActivity().getSharedPreferences("MYPREFS", Context.MODE_PRIVATE);
 
-        if(myPrefs.getString("origin",null)!=null) {
-            txtOrigin.setText(myPrefs.getString("origin", null));
-            originLat = myPrefs.getString("originLat", null);
-            originLng = myPrefs.getString("originLng", null);
+        if(myPrefs.getString("origin","")!="") {
+            txtOrigin.setText(myPrefs.getString("origin", ""));
+            originLat = myPrefs.getString("originLat", "");
+            originLng = myPrefs.getString("originLng", "");
         }
 
-        if(myPrefs.getString("destination",null)!=null) {
-            txtDestination.setText(myPrefs.getString("destination",null));
-            destinationLat = myPrefs.getString("destinationLat", null);
-            destinationLng = myPrefs.getString("destinationLng", null);
+        if(myPrefs.getString("destination","")!="") {
+            txtDestination.setText(myPrefs.getString("destination",""));
+            destinationLat = myPrefs.getString("destinationLat", "");
+            destinationLng = myPrefs.getString("destinationLng", "");
         }
 
-        if(myPrefs.getString("purpose",null)!=null) {
-            int selectionPurpose= purposeAdapter.getPosition(myPrefs.getString("purpose",null));
+        if(myPrefs.getString("purpose","")!="") {
+            int selectionPurpose= purposeAdapter.getPosition(myPrefs.getString("purpose",""));
             spinnerPurpose.setSelection(selectionPurpose);
         }
 
-        if(myPrefs.getString("mode",null)!=null) {
-            int selectionMode = modeAdapter.getPosition(myPrefs.getString("mode", null));
+        if(myPrefs.getString("mode","")!="") {
+            int selectionMode = modeAdapter.getPosition(myPrefs.getString("mode", ""));
             spinnerMode.setSelection(selectionMode);
         }
 
-        txtVehId.setText(myPrefs.getString("vehicleId",null));
-        txtVehDetails.setText(myPrefs.getString("vehicleDetails",null));
+        txtVehId.setText(myPrefs.getString("vehicleId",""));
+        txtVehDetails.setText(myPrefs.getString("vehicleDetails",""));
 
         return view;
 

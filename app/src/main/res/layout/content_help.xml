@@ -42,7 +42,7 @@
             android:background="@color/blue"
             android:fontFamily="@font/gothammedium_font"
             android:onClick="OnReport"
-            android:text="Send Help"
+            android:text="Submit"
             android:textColor="@color/white"
             android:textSize="14sp"
             app:layout_constraintBottom_toTopOf="@+id/framelayout"

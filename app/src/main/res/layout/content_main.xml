@@ -113,7 +113,7 @@
         android:lineSpacingExtra="5sp"
         android:text="@string/notice_developer"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:textSize="12sp"
+        android:textSize="10sp"
         app:layout_constraintBottom_toTopOf="@+id/textViewContact"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -130,7 +130,7 @@
         android:lineSpacingExtra="5sp"
         android:text="@string/notice_contact"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-        android:textSize="12sp"
+        android:textSize="10sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textViewDeveloper" />
@@ -190,8 +190,8 @@
 
     <ImageView
         android:id="@+id/imageDOTrLTFRBLogo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="211dp"
+        android:layout_height="102dp"
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

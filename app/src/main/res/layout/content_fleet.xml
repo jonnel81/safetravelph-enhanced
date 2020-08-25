@@ -68,47 +68,46 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/progressBarFleet" />
 
+    <TextView
+        android:id="@+id/txtBoard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text="Boarding"
+        android:textColor="@color/blue"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/btnBoard"
+        app:layout_constraintEnd_toStartOf="@+id/txtPass"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mapFragFleet" />
 
-   <TextView
-       android:id="@+id/txtBoard"
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:layout_marginStart="48dp"
-       android:text="Boarding"
-       android:textColor="@color/blue"
-       android:textSize="12sp"
-       android:textStyle="bold"
-       app:layout_constraintBottom_toTopOf="@+id/btnBoard"
-       app:layout_constraintEnd_toStartOf="@+id/txtPass"
-       app:layout_constraintStart_toStartOf="parent"
-       app:layout_constraintTop_toBottomOf="@+id/mapFragFleet" />
+    <TextView
+        android:id="@+id/txtPass"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text="Onboard"
+        android:textColor="@color/blue"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/txtNumPass"
+        app:layout_constraintEnd_toStartOf="@+id/txtAlight"
+        app:layout_constraintStart_toEndOf="@id/txtBoard"
+        app:layout_constraintTop_toBottomOf="@+id/mapFragFleet" />
 
-   <TextView
-       android:id="@+id/txtPass"
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:text="Onboard"
-       android:textColor="@color/blue"
-       android:textSize="12sp"
-       android:textStyle="bold"
-       app:layout_constraintBottom_toTopOf="@+id/txtNumPass"
-       app:layout_constraintEnd_toStartOf="@+id/txtAlight"
-       app:layout_constraintStart_toEndOf="@id/txtBoard"
-       app:layout_constraintTop_toBottomOf="@+id/mapFragFleet" />
-
-   <TextView
-       android:id="@+id/txtAlight"
-       android:layout_width="wrap_content"
-       android:layout_height="wrap_content"
-       android:layout_marginEnd="48dp"
-       android:text="Alighting"
-       android:textColor="@color/blue"
-       android:textSize="12sp"
-       android:textStyle="bold"
-       app:layout_constraintBottom_toTopOf="@id/btnAlight"
-       app:layout_constraintEnd_toEndOf="parent"
-       app:layout_constraintStart_toEndOf="@+id/txtPass"
-       app:layout_constraintTop_toBottomOf="@+id/mapFragFleet" />
+    <TextView
+        android:id="@+id/txtAlight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Alighting"
+        android:textColor="@color/blue"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/btnAlight"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/txtPass"
+        app:layout_constraintTop_toBottomOf="@+id/mapFragFleet" />
 
    <ImageButton
        android:id="@+id/btnBoard"
@@ -156,7 +155,6 @@
         android:id="@+id/txtNumBoard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
         android:layout_marginBottom="100dp"
         android:background="@drawable/border"
         android:text="#"
@@ -171,7 +169,6 @@
         android:id="@+id/txtNumAlight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
         android:layout_marginBottom="100dp"
         android:background="@drawable/border"
         android:text="#"
@@ -323,35 +320,34 @@
        app:layout_constraintStart_toEndOf="@+id/txtTravelTime"
        app:layout_constraintTop_toBottomOf="@id/txtTravelDistNum" />
 
-    <FrameLayout
-        android:id="@+id/Fleetcontainer_frame"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginBottom="60dp"
-        android:background="@color/white"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/progressBarFleet" />
-
-
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-       android:id="@+id/bottom_nav_view"
-       app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
+   <FrameLayout
+       android:id="@+id/Fleetcontainer_frame"
        android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       app:layout_constraintEnd_toStartOf="parent"
-       app:layout_constraintStart_toStartOf="parent"
+       android:layout_height="0dp"
+       android:layout_marginBottom="60dp"
+       android:background="@color/white"
+       android:visibility="invisible"
        app:layout_constraintBottom_toBottomOf="parent"
-       android:layout_gravity="bottom"
-       app:itemTextAppearanceActive="@style/BottomNavigation.ActiveItemTextAppearance"
-       app:itemTextAppearanceInactive="@style/BottomNavigation.InactiveItemTextAppearance"
-       android:background="?android:attr/windowBackground"
-       app:labelVisibilityMode="labeled"
-       app:itemBackground="@color/colorPrimary"
-       app:itemIconTint="@color/blue"
-       app:itemTextColor="@color/blue"
-       app:menu="@menu/bottom_nav_menu"/>
+       app:layout_constraintEnd_toEndOf="parent"
+       app:layout_constraintStart_toStartOf="parent"
+       app:layout_constraintTop_toBottomOf="@id/progressBarFleet" />
+
+   <com.google.android.material.bottomnavigation.BottomNavigationView
+      android:id="@+id/bottom_nav_view"
+      app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      app:layout_constraintEnd_toStartOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintBottom_toBottomOf="parent"
+      android:layout_gravity="bottom"
+      app:itemTextAppearanceActive="@style/BottomNavigation.ActiveItemTextAppearance"
+      app:itemTextAppearanceInactive="@style/BottomNavigation.InactiveItemTextAppearance"
+      android:background="?android:attr/windowBackground"
+      app:labelVisibilityMode="labeled"
+      app:itemBackground="@color/colorPrimary"
+      app:itemIconTint="@color/blue"
+      app:itemTextColor="@color/blue"
+      app:menu="@menu/bottom_nav_menu"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
